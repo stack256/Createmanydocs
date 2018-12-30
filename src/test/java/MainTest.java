@@ -23,8 +23,8 @@ public class MainTest {
     @Title("Действия после теста")
     @Description("Действия после теста")
     public void tiredDown() {
-        driver = new ChromeDriver();
-        baseUrl = "http://demo.guru99.com/test/newtours/";
+
+        driver.close();
     }
 
 
@@ -38,7 +38,5 @@ public class MainTest {
         String expectedTitle = "Welcome: Mercury Tours";
         String actualTitle = driver.getTitle();
         Assert.assertEquals(actualTitle, expectedTitle);
-
-        driver.close();
     }
 }
