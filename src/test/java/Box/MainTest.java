@@ -47,4 +47,18 @@ public class MainTest {
         String actualTitle = driver.getTitle();
         softassertfail(expectedTitle, actualTitle);
     }
+
+
+    @Description("Какое то описание")
+    @Severity(SeverityLevel.CRITICAL)
+    @Title("Имя теста2")
+    @Feature("Имя фичи")
+    @Story("Имя истории")
+    @Test
+    public void test2() {
+        driver.get(baseUrl);
+        String expectedTitle = "Welcome: Mercury Tours";
+        String actualTitle = driver.getTitle();
+        softassertfail(expectedTitle, actualTitle);
+    }
 }
