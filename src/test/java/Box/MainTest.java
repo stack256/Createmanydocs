@@ -43,7 +43,7 @@ public class MainTest {
     @Test
     public void test1() {
         driver.get(baseUrl);
-        String expectedTitle = "Welcome: Me1rcury Tours";
+        String expectedTitle = "Welcome: Mercury Tours";
         String actualTitle = driver.getTitle();
         softassertfail(expectedTitle, actualTitle);
     }
