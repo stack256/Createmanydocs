@@ -41,7 +41,6 @@ class About {
             buf = new Stack();
             buf.number = stack.size();
             stack.add(buf);
-            System.out.println(stack.toString());
         }
 
         @Override
@@ -81,7 +80,7 @@ class About {
     static void softassertfail(String report) {
         Allure.LIFECYCLE.fire(new StepFailureEvent());
         Allure.LIFECYCLE.fire(new TestCaseFailureEvent().withThrowable(new RuntimeException("Есть неблокирующие ошибки")));
-        if (stack.size() != 0) {
+        if (stack.size() > 2) {
             Stack buf = stack.get(stack.size() - 1);
             buf.value = false;
             stack.set(stack.size() - 1, buf);
