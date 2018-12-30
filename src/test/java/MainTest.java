@@ -6,6 +6,8 @@ import org.testng.annotations.*;
 import ru.yandex.qatools.allure.annotations.Title;
 
 @Title("Имя класса")
+@Feature("Имя фичи")
+@Story("Имя истории")
 public class MainTest {
 
     WebDriver driver;
