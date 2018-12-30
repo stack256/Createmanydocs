@@ -1,5 +1,6 @@
 package Box;
 
+import io.qameta.allure.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.*;
@@ -34,19 +35,16 @@ public class MainTest {
     }
 
 
-    /*@Description("Some detailed test description")
+    @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Title("Имя теста")
     @Feature("Имя фичи")
     @Story("Имя истории")
-    @Test*/
-    @Title("3.2\tСоздание черновика документа")
     @Test
     public void test1() {
         driver.get(baseUrl);
         String expectedTitle = "Welcome: Me1rcury Tours";
         String actualTitle = driver.getTitle();
-        softassertfail(actualTitle.equals(expectedTitle),"Не эквивалентны");
-        //Assert.assertEquals(actualTitle, expectedTitle);
+        softassertfail(expectedTitle, actualTitle);
     }
 }

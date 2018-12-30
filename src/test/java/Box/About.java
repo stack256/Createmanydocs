@@ -76,6 +76,11 @@ class About {
             softassertfail(report);
     }
 
+    static void softassertfail(String expectation, String reality) {
+        if (!expectation.equals(reality))
+            softassertfail("Ожидаемое значение: " + expectation + ". Фактический результат: " + reality);
+    }
+
     @Step("{0}")
     static void softassertfail(String report) {
         Allure.LIFECYCLE.fire(new StepFailureEvent());
@@ -90,6 +95,11 @@ class About {
     static void hardassertfail(Boolean value, String report) {
         if (!value)
             hardassertfail(report);
+    }
+
+    static void hardassertfail(String expectation, String reality) {
+        if (!expectation.equals(reality))
+            hardassertfail("Ожидаемое значение: " + expectation + ". Фактический результат: " + reality);
     }
 
     @Step("{0}")
