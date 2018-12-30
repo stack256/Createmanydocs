@@ -10,7 +10,7 @@ public class MainTest {
 
         System.out.println("launching chrome browser");
         String driverPath = "C:\\Webdrivers\\chromedriver.exe";
-        System.setProperty("webdriver.chrome.driver", driverPath);
+        //System.setProperty("webdriver.chrome.driver", driverPath);
         WebDriver driver = new ChromeDriver();
         String baseUrl = "http://demo.guru99.com/test/newtours/";
         driver.get(baseUrl);
