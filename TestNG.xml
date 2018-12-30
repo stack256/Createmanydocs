@@ -3,8 +3,5 @@
 
 <suite name = "Suite1">
     <test name = "exampletest1">
-        <classes>
-            <class name = "MainTest" />
-        </classes>
     </test>
 </suite>

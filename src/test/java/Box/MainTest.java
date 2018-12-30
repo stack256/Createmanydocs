@@ -1,3 +1,5 @@
+package Box;
+
 import io.qameta.allure.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -5,10 +7,15 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 import ru.yandex.qatools.allure.annotations.Title;
 
+import static Box.About.*;
+
+@Epic("Это какой то эпик")
+
 public class MainTest {
 
-    WebDriver driver;
+    static WebDriver driver;
     String baseUrl;
+
 
     @BeforeTest(description = "Configure something before test")
     @Title("Действия до теста")
@@ -37,6 +44,7 @@ public class MainTest {
         driver.get(baseUrl);
         String expectedTitle = "Welcome: Me1rcury Tours";
         String actualTitle = driver.getTitle();
-        Assert.assertEquals(actualTitle, expectedTitle);
+        softassertfail(actualTitle.equals(expectedTitle),"Не эквивалентны");
+        //Assert.assertEquals(actualTitle, expectedTitle);
     }
 }
