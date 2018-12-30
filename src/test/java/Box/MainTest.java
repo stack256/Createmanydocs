@@ -3,7 +3,6 @@ package Box;
 import io.qameta.allure.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.Assert;
 import org.testng.annotations.*;
 import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.annotations.Title;
