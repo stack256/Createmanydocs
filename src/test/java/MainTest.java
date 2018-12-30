@@ -17,6 +17,7 @@ public class MainTest {
         String expectedTitle = "Welcome: Mercury Tours";
         String actualTitle = driver.getTitle();
         Assert.assertEquals(actualTitle, expectedTitle);
+
         driver.close();
     }
 }
