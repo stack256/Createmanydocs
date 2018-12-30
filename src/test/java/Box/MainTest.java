@@ -42,6 +42,8 @@ public class MainTest {
     @Stories("Имя истории")
     @Test
     public void test1() {
+        doc.put("Заголовок", new String[]{"Заголовок"});
         auth("jd1","jd1","123");
+        createincoming(doc);
     }
 }

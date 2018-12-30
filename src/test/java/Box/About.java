@@ -14,11 +14,13 @@ import ru.yandex.qatools.allure.events.*;
 import ru.yandex.qatools.allure.experimental.LifecycleListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 class About {
 
     static WebDriver driver;
     static Integer timeoutlnseconds;
+    static HashMap<String, String[]> doc = new HashMap<String, String[]>();
 
 
     static class Stack {
