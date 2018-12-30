@@ -5,9 +5,6 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 import ru.yandex.qatools.allure.annotations.Title;
 
-@Title("Имя класса")
-@Feature("Имя фичи")
-@Story("Имя истории")
 public class MainTest {
 
     WebDriver driver;
@@ -32,8 +29,9 @@ public class MainTest {
 
     @Description("Some detailed test description")
     @Severity(SeverityLevel.CRITICAL)
-    @Story("Base support for bdd annotations")
     @Title("Имя теста")
+    @Feature("Имя фичи")
+    @Story("Имя истории")
     @Test
     public void test1() {
         driver.get(baseUrl);
