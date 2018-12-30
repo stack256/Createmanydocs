@@ -41,6 +41,7 @@ class About {
             buf = new Stack();
             buf.number = stack.size();
             stack.add(buf);
+            System.out.println(stack.toString());
         }
 
         @Override
