@@ -1,6 +1,5 @@
 package Box;
 
-import io.qameta.allure.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.*;
@@ -12,17 +11,13 @@ import java.util.concurrent.TimeUnit;
 
 import static Box.About.*;
 
-@Epic("Это какой то эпик")
-@Title("Это какой то метод")
 public class MainTest {
 
     static WebDriver driver;
     private String baseUrl;
 
 
-    @BeforeTest(description = "Configure something before test")
-    @Title("Действия до теста")
-    @Description("Действия до теста")
+    @BeforeTest
     public void setUp() {
         Allure.LIFECYCLE.addListener(AllureStepListener.getInstance());
         stack = new ArrayList<Stack>();
@@ -32,11 +27,8 @@ public class MainTest {
         baseUrl = "http://demo.guru99.com/test/newtours/";
     }
 
-    @AfterTest(description = "Configure something after test")
-    @Title("Действия после теста")
-    @Description("Действия после теста")
+    @AfterTest
     public void tiredDown() {
-
         driver.close();
     }
 
