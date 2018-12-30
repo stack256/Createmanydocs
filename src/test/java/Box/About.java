@@ -1,7 +1,11 @@
 package Box;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.annotations.Attachment;
@@ -9,11 +13,14 @@ import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.allure.events.*;
 import ru.yandex.qatools.allure.experimental.LifecycleListener;
 
-import static Box.MainTest.*;
-
 import java.util.ArrayList;
 
 class About {
+
+    static WebDriver driver;
+    static Integer timeoutlnseconds;
+
+
     static class Stack {
         Integer number;
         Boolean value;
@@ -106,5 +113,16 @@ class About {
     static void hardassertfail(String report) {
         report(report);
         Assert.fail(report);
+    }
+
+    static void waitForLoad(WebDriver driver) {
+        ExpectedCondition<Boolean> pageLoadCondition = new
+                ExpectedCondition<Boolean>() {
+                    public Boolean apply(WebDriver driver) {
+                        return ((JavascriptExecutor)driver).executeScript("return document.readyState").equals("complete");
+                    }
+                };
+        WebDriverWait wait = new WebDriverWait(driver, 30);
+        wait.until(pageLoadCondition);
     }
 }
