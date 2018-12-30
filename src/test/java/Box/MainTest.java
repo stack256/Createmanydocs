@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import static Box.About.*;
 
+@Title("Это класс")
 public class MainTest {
 
     static WebDriver driver;
