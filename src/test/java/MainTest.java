@@ -26,7 +26,7 @@ public class MainTest {
     }
 
 
-    @Test
+    //@Test
     @Description("Some detailed test description")
     @Severity(SeverityLevel.CRITICAL)
     @Story("Base support for bdd annotations")
