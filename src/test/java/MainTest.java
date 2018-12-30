@@ -13,6 +13,7 @@ public class MainTest {
 
     @BeforeTest(description = "Configure something before test")
     @Title("Действия до теста")
+    @Description("Действия до теста")
     public void setUp() {
         driver = new ChromeDriver();
         baseUrl = "http://demo.guru99.com/test/newtours/";
@@ -20,13 +21,14 @@ public class MainTest {
 
     @AfterTest(description = "Configure something after test")
     @Title("Действия после теста")
+    @Description("Действия после теста")
     public void tiredDown() {
         driver = new ChromeDriver();
         baseUrl = "http://demo.guru99.com/test/newtours/";
     }
 
 
-    //@Test
+    @Test
     @Description("Some detailed test description")
     @Severity(SeverityLevel.CRITICAL)
     @Story("Base support for bdd annotations")
