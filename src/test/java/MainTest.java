@@ -1,18 +1,32 @@
+import io.qameta.allure.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 public class MainTest {
 
-    @Test
-    public void Test1() {
+    WebDriver driver;
+    String baseUrl;
 
-        System.out.println("launching chrome browser");
-        String driverPath = "C:\\Webdrivers\\chromedriver.exe";
-        //System.setProperty("webdriver.chrome.driver", driverPath);
-        WebDriver driver = new ChromeDriver();
-        String baseUrl = "http://demo.guru99.com/test/newtours/";
+    @BeforeTest(description = "Configure something before test")
+    public void setUp() {
+        driver = new ChromeDriver();
+        baseUrl = "http://demo.guru99.com/test/newtours/";
+    }
+
+    @AfterTest(description = "Configure something after test")
+    public void tiredDown() {
+        driver = new ChromeDriver();
+        baseUrl = "http://demo.guru99.com/test/newtours/";
+    }
+
+
+    @Test
+    @Description("Some detailed test description")
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("Base support for bdd annotations")
+    public void Test1() {
         driver.get(baseUrl);
         String expectedTitle = "Welcome: Mercury Tours";
         String actualTitle = driver.getTitle();
