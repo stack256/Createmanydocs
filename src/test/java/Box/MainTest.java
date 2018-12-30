@@ -5,7 +5,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.*;
+import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.annotations.Title;
+
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import static Box.About.*;
 
@@ -21,7 +25,11 @@ public class MainTest {
     @Title("Действия до теста")
     @Description("Действия до теста")
     public void setUp() {
+        Allure.LIFECYCLE.addListener(AllureStepListener.getInstance());
+        stack = new ArrayList<Stack>();
+        stack.add(new Stack());
         driver = new ChromeDriver();
+        driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
         baseUrl = "http://demo.guru99.com/test/newtours/";
     }
 

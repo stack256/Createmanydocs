@@ -23,7 +23,7 @@ class About {
             value = true;
         }
     }
-    private static ArrayList<Stack> stack;
+    static ArrayList<Stack> stack;
 
     //лисенер для мягких ошибок
     public static class AllureStepListener extends LifecycleListener {
