@@ -30,14 +30,14 @@ public class MainTest {
     }
 
 
-    @Test(testName = "Имя теста")
     @Description("Some detailed test description")
     @Severity(SeverityLevel.CRITICAL)
     @Story("Base support for bdd annotations")
     @Title("Имя теста")
+    @Test
     public void test1() {
         driver.get(baseUrl);
-        String expectedTitle = "Welcome: Mercury Tours";
+        String expectedTitle = "Welcome: Me1rcury Tours";
         String actualTitle = driver.getTitle();
         Assert.assertEquals(actualTitle, expectedTitle);
     }
