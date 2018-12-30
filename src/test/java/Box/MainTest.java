@@ -13,11 +13,11 @@ import java.util.concurrent.TimeUnit;
 import static Box.About.*;
 
 @Epic("Это какой то эпик")
-
+@Title("Это какой то метод")
 public class MainTest {
 
     static WebDriver driver;
-    String baseUrl;
+    private String baseUrl;
 
 
     @BeforeTest(description = "Configure something before test")
@@ -41,11 +41,13 @@ public class MainTest {
     }
 
 
-    @Description("Some detailed test description")
+    /*@Description("Some detailed test description")
     @Severity(SeverityLevel.CRITICAL)
     @Title("Имя теста")
     @Feature("Имя фичи")
     @Story("Имя истории")
+    @Test*/
+    @Title("3.2\tСоздание черновика документа")
     @Test
     public void test1() {
         driver.get(baseUrl);

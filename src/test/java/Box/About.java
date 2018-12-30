@@ -80,11 +80,9 @@ class About {
     static void softassertfail(String report) {
         Allure.LIFECYCLE.fire(new StepFailureEvent());
         Allure.LIFECYCLE.fire(new TestCaseFailureEvent().withThrowable(new RuntimeException("Есть неблокирующие ошибки")));
-        if (stack.size() > 2) {
-            Stack buf = stack.get(stack.size() - 1);
-            buf.value = false;
-            stack.set(stack.size() - 1, buf);
-        }
+        Stack buf = stack.get(stack.size() - 1);
+        buf.value = false;
+        stack.set(stack.size() - 1, buf);
         report(report);
     }
 
