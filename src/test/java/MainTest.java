@@ -12,12 +12,14 @@ public class MainTest {
     String baseUrl;
 
     @BeforeTest(description = "Configure something before test")
+    @Title("Действия до теста")
     public void setUp() {
         driver = new ChromeDriver();
         baseUrl = "http://demo.guru99.com/test/newtours/";
     }
 
     @AfterTest(description = "Configure something after test")
+    @Title("Действия после теста")
     public void tiredDown() {
         driver = new ChromeDriver();
         baseUrl = "http://demo.guru99.com/test/newtours/";
@@ -29,7 +31,7 @@ public class MainTest {
     @Severity(SeverityLevel.CRITICAL)
     @Story("Base support for bdd annotations")
     @Title("Имя теста")
-    public void Test1() {
+    public void test1() {
         driver.get(baseUrl);
         String expectedTitle = "Welcome: Mercury Tours";
         String actualTitle = driver.getTitle();
