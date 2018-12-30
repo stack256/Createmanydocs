@@ -1,10 +1,13 @@
 package Box;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.allure.annotations.*;
 
+import javax.lang.model.util.Elements;
+import java.util.List;
 import java.util.Map;
 
 import static Box.Objects.*;
@@ -43,9 +46,12 @@ class Base {
         click("Создать",ARMSED.createButton);
         click("Входящий документ", ARMSED.Createmenu.incomingdocument);
         verifyattr("Вложения", Document.Createform.Incomingdocument.attachments_label);
-        verifyattr("title_label", Document.Createform.Incomingdocument.title_label);
-        verifyattr("type_label", Document.Createform.Incomingdocument.type_label);
-        verifyattr("delivery_method_label", Document.Createform.Incomingdocument.delivery_method_label);
+        verifyattr("Заголовок", Document.Createform.Incomingdocument.title_label);
+        fillfield("Заголовок",Document.Createform.Incomingdocument.title_field, (String[]) doc.get("Заголовок"));
+        verifyattr("Вид документа", Document.Createform.Incomingdocument.type_label);
+        fillfield("Вид документа",Document.Createform.Incomingdocument.type_button, (String[]) doc.get("Вид документа"));
+        verifyattr("Способ доставки", Document.Createform.Incomingdocument.delivery_method_label);
+        fillfield("Способ доставки",Document.Createform.Incomingdocument.delivery_method_button, (String[]) doc.get("Способ доставки"));
         verifyattr("sender_label", Document.Createform.Incomingdocument.sender_label);
         verifyattr("addressee_label", Document.Createform.Incomingdocument.addressee_label);
         verifyattr("recipient_label", Document.Createform.Incomingdocument.recipient_label);
@@ -61,19 +67,10 @@ class Base {
         verifyattr("is_on_control_label", Document.Createform.Incomingdocument.is_on_control_label);
         verifyattr("is_not_registered_label", Document.Createform.Incomingdocument.is_not_registered_label);
 
-        fillfield("Заголовок",Document.Createform.Incomingdocument.title_field, (String[]) doc.get("Заголовок"));
+
+
+
 /*
-        'Заполнить Вид документа'
-        if (create_type != '') {
-            'Открыть форму выбора вида документа'
-            WebUI.callTestCase(findTestCase('Base Test Case/Click'), [('button') : findTestObject('Document/Create form/Incoming document/Type_button')], FailureHandling.STOP_ON_FAILURE)
-
-            'Заполнить "Вид документа"'
-            WebUI.callTestCase(findTestCase('Base Test Case/Fill_select-dialog/Fill_select-dialog_simple'), [('value1') : create_type])
-
-            'Проверить заполненный вид документа'
-            WebUI.verifyElementText(findTestObject('Document/Create form/Incoming document/Type_field'), create_type)
-        }
 
         'Заполнить Способ доставки'
         if (create_delivery_method != '') {
@@ -226,32 +223,61 @@ class Base {
         }*/
     }
 
-    @Step("Заполнить атрибут {0}")
-    private static void fillfield(String attrname, String xpath, String[] values) {
-        switch (attrname){
-            case "Заголовок":
-                for (String value:values)
-                    settext("Заголовок", xpath, value);
-                break;
-            default: hardassertfail("Нет такого атрибута");
-                break;
+    private static void fillselectdialogsimple(String... values) {
+        waitelement(SelectDialog.Simple.dialog);
+        for(String value:values){
+            settext("",SelectDialog.Simple.input,value);
+            click("",SelectDialog.Simple.search_button);
+            waitForLoad();
+            click("",sd_simple_tableadd(value));
+            List<WebElement> elements = driver.findElements(By.xpath(SelectDialog.Simple.selected_elements));
+            boolean t = false;
+            for(WebElement element:elements)
+                if (element.getText().contains(value)) t = true;
+            hardassertfail(t, "Не выбран элемент " + value);
+        }
+        click("ОК", SelectDialog.Simple.ok_button);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
-    @Step("Проверить наличие атрибута {0}")
+    @Step("Заполнить атрибут <{0}>")
+    private static void fillfield(String attrname, String xpath, String[] values) {
+        if (values != null) {
+            switch (attrname) {
+                case "Заголовок":
+                    for (String value : values)
+                        settext("Заголовок", xpath, value);
+                    break;
+                case "Вид документа":
+                case "Способ доставки":
+                    click("...", xpath);
+                    fillselectdialogsimple(values);
+                    break;
+                default:
+                    hardassertfail(attrname + " - Нет такого атрибута");
+                    break;
+            }
+        }
+    }
+
+    @Step("Проверить наличие атрибута <{0}>")
     private static void verifyattr(String report, String xpath) {
-        waitForLoad(driver);
+        waitForLoad();
         try {
             (new WebDriverWait(driver, timeoutlnseconds))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
         } catch (Exception e) {
             softassertfail("Не найден элемент " + xpath);
         }
-        waitForLoad(driver);
+        waitForLoad();
     }
 
     private static void waitelement(String xpath) {
-        waitForLoad(driver);
+        waitForLoad();
         try {
             (new WebDriverWait(driver, timeoutlnseconds))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
@@ -260,12 +286,12 @@ class Base {
         } catch (Exception e) {
             hardassertfail("Не найден элемент " + xpath);
         }
-        waitForLoad(driver);
+        waitForLoad();
     }
 
-    @Step("Заполнить атрибут {0} значением {2}")
+    @Step("Заполнить атрибут <{0}> значением <{2}>")
     private static void settext(String report, String xpath, String text) {
-        waitForLoad(driver);
+        waitForLoad();
         try {
             (new WebDriverWait(driver, timeoutlnseconds))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
@@ -276,12 +302,12 @@ class Base {
         }
         driver.findElement(By.xpath(xpath)).clear();
         driver.findElement(By.xpath(xpath)).sendKeys(text);
-        waitForLoad(driver);
+        waitForLoad();
     }
 
-    @Step("Нажать кнопку {0}")
+    @Step("Нажать кнопку <{0}>")
     private static void click(String report, String xpath) {
-        waitForLoad(driver);
+        waitForLoad();
         try {
             (new WebDriverWait(driver, timeoutlnseconds))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
@@ -291,6 +317,6 @@ class Base {
             hardassertfail("Не найден элемент " + xpath);
         }
         driver.findElement(By.xpath(xpath)).click();
-        waitForLoad(driver);
+        waitForLoad();
     }
 }

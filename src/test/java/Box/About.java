@@ -117,7 +117,7 @@ class About {
         Assert.fail(report);
     }
 
-    static void waitForLoad(WebDriver driver) {
+    static void waitForLoad() {
         ExpectedCondition<Boolean> pageLoadCondition = new
                 ExpectedCondition<Boolean>() {
                     public Boolean apply(WebDriver driver) {
@@ -126,5 +126,16 @@ class About {
                 };
         WebDriverWait wait = new WebDriverWait(driver, 30);
         wait.until(pageLoadCondition);
+    }
+
+    public static String sd_simple_tableadd(String selectorValue) {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//td[contains(.,'%s')]/ancestor::tr//a[@title='Добавить']";
+        return String.format(dynamicXPath, selectorValue);
+
     }
 }

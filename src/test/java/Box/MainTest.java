@@ -43,6 +43,8 @@ public class MainTest {
     @Test
     public void test1() {
         doc.put("Заголовок", new String[]{"Заголовок"});
+        doc.put("Вид документа", new String[]{"Запрос"});
+        doc.put("Способ доставки", new String[]{"Личный прием"});
         auth("jd1","jd1","123");
         createincoming(doc);
     }
