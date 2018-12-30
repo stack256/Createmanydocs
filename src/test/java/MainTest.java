@@ -30,7 +30,7 @@ public class MainTest {
     }
 
 
-    @Test
+    @Test(testName = "Имя теста")
     @Description("Some detailed test description")
     @Severity(SeverityLevel.CRITICAL)
     @Story("Base support for bdd annotations")
