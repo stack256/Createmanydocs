@@ -3,11 +3,7 @@
 <suite name="Suite of my name">
     <test name="Test of my name">
         <classes>
-            <class name="MainTest">
-                <methods>
-                    <include name="test1"/>
-                </methods>
-            </class> <!-- MainTest -->
+            <class name="MainTest"/>
         </classes>
     </test> <!-- _2019 -->
 </suite> <!-- Default Suite -->
