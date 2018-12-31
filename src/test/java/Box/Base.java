@@ -6,12 +6,15 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.allure.annotations.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static Box.Objects.*;
 import static Box.About.*;
+import static Box.Users.*;
 
 class Base {
 
@@ -34,22 +37,7 @@ class Base {
         }
 
         current_login = login;
-        switch (login) {
-            case "jd1":
-                current_user = "Наумова К.1.";
-                break;
-            case "admin":
-                current_user = "admin";
-                break;
-            case "jdd":
-                current_user = "John D. J.j.";
-                break;
-            case "jd3":
-                current_user = "Белозёров Я.3.";
-                break;
-            default:
-                break;
-        }
+        current_user = report;
     }
 
     @Step("Выйти из системы")
@@ -152,12 +140,84 @@ class Base {
         fillfield("Нерегистрируемый",Document.Createform.Incomingdocument.is_not_registered_checkbox, doc.get("Нерегистрируемый"), doc);
     }
 
+    @Step("Заполнить атрибуты")
+    private static void fillcreateinternal(Map<String, String[]> doc) {
+        verifyattr("Вложения", Document.Createform.Internaldocument.attachments_label);
+
+        verifyattr("Заголовок", Document.Createform.Internaldocument.title_label);
+        fillfield("Заголовок",Document.Createform.Internaldocument.title_field, doc.get("Заголовок"), doc);
+
+        verifyattr("Вид документа", Document.Createform.Internaldocument.type_label);
+        fillfield("Вид документа",Document.Createform.Internaldocument.type_button, doc.get("Вид документа"), doc);
+
+        verifyattr("Срок ответа", Document.Createform.Internaldocument.execution_date_label);
+        fillfield("Срок ответа",Document.Createform.Internaldocument.execution_date_field, doc.get("Срок ответа"), doc);
+
+        verifyattr("Получатель", Document.Createform.Internaldocument.recipient_label);
+        fillfield("Получатель",Document.Createform.Internaldocument.recipient_button, doc.get("Получатель"), doc);
+
+        verifyattr("Содержание", Document.Createform.Internaldocument.summarycontent_label);
+        fillfield("Содержание",Document.Createform.Internaldocument.summarycontent_field, doc.get("Содержание"), doc);
+
+        verifyattr("Подписано на бумажном носителе", Document.Createform.Internaldocument.signedbypaper_label);
+        fillfield("Подписано на бумажном носителе",Document.Createform.Internaldocument.signedbypaper_checkbox, doc.get("Подписано на бумажном носителе"), doc);
+
+        boolean t = false;
+        for (String val:doc.get("Подписано на бумажном носителе"))
+            if (val.equals("Да")) t = true;
+        if (t) {
+            verifyattr("Подписанты", Document.Createform.Internaldocument.signers_label);
+            fillfield("Подписанты", Document.Createform.Internaldocument.signers_button, doc.get("Подписанты"), doc);
+
+            verifyattr("Дата подписания", Document.Createform.Internaldocument.signing_date_label);
+            fillfield("Дата подписания", Document.Createform.Internaldocument.signing_date_field, doc.get("Дата подписания"), doc);
+
+            doc.put("Подписан", new String[]{"Да"});
+        }
+
+        verifyattr("В ответ на", Document.Createform.Internaldocument.response_to_label);
+        fillfield("В ответ на", Document.Createform.Internaldocument.response_to_button, doc.get("В ответ на"), doc);
+
+        verifyattr("Количество листов", Document.Createform.Internaldocument.sheets_number_label);
+        fillfield("Количество листов", Document.Createform.Internaldocument.sheets_number_field, doc.get("Количество листов"), doc);
+
+        verifyattr("Тематика", Document.Createform.Internaldocument.subject_label);
+        fillfield("Тематика", Document.Createform.Internaldocument.subject_button, doc.get("Тематика"), doc);
+
+        verifyattr("Номер дела", Document.Createform.Internaldocument.file_register_label);
+        fillfield("Номер дела", Document.Createform.Internaldocument.file_register_button, doc.get("Номер дела"), doc);
+
+        verifyattr("Примечание", Document.Createform.Internaldocument.note_label);
+        fillfield("Примечание", Document.Createform.Internaldocument.note_field, doc.get("Примечание"), doc);
+
+    }
+
     @Step("Создать входящий документ")
     static void createincoming(Map<String, String[]> doc) {
         gotoarmsed();
         click("Создать",ARMSED.createButton);
         click("Входящий документ", ARMSED.Createmenu.incomingdocument);
         fillcreateincoming(doc);
+        String currenturl = driver.getCurrentUrl();
+        click("Создать",Document.Createform.create_button);
+        while (currenturl.equals(driver.getCurrentUrl())) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        doc.put("Статус",new String[]{"Черновик"});
+        doc.put("Номер",new String[]{"Не присвоен"});
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+    }
+
+    @Step("Создать внутренний документ")
+    static void createinternal(Map<String, String[]> doc) {
+        gotoarmsed();
+        click("Создать",ARMSED.createButton);
+        click("Внутренний документ", ARMSED.Createmenu.internaldocument);
+        fillcreateinternal(doc);
         String currenturl = driver.getCurrentUrl();
         click("Создать",Document.Createform.create_button);
         while (currenturl.equals(driver.getCurrentUrl())) {
@@ -225,6 +285,65 @@ class Base {
             removedoc.add(currenturl);
     }
 
+    @Step("Проверить наличие атрибутов и их значения на форме просмотра")
+    static void readinternal(Map<String, String[]> doc) {
+        waitForLoad();
+        String status = null;
+        for (String val:doc.get("Статус"))
+            status = val;
+        if (!driver.findElement(By.xpath(Document.Viewform.Internaldocument.status_field)).getText().equals(status)){
+            driver.get(driver.getCurrentUrl());
+        }
+        checkfield("Номер", Document.Viewform.Internaldocument.regnum_label, Document.Viewform.Internaldocument.regnum_field, doc);
+
+        checkfield("Дата регистрации", Document.Viewform.Internaldocument.reg_data_label, Document.Viewform.Internaldocument.reg_data_field, doc);
+
+        checkfield("Составитель", Document.Viewform.Internaldocument.author_label, Document.Viewform.Internaldocument.author_field, doc);
+
+        checkfield("Исполнитель", Document.Viewform.Internaldocument.executor_label, Document.Viewform.Internaldocument.executor_field, doc);
+
+        checkfield("Заголовок", Document.Viewform.Internaldocument.title_label, Document.Viewform.Internaldocument.title_field, doc);
+
+        checkfield("Вид документа", Document.Viewform.Internaldocument.type_label, Document.Viewform.Internaldocument.type_field, doc);
+
+        checkfield("Срок ответа", Document.Viewform.Internaldocument.response_date_label, Document.Viewform.Internaldocument.response_date_field, doc);
+
+        checkfield("Получатель", Document.Viewform.Internaldocument.recipient_label, Document.Viewform.Internaldocument.recipient_field, doc);
+
+        checkfield("Содержание", Document.Viewform.Internaldocument.summary_label, Document.Viewform.Internaldocument.summary_field, doc);
+
+        checkfield("В ответ на", Document.Viewform.Internaldocument.responseto_label, Document.Viewform.Internaldocument.responseto_field, doc);
+
+        checkfield("Количество листов", Document.Viewform.Internaldocument.sheets_number_label, Document.Viewform.Internaldocument.sheets_number_field, doc);
+
+        checkfield("Тематика", Document.Viewform.Internaldocument.subject_label, Document.Viewform.Internaldocument.subject_field, doc);
+
+        checkfield("Номер дела", Document.Viewform.Internaldocument.file_register_label, Document.Viewform.Internaldocument.file_register_field, doc);
+
+        checkfield("Примечание", Document.Viewform.Internaldocument.note_label, Document.Viewform.Internaldocument.note_field, doc);
+
+        checkfield("Номер проекта", Document.Viewform.Internaldocument.regnumproject_label, Document.Viewform.Internaldocument.regnumproject_field, doc);
+
+        checkfield("Дата регистрации проекта", Document.Viewform.Internaldocument.regproject_data_label, Document.Viewform.Internaldocument.regproject_data_field, doc);
+
+        checkfield("Подписано на бумажном носителе", Document.Viewform.Internaldocument.signedonpaper_label, Document.Viewform.Internaldocument.signedonpaper_field, doc);
+
+        checkfield("Подписанты", Document.Viewform.Internaldocument.signers_label, Document.Viewform.Internaldocument.signers_field, doc);
+
+        checkfield("Подписан", Document.Viewform.Internaldocument.signed_label, Document.Viewform.Internaldocument.signed_field, doc);
+
+        checkfield("Дата подписания", Document.Viewform.Internaldocument.signingDate_label, Document.Viewform.Internaldocument.signingDate_field, doc);
+
+        checkfield("Регистратор", Document.Viewform.Internaldocument.registrator_label, Document.Viewform.Internaldocument.registrator_field, doc);
+
+        String currenturl = driver.getCurrentUrl();
+        if (currenturl.contains("#")){
+            currenturl = currenturl.substring(0,currenturl.indexOf('#'));
+        }
+        if (!removedoc.contains(currenturl))
+            removedoc.add(currenturl);
+    }
+
     @Step("Атрибут <{0}>")
     private static void checkfield(String attrname, String xpath, String xpathfield, Map<String, String[]> doc) {
         waitForLoad();
@@ -266,14 +385,21 @@ class Base {
         }
     }
 
-    @Step("Заполнить атрибут <{0}> значением <{1}>")
-    private static void fillselectdialogsimple(String attrname, String... values) {
+    @Step("Заполнить атрибут <{0}> значением <{2}>")
+    private static void fillselectdialogsimple(String attrname, Map<String, String[]> doc, String... values) {
         waitelement(SelectDialog.Simple.dialog);
+
+
         for(String value:values){
-            settext("",SelectDialog.Simple.input,value);
-            click("",SelectDialog.Simple.search_button);
+            settext("Поиск",SelectDialog.Simple.input,value);
+            click("Поиск",SelectDialog.Simple.search_button);
             waitForLoad();
-            click("",sd_simple_tableadd(value));
+            click("Добавить",sd_simple_tableadd(value));
+            if (attrname.equals("Подписанты")){
+                for (User user:users)
+                    if (value.equals(user.full))
+                        value = user.fio;
+            }
             List<WebElement> elements = driver.findElements(By.xpath(SelectDialog.Simple.selected_elements));
             boolean t = false;
             for(WebElement element:elements)
@@ -285,6 +411,19 @@ class Base {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+        if (attrname.equals("Подписанты")){
+            ArrayList<String> aval = new ArrayList<>();
+            for(String value:values)
+                for (User user:users)
+                    if (value.equals(user.full))
+                        aval.add(user.fio);
+            int k = aval.size();
+            String[] buf = new String[k];
+            for (int i = 0; i < k; i++)
+                buf[i] = aval.get(i);
+            doc.put("Подписанты",buf);
+            aval.clear();
         }
     }
 
@@ -437,7 +576,6 @@ class Base {
         }
     }
 
-    //@Step("Заполнить атрибут <{0}>")
     private static void fillfield(String attrname, String xpath, String[] values, Map<String, String[]> doc) {
         if (values != null) {
             switch (attrname) {
@@ -458,6 +596,8 @@ class Base {
                 case "Номер":
                 case "Дата создания С":
                 case "Дата создания По":
+                case "Срок ответа":
+                case "Дата подписания":
                     for (String value : values)
                         settext("Заголовок", xpath, value);
                     break;
@@ -467,8 +607,9 @@ class Base {
                 case "Представитель корреспондента":
                 case "Автор":
                 case "Тематика":
+                case "Подписанты":
                     click("...", xpath);
-                    fillselectdialogsimple(attrname, values);
+                    fillselectdialogsimple(attrname, doc, values);
                     break;
                 case "Корреспондент":
                     click("...", xpath);
@@ -495,6 +636,7 @@ class Base {
                 //чекбоксы которые по умолчанию в "Нет"
                 case "На контроле":
                 case "Нерегистрируемый":
+                case "Подписано на бумажном носителе":
                     for (String value : values)
                         if (value.equals("Да"))
                             click(attrname, xpath);
@@ -597,4 +739,5 @@ class Base {
             waitelement(XPath);
         }
     }
+
 }

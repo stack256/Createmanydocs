@@ -23,7 +23,7 @@ class About {
 
     static WebDriver driver;
     static Integer timeoutlnseconds;
-    static HashMap<String, String[]> doc = new HashMap<String, String[]>();
+    static HashMap<String, String[]> doc;
     static String current_user, current_login;
     static ArrayList<String> removedoc;
 

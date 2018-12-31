@@ -9,16 +9,19 @@ import ru.yandex.qatools.allure.model.*;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import static Box.Base.*;
 import static Box.About.*;
+import static Box.Users.*;
 
 public class MainTest {
 
     @BeforeMethod
     public void setUp() {
+        doc = new HashMap<String, String[]>();
+        usersinitial();
         timeoutlnseconds = 15;
         Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
         stack = new ArrayList<About.Stack>();
@@ -40,17 +43,20 @@ public class MainTest {
         doc.clear();
         stack.clear();
         removedoc.clear();
+        users.clear();
         driver.close();
     }
 
 
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
-    @Title("Имя теста")
-    @Features("Имя фичи")
-    @Stories("Имя истории")
+    @Features("Входящий")
+    @Stories("Жизненный цикл")
+    @Title("Создать входящий документ")
     @Test
     public void test1() {
+        User user = getuserbyroles("СЭД. Регистраторы");
+
         doc.put("Заголовок", new String[]{"Заголовок"});
         doc.put("Вид документа", new String[]{"Запрос"});
         doc.put("Способ доставки", new String[]{"Личный прием"});
@@ -72,29 +78,46 @@ public class MainTest {
         doc.put("На контроле", new String[]{"Да"});
         doc.put("Нерегистрируемый", new String[]{"Да"});
 
-
-
         //авторизоваться
-        auth("jd1","jd1","123");
+        auth(user.famio,user.login,user.pass);
         //создать входящий документ
         createincoming(doc);
-
-
-
-        /*doc.put("Статус",new String[]{"Черновик"});
-        doc.put("Номер",new String[]{"Не присвоен"});
-        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
-        int k = doc.get("Номер дела").length;
-        if (k == 1)
-            doc.put("Номер дела", new String[]{"/" + doc.get("Номер дела")[k-1]});
-        else
-        if (k == 2)
-            doc.put("Номер дела", new String[]{"/" + doc.get("Номер дела")[k-2] + "/" + doc.get("Номер дела")[k-1]});
-        else
-        if (k > 2)
-            doc.put("Номер дела", new String[]{"/_/" + doc.get("Номер дела")[k-2] + "/" + doc.get("Номер дела")[k-1]});
-        driver.get("http://172.16.125.14:8180/share/page/document?nodeRef=workspace://SpacesStore/9373b47f-569f-4334-8c46-72e487f64093");*/
         readincoming(doc);
+        readhistory(doc.get("Запись в бж"),doc);
+    }
+
+
+    @Description("Какое то описание")
+    @Severity(SeverityLevel.CRITICAL)
+    @Features("Внутренний")
+    @Stories("Жизненный цикл")
+    @Title("Создать внутренний документ")
+    @Test
+    public void test2() {
+        User user = getuserbyroles("Внутренние. Создатели");
+
+        doc.put("Составитель", new String[]{user.full});
+        doc.put("Исполнитель", new String[]{user.full});
+        doc.put("Заголовок", new String[]{"Заголовок"});
+        doc.put("Вид документа", new String[]{"Аналитическая записка"});
+        doc.put("Срок ответа", new String[]{"21.12.2018"});
+        doc.put("Получатель", new String[]{"Сотрудник",getuserbylogin("jd5").full});
+        doc.put("Содержание", new String[]{"21.12.2018"});
+        doc.put("Подписано на бумажном носителе", new String[]{"Да"});
+        doc.put("Подписанты", new String[]{getuserbylogin("jd3").full, getuserbylogin("jd4").full});
+        doc.put("Дата подписания", new String[]{"21.12.2018"});
+        //doc.put("В ответ на", new String[]{"Внутренний документ: 1234567890, № NA-00094 от 28.09.2018"});
+        //doc.put("В ответ на Номер", new String[]{"00094"});
+        doc.put("Количество листов", new String[]{"21"});
+        doc.put("Тематика", new String[]{"Доставка воды"});
+        doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
+        doc.put("Примечание", new String[]{"21"});
+
+        //авторизоваться
+        auth(user.famio,user.login,user.pass);
+        //создать входящий документ
+        createinternal(doc);
+        readinternal(doc);
         readhistory(doc.get("Запись в бж"),doc);
     }
 }
