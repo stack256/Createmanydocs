@@ -79,7 +79,6 @@ class Objects {
         static String copy_document = "//button[@title='Копировать документ']";
         static String admin_function = "//button[@title='Административные функции']";
         static String admin_delete = "//li//a[text()='Удалить безвозвратно']";
-        static String create_button = "//div[@class='document-metadata']//button[text()='Создать']";
         static class Viewform{
             static String zavershit_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Причина:')]";
             static String zavershit_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//textarea";
@@ -141,6 +140,7 @@ class Objects {
             static String executor_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[contains(@id,'executor')]//div[contains(@class,'cropped-item')]//div[contains(@class,'value')]";
         }
         static class Createform{
+            static String create_button = "//div[@class='document-metadata']//button[text()='Создать']";
             static class Incomingdocument {
                 static String type_label = "//div[@class='document-metadata']//*[contains(text(),'Вид документа:')]";
                 static String type_field = "//div[@class='document-metadata']//*[contains(text(),'Вид документа:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
@@ -152,7 +152,7 @@ class Objects {
                 static String summarycontent_field = "//body[@id='tinymce']";
                 static String subject_label = "//div[@class='document-metadata']//*[contains(text(),'Тематика:')]";
                 static String subject_field = "//div[@class='document-metadata']//*[contains(text(),'Тематика:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
-                static String subject_button = "//div[@class='document-metadata']//*[contains(text(),'Тематика:')]//ancestor::div[contains(@class,'control')]//button<";
+                static String subject_button = "//div[@class='document-metadata']//*[contains(text(),'Тематика:')]//ancestor::div[contains(@class,'control')]//button";
                 static String sheets_number_label = "//div[@class='document-metadata']//*[contains(text(),'Количество листов:')]";
                 static String sheets_number_field = "//div[@class='document-metadata']//*[contains(text(),'Количество листов:')]//ancestor::div[contains(@class,'control')]//input";
                 static String sender_label = "//div[@class='document-metadata']//*[contains(text(),'Корреспондент:')]";

@@ -13,15 +13,19 @@ import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.allure.events.*;
 import ru.yandex.qatools.allure.experimental.LifecycleListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 class About {
 
     static WebDriver driver;
     static Integer timeoutlnseconds;
     static HashMap<String, String[]> doc = new HashMap<String, String[]>();
-
+    static String current_user, current_login;
+    static ArrayList<String> removedoc;
 
     static class Stack {
         Integer number;
@@ -128,7 +132,7 @@ class About {
         wait.until(pageLoadCondition);
     }
 
-    public static String sd_simple_tableadd(String selectorValue) {
+    static String sd_simple_tableadd(String selectorValue) {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -136,6 +140,49 @@ class About {
         }
         String dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//td[contains(.,'%s')]/ancestor::tr//a[@title='Добавить']";
         return String.format(dynamicXPath, selectorValue);
+    }
 
+    static String sd_sender_tableadd(String selectorValue) {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[@class='form-fields']/div[(contains(@id,'contractor') or contains(@id,'organisation') or contains(@id,'person')) and not(contains(@class,'hidden'))]//td[contains(.,'%s')]/ancestor::tr//a[@title='Добавить']";
+        return String.format(dynamicXPath, selectorValue);
+    }
+
+    static String sd_recipient_tableadd(String selectorValue) {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[@class='form-fields']/div[(contains(@id,'employee') or contains(@id,'organization')) and not(contains(@class,'hidden'))]//td[contains(.,'%s')]/ancestor::tr//a[@title='Добавить']";
+        return String.format(dynamicXPath, selectorValue);
+    }
+
+    static String sd_filergistertree_tableadd(String selectorValue) {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String dynamicXPath = "(//div[contains(@class,'container') and contains (@style,'visibility: visible')]//td//*[text()='%s']//ancestor::tr//a[@href='#'])[1]";
+        return String.format(dynamicXPath, selectorValue);
+    }
+
+    private static String incoming_header(String[] type, String[] regnum) {
+        Date currentdate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        return type[0] + ", № " + regnum[0] + " от " + sdf.format(currentdate);
+    }
+
+    public static String incoming_header(String[] type, String[] regnum, String[] date) {
+        return type[0] + ", № " + regnum[0] + " от " + date[0];
+    }
+
+    static String historystandartcreate(Map<String, String[]> doc){
+        return current_user + " создал(а) новый документ \"" + incoming_header(doc.get("Вид документа"), doc.get("Номер")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
     }
 }
