@@ -93,7 +93,7 @@ class Users {
         users.add(newuser);
         newuser = new User();
 
-        newuser.login = "jd2";
+        /*newuser.login = "jd2";
         newuser.pass = "123";
         newuser.roles.add("Внутренние. Создатели");
         newuser.roles.add("Добавляющие участников");
@@ -106,7 +106,7 @@ class Users {
         newuser.fio = "Тихомирова Саломея 2";
         newuser.full = "Тихомирова Саломея 2 Тестировщик Подразделение 1";
         users.add(newuser);
-        newuser = new User();
+        newuser = new User();*/
 
         newuser.login = "jd3";
         newuser.pass = "123";
