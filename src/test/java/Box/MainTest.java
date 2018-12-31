@@ -20,6 +20,7 @@ public class MainTest {
 
     @BeforeMethod
     public void setUp() {
+        current_login = null;
         doc = new HashMap<String, String[]>();
         usersinitial();
         timeoutlnseconds = 15;
