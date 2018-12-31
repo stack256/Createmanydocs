@@ -120,4 +120,41 @@ public class MainTest {
         //if (!stack.get(0).value)
         removedocs();
     }
+
+
+    @Description("Какое то описание")
+    @Severity(SeverityLevel.CRITICAL)
+    @Features("Исходящий")
+    @Stories("Жизненный цикл")
+    @Title("Создать исходящий документ")
+    //@Test
+    public void test3() {
+        User user = getuserbyroles("Внутренние. Создатели");
+
+        doc.put("Составитель", new String[]{user.full});
+        doc.put("Исполнитель", new String[]{user.full});
+        doc.put("Заголовок", new String[]{"Заголовок"});
+        doc.put("Вид документа", new String[]{"Аналитическая записка"});
+        doc.put("Срок ответа", new String[]{"21.12.2018"});
+        doc.put("Получатель", new String[]{"Сотрудник",getuserbylogin("jd5").full});
+        doc.put("Содержание", new String[]{"21.12.2018"});
+        doc.put("Подписано на бумажном носителе", new String[]{"Да"});
+        doc.put("Подписанты", new String[]{getuserbylogin("jd3").full, getuserbylogin("jd4").full});
+        doc.put("Дата подписания", new String[]{"21.12.2018"});
+        //doc.put("В ответ на", new String[]{"Внутренний документ: 1234567890, № NA-00094 от 28.09.2018"});
+        //doc.put("В ответ на Номер", new String[]{"00094"});
+        doc.put("Количество листов", new String[]{"21"});
+        doc.put("Тематика", new String[]{"Доставка воды"});
+        doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
+        doc.put("Примечание", new String[]{"21"});
+
+        //авторизоваться
+        auth(user.famio,user.login,user.pass);
+        //создать входящий документ
+        //createoutgoing(doc);
+        //readoutgoing(doc);
+        readhistory(doc.get("Запись в бж"),doc);
+        //if (!stack.get(0).value)
+        removedocs();
+    }
 }
