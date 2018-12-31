@@ -23,7 +23,7 @@ public class MainTest {
         current_login = null;
         doc = new HashMap<String, String[]>();
         usersinitial();
-        timeoutlnseconds = 15;
+        timeoutlnseconds = 30;
         Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
         stack = new ArrayList<About.Stack>();
         removedoc = new ArrayList<>();
@@ -36,16 +36,11 @@ public class MainTest {
 
     @AfterMethod
     public void tiredDown() {
-        auth("Admin","admin","uVPmD7pd");
-        for (String val:removedoc){
-            driver.get(val);
-            admindelete();
-        }
         doc.clear();
         stack.clear();
         removedoc.clear();
         users.clear();
-        driver.close();
+        driver.quit();
     }
 
 
@@ -66,8 +61,8 @@ public class MainTest {
         doc.put("Корреспондент Наименование", new String[]{"AT_Organization"});
         doc.put("Представитель корреспондента", new String[]{"Денисов Руслан Всеволодович Тестировщик AT_Subdivision2"});
         doc.put("Получатель", new String[]{"Сотрудник","John D. John D. jdd Еще один дегустатор Название организации"});
-        doc.put("В ответ на", new String[]{"Исходящий документ: А1 ЭП только Прочее, № ИСХ-01035/17 от 24.10.2017"});
-        doc.put("В ответ на Номер", new String[]{"1035"});
+        //doc.put("В ответ на", new String[]{"Исходящий документ: А1 ЭП только Прочее, № ИСХ-01035/17 от 24.10.2017"});
+        //doc.put("В ответ на Номер", new String[]{"1035"});
         doc.put("Исходящий номер", new String[]{"Outgoing-number"});
         doc.put("Исходящий от", new String[]{"21.12.2018"});
         doc.put("Содержание", new String[]{"21.12.2018"});
@@ -85,6 +80,8 @@ public class MainTest {
         createincoming(doc);
         readincoming(doc);
         readhistory(doc.get("Запись в бж"),doc);
+        //if (!stack.get(0).value)
+        removedocs();
     }
 
 
@@ -120,5 +117,7 @@ public class MainTest {
         createinternal(doc);
         readinternal(doc);
         readhistory(doc.get("Запись в бж"),doc);
+        //if (!stack.get(0).value)
+        removedocs();
     }
 }

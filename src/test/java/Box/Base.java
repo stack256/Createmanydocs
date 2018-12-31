@@ -70,6 +70,15 @@ class Base {
         waitelement(Document.delete_check);
     }
 
+    @Step("Удаление документов после успешного теста")
+    static void removedocs() {
+        auth("Admin","admin","uVPmD7pd");
+        for (String val:removedoc){
+            driver.get(val);
+            admindelete();
+        }
+    }
+
     @Step("Выполнение действия")
     private static void executeactionapprove(String approve) {
         String dynamicXPath = "//div[contains(@class,\'container\') and contains (@style,\'visibility: visible\')]//button[text()=\'%s\']";
@@ -81,7 +90,7 @@ class Base {
         click("Логика: СЭД", MenuBar.logsed);
         timeoutlnseconds = 120;
         waitelement(ARMSED.createButton);
-        timeoutlnseconds = 15;
+        timeoutlnseconds = 30;
     }
 
     @Step("Заполнить атрибуты")
