@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static Box.About.doc;
 import static Box.Objects.*;
 import static Box.About.*;
 import static Box.Users.*;
@@ -1741,8 +1740,10 @@ class Base {
             (new WebDriverWait(driver, timeoutlnseconds))
                     .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
         } catch (Exception e) {
-            softassertfail("Не найден элемент " + xpath);
-            return false;
+            if (!xpath.equals(SelectDialog.Simple.dialog)) {
+                softassertfail("Не найден элемент " + xpath);
+                return false;
+            }
         }
         waitForLoad();
         return true;

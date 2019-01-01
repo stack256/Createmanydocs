@@ -303,7 +303,5 @@ public class MainTest {
         readhistory(doc.get("Запись в бж"),doc);
         //if (!stack.get(0).value)
         removedocs();
-
-
     }
 }
