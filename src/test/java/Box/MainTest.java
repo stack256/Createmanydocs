@@ -23,6 +23,7 @@ public class MainTest {
         current_login = null;
         doc = new HashMap<String, String[]>();
         items = new HashMap<String, HashMap<String, String[]>>();
+        item = new HashMap<String, String[]>();
         usersinitial();
         timeoutlnseconds = 30;
         Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
@@ -243,7 +244,6 @@ public class MainTest {
         item.put("Пункты Контролер", new String[]{getuserbylogin("denisov").full});
         item.put("Пункты Тематика", new String[]{"Доставка воды"});
         items.put("1", item);
-        item = new HashMap<String, String[]>();
 
         //авторизоваться
         auth(user.famio,user.login,user.pass);
