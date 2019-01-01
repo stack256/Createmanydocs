@@ -149,6 +149,11 @@ class About {
         WebDriverWait wait = new WebDriverWait(driver, 30);
         wait.until(pageLoadCondition);
 */
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         WebDriver jsWaitDriver;
         jsWaitDriver = driver;
         WebDriverWait wait = new WebDriverWait(jsWaitDriver,15);
