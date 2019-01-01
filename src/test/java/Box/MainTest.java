@@ -162,20 +162,20 @@ public class MainTest {
         removedocs();
     }
 
-/*
+
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Features("Нормативные документы")
     @Stories("Жизненный цикл")
     @Title("Создать нормативный документ")
     @Test
-    public void test3() {
+    public void test4() {
         User user = getuserbyroles("НД. Создатели");
 
         doc.put("Составитель", new String[]{user.full});
         doc.put("Исполнитель", new String[]{user.full});
         doc.put("Заголовок", new String[]{"Заголовок"});
-        doc.put("Вид документа", new String[]{"Информационное письмо"});
+        doc.put("Вид документа", new String[]{"Категории подписываемых вложений"});
         doc.put("Содержание", new String[]{"21.12.2019"});
         doc.put("Количество листов", new String[]{"21"});
         doc.put("Подписано на бумажном носителе", new String[]{"Да"});
@@ -197,5 +197,5 @@ public class MainTest {
         readhistory(doc.get("Запись в бж"),doc);
         //if (!stack.get(0).value)
         removedocs();
-    }*/
+    }
 }

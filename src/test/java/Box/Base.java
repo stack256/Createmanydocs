@@ -6,9 +6,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.allure.annotations.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -518,60 +516,54 @@ class Base {
 
     @Step("Заполнить атрибуты")
     private static void fillcreatend(Map<String, String[]> doc) {
-        verifyattr("Вложения", Document.Createform.Outgoingdocument.attachments_label);
+        verifyattr("Вложения", Document.Createform.Nddocument.attachments_label);
 
-        verifyattr("Заголовок", Document.Createform.Outgoingdocument.title_label);
-        fillfield("Заголовок",Document.Createform.Outgoingdocument.title_field, doc.get("Заголовок"), doc);
+        verifyattr("Заголовок", Document.Createform.Nddocument.title_label);
+        fillfield("Заголовок",Document.Createform.Nddocument.title_field, doc.get("Заголовок"), doc);
 
-        verifyattr("Вид документа", Document.Createform.Outgoingdocument.type_label);
-        fillfield("Вид документа",Document.Createform.Outgoingdocument.type_button, doc.get("Вид документа"), doc);
+        verifyattr("Вид документа", Document.Createform.Nddocument.type_label);
+        fillfield("Вид документа",Document.Createform.Nddocument.type_button, doc.get("Вид документа"), doc);
 
-        verifyattr("Способ доставки", Document.Createform.Outgoingdocument.delivery_method_label);
-        fillfield("Способ доставки",Document.Createform.Outgoingdocument.delivery_method_button, doc.get("Способ доставки"), doc);
+        verifyattr("Содержание", Document.Createform.Nddocument.summarycontent_label);
+        fillfield("Содержание",Document.Createform.Nddocument.summarycontent_field, doc.get("Содержание"), doc);
 
-        verifyattr("Корреспондент", Document.Createform.Outgoingdocument.sender_label);
-        fillfield("Корреспондент",Document.Createform.Outgoingdocument.sender_button, doc.get("Корреспондент"), doc);
+        verifyattr("Количество листов", Document.Createform.Nddocument.sheets_number_label);
+        fillfield("Количество листов", Document.Createform.Nddocument.sheets_number_field, doc.get("Количество листов"), doc);
 
-        verifyattr("Адресат корреспондента", Document.Createform.Outgoingdocument.addressee_label);
-        fillfield("Адресат корреспондента",Document.Createform.Outgoingdocument.addressee_button, doc.get("Адресат корреспондента"), doc);
-
-        verifyattr("Содержание", Document.Createform.Outgoingdocument.summarycontent_label);
-        fillfield("Содержание",Document.Createform.Outgoingdocument.summarycontent_field, doc.get("Содержание"), doc);
-
-        verifyattr("Подписано на бумажном носителе", Document.Createform.Outgoingdocument.signedbypaper_label);
-        fillfield("Подписано на бумажном носителе",Document.Createform.Outgoingdocument.signedbypaper_checkbox, doc.get("Подписано на бумажном носителе"), doc);
+        verifyattr("Подписано на бумажном носителе", Document.Createform.Nddocument.signedbypaper_label);
+        fillfield("Подписано на бумажном носителе",Document.Createform.Nddocument.signedbypaper_checkbox, doc.get("Подписано на бумажном носителе"), doc);
 
         boolean t = false;
         for (String val:doc.get("Подписано на бумажном носителе"))
             if (val.equals("Да")) t = true;
         if (t) {
-            verifyattr("Подписанты", Document.Createform.Outgoingdocument.signers_label);
-            fillfield("Подписанты", Document.Createform.Outgoingdocument.signers_button, doc.get("Подписанты"), doc);
+            verifyattr("Подписанты", Document.Createform.Nddocument.signers_label);
+            fillfield("Подписанты", Document.Createform.Nddocument.signers_button, doc.get("Подписанты"), doc);
 
-            verifyattr("Дата подписания", Document.Createform.Outgoingdocument.signing_date_label);
-            fillfield("Дата подписания", Document.Createform.Outgoingdocument.signing_date_field, doc.get("Дата подписания"), doc);
+            verifyattr("Дата подписания", Document.Createform.Nddocument.signing_date_label);
+            fillfield("Дата подписания", Document.Createform.Nddocument.signing_date_field, doc.get("Дата подписания"), doc);
 
             doc.put("Подписан", new String[]{"Да"});
         }
 
-        verifyattr("В ответ на", Document.Createform.Outgoingdocument.response_to_label);
-        fillfield("В ответ на", Document.Createform.Outgoingdocument.response_to_button, doc.get("В ответ на"), doc);
+        verifyattr("Номер дела", Document.Createform.Nddocument.file_register_label);
+        fillfield("Номер дела", Document.Createform.Nddocument.file_register_button, doc.get("Номер дела"), doc);
 
-        verifyattr("Количество листов", Document.Createform.Outgoingdocument.sheets_number_label);
-        fillfield("Количество листов", Document.Createform.Outgoingdocument.sheets_number_field, doc.get("Количество листов"), doc);
+        verifyattr("Примечание", Document.Createform.Nddocument.note_label);
+        fillfield("Примечание", Document.Createform.Nddocument.note_field, doc.get("Примечание"), doc);
 
-        verifyattr("Тематика", Document.Createform.Outgoingdocument.subject_label);
-        fillfield("Тематика", Document.Createform.Outgoingdocument.subject_button, doc.get("Тематика"), doc);
+        verifyattr("Тематика", Document.Createform.Nddocument.subject_label);
+        fillfield("Тематика", Document.Createform.Nddocument.subject_button, doc.get("Тематика"), doc);
 
-        verifyattr("Номер дела", Document.Createform.Outgoingdocument.file_register_label);
-        fillfield("Номер дела", Document.Createform.Outgoingdocument.file_register_button, doc.get("Номер дела"), doc);
+        verifyattr("Подразделения", Document.Createform.Nddocument.organizationunit_label);
+        fillfield("Подразделения", Document.Createform.Nddocument.organizationunit_button, doc.get("Подразделения"), doc);
 
-        verifyattr("Примечание", Document.Createform.Outgoingdocument.note_label);
-        fillfield("Примечание", Document.Createform.Outgoingdocument.note_field, doc.get("Примечание"), doc);
+        verifyattr("Бессрочный", Document.Createform.Nddocument.unlimited_label);
+        fillfield("Бессрочный", Document.Createform.Nddocument.unlimited_checkbox, doc.get("Бессрочный"), doc);
 
-        verifyattr("Завершающий", Document.Createform.Outgoingdocument.finishing_label);
-        //fillfield("Завершающий", Document.Createform.Outgoingdocument.finishing_field, doc.get("Завершающий"), doc);
-        //атрибут временно залочен, хз насколько
+        verifyattr("Период действия", Document.Createform.Nddocument.daterange_label);
+        fillfield("Период действия С", Document.Createform.Nddocument.daterangestart_field, doc.get("Период действия С"), doc);
+        fillfield("Период действия По", Document.Createform.Nddocument.daterangeend_field, doc.get("Период действия По"), doc);
 
     }
 
@@ -581,53 +573,54 @@ class Base {
         String status = null;
         for (String val:doc.get("Статус"))
             status = val;
-        waitelement(Document.Viewform.Outgoingdocument.status_field);
-        if (!driver.findElement(By.xpath(Document.Viewform.Outgoingdocument.status_field)).getText().equals(status)){
+        waitelement(Document.Viewform.Nddocument.status_field);
+        if (!driver.findElement(By.xpath(Document.Viewform.Nddocument.status_field)).getText().equals(status)){
             driver.get(driver.getCurrentUrl());
         }
-        checkfield("Номер", Document.Viewform.Outgoingdocument.regnum_label, Document.Viewform.Outgoingdocument.regnum_field, doc);
+        checkfield("Номер", Document.Viewform.Nddocument.regnum_label, Document.Viewform.Nddocument.regnum_field, doc);
 
-        checkfield("Дата регистрации", Document.Viewform.Outgoingdocument.reg_data_label, Document.Viewform.Outgoingdocument.reg_data_field, doc);
+        checkfield("Дата регистрации", Document.Viewform.Nddocument.reg_data_label, Document.Viewform.Nddocument.reg_data_field, doc);
 
-        checkfield("Заголовок", Document.Viewform.Outgoingdocument.title_label, Document.Viewform.Outgoingdocument.title_field, doc);
+        checkfield("Заголовок", Document.Viewform.Nddocument.title_label, Document.Viewform.Nddocument.title_field, doc);
 
-        checkfield("Вид документа", Document.Viewform.Outgoingdocument.type_label, Document.Viewform.Outgoingdocument.type_field, doc);
+        checkfield("Вид документа", Document.Viewform.Nddocument.type_label, Document.Viewform.Nddocument.type_field, doc);
 
-        checkfield("Способ доставки", Document.Viewform.Outgoingdocument.delivery_method_label, Document.Viewform.Outgoingdocument.delivery_method_field, doc);
+        checkfield("Содержание", Document.Viewform.Nddocument.summary_label, Document.Viewform.Nddocument.summary_field, doc);
 
-        checkfield("Корреспондент", Document.Viewform.Outgoingdocument.sender_label, Document.Viewform.Outgoingdocument.sender_field, doc);
+        checkfield("Количество листов", Document.Viewform.Nddocument.sheets_number_label, Document.Viewform.Nddocument.sheets_number_field, doc);
 
-        checkfield("Адресат корреспондента", Document.Viewform.Outgoingdocument.addressee_label, Document.Viewform.Outgoingdocument.addressee_field, doc);
+        checkfield("Подписано на бумажном носителе", Document.Viewform.Nddocument.signedonpaper_label, Document.Viewform.Nddocument.signedonpaper_field, doc);
 
-        checkfield("Содержание", Document.Viewform.Outgoingdocument.summary_label, Document.Viewform.Outgoingdocument.summary_field, doc);
+        checkfield("Подписанты", Document.Viewform.Nddocument.signers_label, Document.Viewform.Nddocument.signers_field, doc);
 
-        checkfield("Количество листов", Document.Viewform.Outgoingdocument.sheets_number_label, Document.Viewform.Outgoingdocument.sheets_number_field, doc);
+        checkfield("Дата подписания", Document.Viewform.Nddocument.signingDate_label, Document.Viewform.Nddocument.signingDate_field, doc);
 
-        checkfield("Тематика", Document.Viewform.Outgoingdocument.subject_label, Document.Viewform.Outgoingdocument.subject_field, doc);
+        checkfield("Подписан", Document.Viewform.Nddocument.signed_label, Document.Viewform.Nddocument.signed_field, doc);
 
-        checkfield("Примечание", Document.Viewform.Outgoingdocument.note_label, Document.Viewform.Outgoingdocument.note_field, doc);
+        checkfield("Номер дела", Document.Viewform.Nddocument.file_register_label, Document.Viewform.Nddocument.file_register_field, doc);
 
-        checkfield("Номер дела", Document.Viewform.Outgoingdocument.file_register_label, Document.Viewform.Outgoingdocument.file_register_field, doc);
+        checkfield("Примечание", Document.Viewform.Nddocument.note_label, Document.Viewform.Nddocument.note_field, doc);
 
-        checkfield("Составитель", Document.Viewform.Outgoingdocument.author_label, Document.Viewform.Outgoingdocument.author_field, doc);
+        checkfield("Тематика", Document.Viewform.Nddocument.subject_label, Document.Viewform.Nddocument.subject_field, doc);
 
-        checkfield("Исполнитель", Document.Viewform.Outgoingdocument.executor_label, Document.Viewform.Outgoingdocument.executor_field, doc);
+        checkfield("Подразделения", Document.Viewform.Nddocument.organizationunit_label, Document.Viewform.Nddocument.organizationunit_field, doc);
 
-        checkfield("Номер проекта", Document.Viewform.Outgoingdocument.regnumproject_label, Document.Viewform.Outgoingdocument.regnumproject_field, doc);
+        checkfield("Бессрочный", Document.Viewform.Nddocument.unlimited_label, Document.Viewform.Nddocument.unlimited_field, doc);
 
-        checkfield("Дата регистрации проекта", Document.Viewform.Outgoingdocument.regproject_data_label, Document.Viewform.Outgoingdocument.regproject_data_field, doc);
+        checkfield("Период действия С", Document.Viewform.Nddocument.daterange_label, Document.Viewform.Nddocument.daterangestart_field, doc);
 
-        checkfield("Подписано на бумажном носителе", Document.Viewform.Outgoingdocument.signedonpaper_label, Document.Viewform.Outgoingdocument.signedonpaper_field, doc);
+        checkfield("Период действия По", Document.Viewform.Nddocument.daterange_label, Document.Viewform.Nddocument.daterangeend_field, doc);
 
-        checkfield("Подписанты", Document.Viewform.Outgoingdocument.signers_label, Document.Viewform.Outgoingdocument.signers_field, doc);
+        checkfield("Составитель", Document.Viewform.Nddocument.author_label, Document.Viewform.Nddocument.author_field, doc);
 
-        checkfield("Подписан", Document.Viewform.Outgoingdocument.signed_label, Document.Viewform.Outgoingdocument.signed_field, doc);
+        checkfield("Исполнитель", Document.Viewform.Nddocument.executor_label, Document.Viewform.Nddocument.executor_field, doc);
 
-        checkfield("Дата подписания", Document.Viewform.Outgoingdocument.signingDate_label, Document.Viewform.Outgoingdocument.signingDate_field, doc);
+        checkfield("Номер проекта", Document.Viewform.Nddocument.regnumproject_label, Document.Viewform.Nddocument.regnumproject_field, doc);
 
-        checkfield("Регистратор", Document.Viewform.Outgoingdocument.registrator_label, Document.Viewform.Outgoingdocument.registrator_field, doc);
+        checkfield("Дата регистрации проекта", Document.Viewform.Nddocument.regproject_data_label, Document.Viewform.Nddocument.regproject_data_field, doc);
 
-        checkfield("Завершающий", Document.Viewform.Outgoingdocument.finishing_label, Document.Viewform.Outgoingdocument.finishing_field, doc);
+        checkfield("Регистратор", Document.Viewform.Nddocument.registrator_label, Document.Viewform.Nddocument.registrator_field, doc);
+
 
         String currenturl = driver.getCurrentUrl();
         if (currenturl.contains("#")){
@@ -652,7 +645,7 @@ class Base {
     private static void readfield(String attrname, String xpath, Map<String, String[]> doc) {
         if (doc.get(attrname) == null)
             if (attrname.equals("Завершающий") || attrname.equals("На контроле") || attrname.equals("Нерегистрируемый") ||
-                    attrname.equals("Подписан") || attrname.equals("Подписано на бумажном носителе"))
+                    attrname.equals("Подписан") || attrname.equals("Подписано на бумажном носителе") || attrname.equals("Бессрочный"))
                 doc.put(attrname,new String[]{"Нет"});
             else
                 doc.put(attrname,new String[]{"(Нет)"});
@@ -680,6 +673,29 @@ class Base {
             }
             softassertfail(t, "Атрибут не содержит значение " + value);
         }
+    }
+
+    @Step("Атрибут <{0}>")
+    private static void checkfield(String attrname, String xpath, String xpathfield, String xpathfield2, Map<String, String[]> doc) {
+        waitForLoad();
+        try {
+            (new WebDriverWait(driver, timeoutlnseconds))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+        } catch (Exception e) {
+            hardassertfail("Не найден элемент " + xpath);
+        }
+        readfield(attrname, xpathfield, xpathfield2, doc);
+    }
+
+    private static void readfield(String attrname, String xpath, String xpath2, Map<String, String[]> doc) {
+        if (doc.get(attrname) == null)
+            if (attrname.equals("Завершающий") || attrname.equals("На контроле") || attrname.equals("Нерегистрируемый") ||
+                    attrname.equals("Подписан") || attrname.equals("Подписано на бумажном носителе") || attrname.equals("Бессрочный"))
+                doc.put(attrname,new String[]{"Нет"});
+            else
+                doc.put(attrname,new String[]{"(Нет)"});
+        readfieldchild(xpath, attrname, doc.get(attrname));
+        readfieldchild(xpath2, attrname, doc.get(attrname));
     }
 
     @Step("Заполнить атрибут <{0}> значением <{2}>")
@@ -895,6 +911,8 @@ class Base {
                 case "Дата создания По":
                 case "Срок ответа":
                 case "Дата подписания":
+                case "Период действия С":
+                case "Период действия По":
                     for (String value : values)
                         settext(attrname, xpath, value);
                     break;
@@ -906,6 +924,7 @@ class Base {
                 case "Автор":
                 case "Тематика":
                 case "Подписанты":
+                case "Подразделения":
                     click("...", xpath);
                     fillselectdialogsimple(attrname, doc, values);
                     break;
@@ -936,6 +955,7 @@ class Base {
                 case "Нерегистрируемый":
                 case "Подписано на бумажном носителе":
                 case "Завершающий":
+                case "Бессрочный":
                     for (String value : values)
                         if (value.equals("Да"))
                             click(attrname, xpath);

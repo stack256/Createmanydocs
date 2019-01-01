@@ -1,7 +1,6 @@
 package Box;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 class Users {
     static class User{
@@ -32,8 +31,8 @@ class Users {
                 if (val.roles.contains(role))
                     if (!values.contains(val))
                         values.add(val);
-        Random rnd = new Random(System.currentTimeMillis());
-        user = values.get(rnd.nextInt(values.size()));
+        //Random rnd = new Random(System.currentTimeMillis());
+        user = values.get((int) (Math.random() * values.size()));
         values.clear();
         return user;
     }
@@ -55,7 +54,7 @@ class Users {
         newuser.roles.add("Внутренние. Создатели");
         newuser.roles.add("Договор. Исполнитель");
         newuser.roles.add("Исходящие. Создатели");
-        newuser.roles.add("НД.Создатели");
+        newuser.roles.add("НД. Создатели");
         newuser.roles.add("ОРД. Создатели");
         newuser.roles.add("Подписанты документов");
         newuser.roles.add("Поручения. Инициатор");
