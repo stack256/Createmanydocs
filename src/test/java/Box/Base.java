@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static Box.About.doc;
 import static Box.Objects.*;
 import static Box.About.*;
 import static Box.Users.*;
@@ -688,8 +689,8 @@ class Base {
         fillfield("Контролёр", Document.Createform.Orddocument.controller_button, doc.get("Контролёр"), doc);
 
         if (doc.get("Контролёр") != null) {
-            verifyattr("Подтверждать завершение работы по документу", Document.Createform.Orddocument.signing_date_label);
-            fillfield("Подтверждать завершение работы по документу", Document.Createform.Orddocument.signing_date_field, doc.get("Подтверждать завершение работы по документу"), doc);
+            verifyattr("Подтверждать завершение работы по документу", Document.Createform.Orddocument.confirmcompletion_label);
+            fillfield("Подтверждать завершение работы по документу", Document.Createform.Orddocument.confirmcompletion_checkbox, doc.get("Подтверждать завершение работы по документу"), doc);
         }
 
         verifyattr("Примечание", Document.Createform.Orddocument.note_label);
@@ -718,7 +719,6 @@ class Base {
             click("Создание", Document.Createform.Orddocument.items_button);
 
             for (int i=0; i<k; i++) {
-                System.out.println(items.get("1"));
                 item = items.get(Integer.toString(i+1));
                 verifyattr("Пункты Заголовок", Document.Createform.Orddocument.Items.title_label);
                 fillfield("Пункты Заголовок", Document.Createform.Orddocument.Items.title_field, item.get("Пункты Заголовок"), item);
@@ -818,6 +818,160 @@ class Base {
             removedoc.add(currenturl);
     }
 
+    @Step("Создать поручение")
+    static void createerrand(Map<String, String[]> doc, String button) {
+        gotoarmsed();
+        click("Создать",ARMSED.createButton);
+        click("Поручение", ARMSED.Createmenu.erranddocument);
+        fillcreateerrand(doc);
+        String currenturl = driver.getCurrentUrl();
+        if (button.equals("Сохранить черновик")) {
+            click("Сохранить черновик", Document.Createform.Erranddocument.save_button);
+            doc.put("Статус", new String[]{"Черновик"});
+        }
+        else
+        if (button.equals("Направить")) {
+            click("Направить", Document.Createform.Erranddocument.default_button);
+            doc.put("Статус",new String[]{"Ожидает исполнения"});
+        }
+        else hardassertfail(button + " - Нет такой кнопки на форме создания поручения");
+        while (currenturl.equals(driver.getCurrentUrl())) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (doc.get("Автор") == null)
+            doc.put("Автор", new String[]{getuserbylogin(current_login).full});
+        if (doc.get("Создатель") == null)
+            doc.put("Создатель", new String[]{getuserbylogin(current_login).full});
+    }
+
+    @Step("Заполнить атрибуты")
+    private static void fillcreateerrand(Map<String, String[]> doc) {
+        verifyattr("Тип поручения", Document.Createform.Erranddocument.type_label);
+        fillfield("Тип поручения",Document.Createform.Erranddocument.type_button, doc.get("Тип поручения"), doc);
+
+        verifyattr("Заголовок", Document.Createform.Erranddocument.title_label);
+        fillfield("Заголовок",Document.Createform.Erranddocument.title_button, doc.get("Заголовок"), doc);
+
+        verifyattr("Текст поручения", Document.Createform.Erranddocument.content_label);
+        fillfield("Текст поручения",Document.Createform.Erranddocument.content_field, doc.get("Текст поручения"), doc);
+
+        verifyattr("Исполнитель", Document.Createform.Erranddocument.executor_label);
+        fillfield("Исполнитель",Document.Createform.Erranddocument.executor_button, doc.get("Исполнитель"), doc);
+
+        verifyattr("Соисполнители", Document.Createform.Erranddocument.coexecutor_label);
+        fillfield("Соисполнители",Document.Createform.Erranddocument.coexecutor_button, doc.get("Соисполнители"), doc);
+
+        verifyattr("Срок исполнения", Document.Createform.Erranddocument.limitationdate_label);
+        fillfield("Срок исполнения",Document.Createform.Erranddocument.limitationdate_radiodate, doc.get("Срок исполнения"), doc);
+
+        verifyattr("Вложения", Document.Createform.Erranddocument.attachments_label);
+
+        if (doc.get("Направлять периодически") != null || doc.get("Контролер") != null || doc.get("Требуется отчет") != null ||
+                doc.get("Важное") != null || doc.get("Тематика") != null){
+            click("Расширенное поручение",Document.Createform.Erranddocument.expand_button);
+
+            verifyattr("Направлять периодически", Document.Createform.Erranddocument.periodically_label);
+            fillfield("Направлять периодически",Document.Createform.Erranddocument.periodically_checkbox, doc.get("Направлять периодически"), doc);
+
+            boolean t = false;
+            for (String val:doc.get("Направлять периодически"))
+                if (val.equals("Да")) t = true;
+            if (t) {
+                verifyattr("Повторять", Document.Createform.Erranddocument.reiterationrule_label);
+                fillfield("Повторять",Document.Createform.Erranddocument.reiterationrule_button, doc.get("Повторять"), doc);
+
+                verifyattr("Начало повторений", Document.Createform.Erranddocument.periodstart_label);
+                fillfield("Начало повторений",Document.Createform.Erranddocument.periodstart_field, doc.get("Начало повторений"), doc);
+
+                verifyattr("Окончание повторений", Document.Createform.Erranddocument.periodend_label);
+                fillfield("Окончание повторений",Document.Createform.Erranddocument.periodend_radiodate, doc.get("Окончание повторений"), doc);
+            }
+
+            verifyattr("Контролер", Document.Createform.Erranddocument.controller_label);
+            fillfield("Контролер",Document.Createform.Erranddocument.controller_button, doc.get("Контролер"), doc);
+
+            verifyattr("Требуется отчет", Document.Createform.Erranddocument.needreport_label);
+            fillfield("Требуется отчет",Document.Createform.Erranddocument.needreport_checkbox, doc.get("Требуется отчет"), doc);
+
+            t = false;
+            for (String val:doc.get("Требуется отчет"))
+                if (val.equals("Да")) t = true;
+            if (t) {
+                verifyattr("Получатель отчета", Document.Createform.Erranddocument.reportrecipient_label);
+                fillfield("Получатель отчета",Document.Createform.Erranddocument.reportrecipient_select, doc.get("Получатель отчета"), doc);
+            }
+
+            verifyattr("Важное", Document.Createform.Erranddocument.important_label);
+            fillfield("Важное",Document.Createform.Erranddocument.important_checkbox, doc.get("Важное"), doc);
+
+            verifyattr("Тематика", Document.Createform.Erranddocument.subject_label);
+            fillfield("Тематика",Document.Createform.Erranddocument.subject_button, doc.get("Тематика"), doc);
+
+        }
+    }
+
+    @Step("Проверить наличие атрибутов и их значения на форме просмотра")
+    static void readerrand(Map<String, String[]> doc) {
+        waitForLoad();
+        String status = null;
+        for (String val:doc.get("Статус"))
+            status = val;
+        waitelement(Document.Viewform.Incomingdocument.status_field);
+        if (!driver.findElement(By.xpath(Document.Viewform.Incomingdocument.status_field)).getText().equals(status)){
+            driver.get(driver.getCurrentUrl());
+        }
+
+
+        String title = driver.findElement(By.xpath(Objects.Document.documenttitle)).getText();
+        doc.put("Номер",new String[]{title.substring(2,title.indexOf(","))});
+        doc.put("Срок исполнения", new String[]{title.substring(title.indexOf("срок:")+6,title.length())});
+
+        checkfield("Документ-основание", Document.Viewform.Erranddocument.base_label, Document.Viewform.Erranddocument.base_field, doc);
+
+        checkfield("Основание", Document.Viewform.Erranddocument.additional_label, Document.Viewform.Erranddocument.additional_field, doc);
+
+        checkfield("Автор", Document.Viewform.Erranddocument.initiator_label, Document.Viewform.Erranddocument.initiator_field, doc);
+
+        checkfield("Создатель", Document.Viewform.Erranddocument.author_label, Document.Viewform.Erranddocument.author_field, doc);
+
+        checkfield("Тип поручения", Document.Viewform.Erranddocument.type_label, Document.Viewform.Erranddocument.type_field, doc);
+
+        checkfield("Заголовок", Document.Viewform.Erranddocument.title_label, Document.Viewform.Erranddocument.title_field, doc);
+
+        checkfield("Текст поручения", Document.Viewform.Erranddocument.content_label, Document.Viewform.Erranddocument.content_field, doc);
+
+        checkfield("Исполнитель", Document.Viewform.Erranddocument.executor_label, Document.Viewform.Erranddocument.executor_field, doc);
+
+        checkfield("Соисполнители", Document.Viewform.Erranddocument.coexecutors_label, Document.Viewform.Erranddocument.coexecutors_field, doc);
+
+        checkfield("Срок исполнения", Document.Viewform.Erranddocument.limitationdate_label, Document.Viewform.Erranddocument.limitationdate_field, doc);
+
+        checkfield("Закрывает вышестоящее поручение", Document.Viewform.Erranddocument.autoclose_label, Document.Viewform.Erranddocument.autoclose_field, doc);
+
+        checkfield("Направлять периодически", Document.Viewform.Erranddocument.periodically_label, Document.Viewform.Erranddocument.periodically_field, doc);
+
+        checkfield("Контролер", Document.Viewform.Erranddocument.controller_label, Document.Viewform.Erranddocument.controller_field, doc);
+
+        checkfield("Требуется отчет", Document.Viewform.Erranddocument.needreport_label, Document.Viewform.Erranddocument.needreport_field, doc);
+
+        checkfield("Получатель отчета", Document.Viewform.Erranddocument.reportrecipient_label, Document.Viewform.Erranddocument.reportrecipient_field, doc);
+
+        checkfield("Тематика", Document.Viewform.Erranddocument.subject_label, Document.Viewform.Erranddocument.subject_field, doc);
+
+
+        String currenturl = driver.getCurrentUrl();
+        if (currenturl.contains("#")){
+            currenturl = currenturl.substring(0,currenturl.indexOf('#'));
+        }
+        if (!removedoc.contains(currenturl))
+            removedoc.add(currenturl);
+    }
+
     @Step("Атрибут <{0}>")
     private static void checkfield(String attrname, String xpath, String xpathfield, Map<String, String[]> doc) {
         waitForLoad();
@@ -833,7 +987,8 @@ class Base {
     private static void readfield(String attrname, String xpath, Map<String, String[]> doc) {
         if (doc.get(attrname) == null)
             if (attrname.equals("Завершающий") || attrname.equals("На контроле") || attrname.equals("Нерегистрируемый") ||
-                    attrname.equals("Подписан") || attrname.equals("Подписано на бумажном носителе") || attrname.equals("Бессрочный"))
+                    attrname.equals("Подписан") || attrname.equals("Подписано на бумажном носителе") || attrname.equals("Бессрочный") ||
+                    attrname.equals("Закрывает вышестоящее поручение") || attrname.equals("Направлять периодически") || attrname.equals("Требуется отчет"))
                 doc.put(attrname,new String[]{"Нет"});
             else
                 doc.put(attrname,new String[]{"(Нет)"});
@@ -1081,136 +1236,489 @@ class Base {
     }
 
     private static void fillfield(String attrname, String xpath, String[] values, Map<String, String[]> doc) {
-        if (values != null) {
-            switch (attrname) {
-                case "Заголовок":
-                case "В ответ на Заголовок":
-                case "Наименование":
-                case "ИНН":
-                case "КПП":
-                case "ФИО":
-                case "№ документа":
-                case "Адрес":
-                case "Исходящий номер":
-                case "Исходящий от":
-                case "Количество листов":
-                case "Примечание":
-                case "Срок исполнения":
-                case "Содержит в названии":
-                case "Номер":
-                case "Дата создания С":
-                case "Дата создания По":
-                case "Срок ответа":
-                case "Дата подписания":
-                case "Период действия С":
-                case "Период действия По":
-                case "Пункты Заголовок":
-                case "Пункты Содержание":
-                    for (String value : values)
-                        settext(attrname, xpath, value);
-                    break;
-                case "Вид документа":
-                case "Способ доставки":
-                case "Регион":
-                case "Представитель корреспондента":
-                case "Адресат корреспондента":
-                case "Автор":
-                case "Тематика":
-                case "Подписанты":
-                case "Подразделения":
-                case "Контролёр":
-                case "Пункты Автор":
-                case "Пункты Исполнитель":
-                case "Пункты Соисполнители":
-                case "Пункты Контролер":
-                case "Пункты Тематика":
-                    click("...", xpath);
-                    if (!waitelement(SelectDialog.Simple.dialog))
-                        clickagain("...", xpath);
-                    fillselectdialogsimple(attrname, doc, values);
-                    break;
-                case "Корреспондент":
-                    click("...", xpath);
-                    if (!waitelement(SelectDialog.Sender.dialog))
-                        clickagain("...", xpath);
-                    fillselectdialogsender(attrname, values, doc);
-                    break;
-                case "Номер дела":
-                    click("...", xpath);
-                    if (!waitelement(SelectDialog.Fileregister.dialog))
-                        clickagain("...", xpath);
-                    fillselectdialogfileregister(attrname, doc, values);
-                    break;
-                case "Получатель":
-                    click("...", xpath);
-                    if (!waitelement(SelectDialog.Recipient.dialog))
-                        clickagain("...", xpath);
-                    fillselectdialogrecipient(attrname, doc, values);
-                    break;
-                case "В ответ на":
-                    click("...", xpath);
-                    if (!waitelement(SelectDialog.Responseto.dialog))
-                        clickagain("...", xpath);
-                    fillselectdialogresponseto(attrname, doc, values);
-                    break;
-                case "Содержание":
-                    driver.switchTo().frame(driver.findElement(By.xpath(Document.Createform.Incomingdocument.summarycontent_iframe)));
-                    for (String value : values)
-                        settext(attrname, xpath, value);
-                    driver.switchTo().defaultContent();
-                    break;
-                case "Пункты Срок исполнения":
-                    for (String value : values)
-                        if (value.contains("рабочий день")) {
-                            click("Радио",Document.Createform.Orddocument.Items.limitationdate_radiodays);
-                            settext("Срок", Document.Createform.Orddocument.Items.limitationdate_radiodays_field, value.substring(0,value.indexOf("рабочий день")-1));
-                            WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Orddocument.Items.limitationdate_radiodays_select));
-                            Select select = new Select(selectElem);
-                            select.selectByVisibleText("рабочий день");
-                        } else
-                        if (value.contains("календарный день")) {
-                            click("Радио",Document.Createform.Orddocument.Items.limitationdate_radiodays);
-                            settext("Срок", Document.Createform.Orddocument.Items.limitationdate_radiodays_field, value.substring(0,value.indexOf("календарный день")-1));
-                            WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Orddocument.Items.limitationdate_radiodays_select));
-                            Select select = new Select(selectElem);
-                            select.selectByVisibleText("календарный день");
-                        } else
-                        if (value.contains("Без срока")) {
-                            click("Радио",Document.Createform.Orddocument.Items.limitationdate_radiolimitless);
-                        } else {
-                            click("Радио",Document.Createform.Orddocument.Items.limitationdate_radiodate);
-                            settext("Срок", Document.Createform.Orddocument.Items.limitationdate_radiodate_field, value);
-                        }
-                    break;
-                case "На контроле":
-                case "Нерегистрируемый":
-                case "Подписано на бумажном носителе":
-                case "Завершающий":
-                case "Бессрочный":
-                case "Пункты Требуется отчет":
-                case "Подтверждать завершение работы по документу":
-                    for (String value : values)
-                        if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
-                            click(attrname, xpath);
-                    break;
-                default:
-                    softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
-                    break;
-            }
-        } else
-            switch (attrname){
-                case "Наименование":
-                case "ИНН":
-                case "КПП":
-                case "ФИО":
-                case "№ документа":
-                case "Адрес":
-                case "Регион":
-                    break;
-                default:
-                    doc.put(attrname, new String[]{"(Нет)"});
-                    break;
-            }
+        String docum = null;
+        for (String value : doc.get("document"))
+            docum = value;
+
+        switch (docum){
+            case "incoming":
+                if (values != null) {
+                    switch (attrname) {
+                        case "Заголовок":
+                        case "Исходящий номер":
+                        case "Исходящий от":
+                        case "Количество листов":
+                        case "Примечание":
+                        case "Срок исполнения":
+                        case "Наименование":
+                        case "ИНН":
+                        case "КПП":
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            break;
+                        case "Вид документа":
+                        case "Способ доставки":
+                        case "Представитель корреспондента":
+                        case "Тематика":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Simple.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogsimple(attrname, doc, values);
+                            break;
+                        case "Корреспондент":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Sender.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogsender(attrname, values, doc);
+                            break;
+                        case "Получатель":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Recipient.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogrecipient(attrname, doc, values);
+                            break;
+                        case "В ответ на":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Responseto.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogresponseto(attrname, doc, values);
+                            break;
+                        case "Содержание":
+                            driver.switchTo().frame(driver.findElement(By.xpath(Document.Createform.Incomingdocument.summarycontent_iframe)));
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            driver.switchTo().defaultContent();
+                            break;
+                        case "Номер дела":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Fileregister.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogfileregister(attrname, doc, values);
+                            break;
+                        case "На контроле":
+                        case "Нерегистрируемый":
+                        /*case "Подписано на бумажном носителе":
+                        case "Завершающий":
+                        case "Бессрочный":
+                        case "Пункты Требуется отчет":
+                        case "Подтверждать завершение работы по документу":*/
+                            for (String value : values)
+                                if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
+                                    click(attrname, xpath);
+                            break;
+                        default:
+                            softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
+                            break;
+                    }
+                }else
+                    switch (attrname){
+                        case "Повторять":
+                            break;
+                        default:
+                            doc.put(attrname, new String[]{"(Нет)"});
+                            break;
+                    }
+                break;
+            case "internal":
+                if (values != null) {
+                    switch (attrname) {
+                        case "Заголовок":
+                        case "Срок ответа":
+                        case "Дата подписания":
+                        case "Количество листов":
+                        case "Примечание":
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            break;
+                        case "Вид документа":
+                        case "Подписанты":
+                        case "Тематика":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Simple.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogsimple(attrname, doc, values);
+                            break;
+                        case "Получатель":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Recipient.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogrecipient(attrname, doc, values);
+                            break;
+                        case "Содержание":
+                            driver.switchTo().frame(driver.findElement(By.xpath(Document.Createform.Incomingdocument.summarycontent_iframe)));
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            driver.switchTo().defaultContent();
+                            break;
+                        case "Подписано на бумажном носителе":
+                            for (String value : values)
+                                if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
+                                    click(attrname, xpath);
+                            break;
+                        case "В ответ на":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Responseto.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogresponseto(attrname, doc, values);
+                            break;
+                        case "Номер дела":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Fileregister.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogfileregister(attrname, doc, values);
+                            break;
+                        default:
+                            softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
+                            break;
+                    }
+                }else
+                    switch (attrname){
+                        case "Повторять":
+                            break;
+                        default:
+                            doc.put(attrname, new String[]{"(Нет)"});
+                            break;
+                    }
+                break;
+            case "outgoing":
+                if (values != null) {
+                    switch (attrname) {
+                        case "Заголовок":
+                        case "Дата подписания":
+                        case "Количество листов":
+                        case "Примечание":
+                        case "Наименование":
+                        case "ИНН":
+                        case "КПП":
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            break;
+                        case "Вид документа":
+                        case "Способ доставки":
+                        case "Адресат корреспондента":
+                        case "Подписанты":
+                        case "Тематика":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Simple.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogsimple(attrname, doc, values);
+                            break;
+                        case "Корреспондент":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Sender.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogsender(attrname, values, doc);
+                            break;
+                        case "Содержание":
+                            driver.switchTo().frame(driver.findElement(By.xpath(Document.Createform.Incomingdocument.summarycontent_iframe)));
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            driver.switchTo().defaultContent();
+                            break;
+                        case "Подписано на бумажном носителе":
+                        case "Завершающий":
+                            for (String value : values)
+                                if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
+                                    click(attrname, xpath);
+                            break;
+                        case "В ответ на":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Responseto.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogresponseto(attrname, doc, values);
+                            break;
+                        case "Номер дела":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Fileregister.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogfileregister(attrname, doc, values);
+                            break;
+                        default:
+                            softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
+                            break;
+                    }
+                }else
+                    switch (attrname){
+                        case "Повторять":
+                            break;
+                        default:
+                            doc.put(attrname, new String[]{"(Нет)"});
+                            break;
+                    }
+                break;
+            case "nd":
+                if (values != null) {
+                    switch (attrname) {
+                        case "Заголовок":
+                        case "Количество листов":
+                        case "Дата подписания":
+                        case "Примечание":
+                        case "Период действия С":
+                        case "Период действия По":
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            break;
+                        case "Вид документа":
+                        case "Подписанты":
+                        case "Тематика":
+                        case "Подразделения":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Simple.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogsimple(attrname, doc, values);
+                            break;
+                        case "Содержание":
+                            driver.switchTo().frame(driver.findElement(By.xpath(Document.Createform.Incomingdocument.summarycontent_iframe)));
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            driver.switchTo().defaultContent();
+                            break;
+                        case "Подписано на бумажном носителе":
+                        case "Бессрочный":
+                            for (String value : values)
+                                if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
+                                    click(attrname, xpath);
+                            break;
+                        case "Номер дела":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Fileregister.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogfileregister(attrname, doc, values);
+                            break;
+                        default:
+                            softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
+                            break;
+                    }
+                }else
+                    switch (attrname){
+                        case "Повторять":
+                            break;
+                        default:
+                            doc.put(attrname, new String[]{"(Нет)"});
+                            break;
+                    }
+                break;
+            case "ord":
+                if (values != null) {
+                    switch (attrname) {
+                        case "Заголовок":
+                        case "Срок исполнения":
+                        case "Дата подписания":
+                        case "Примечание":
+                        case "Количество листов":
+                        case "Пункты Заголовок":
+                        case "Пункты Содержание":
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            break;
+                        case "Вид документа":
+                        case "Подписанты":
+                        case "Контролёр":
+                        case "Тематика":
+                        case "Пункты Автор":
+                        case "Пункты Исполнитель":
+                        case "Пункты Соисполнители":
+                        case "Пункты Контролер":
+                        case "Пункты Тематика":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Simple.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogsimple(attrname, doc, values);
+                            break;
+                        case "Содержание":
+                            driver.switchTo().frame(driver.findElement(By.xpath(Document.Createform.Incomingdocument.summarycontent_iframe)));
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            driver.switchTo().defaultContent();
+                            break;
+                        case "Подписано на бумажном носителе":
+                        case "Подтверждать завершение работы по документу":
+                        case "Пункты Требуется отчет":
+                            for (String value : values)
+                                if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
+                                    click(attrname, xpath);
+                            break;
+                        case "Номер дела":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Fileregister.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogfileregister(attrname, doc, values);
+                            break;
+                        case "Отменяемые документы":
+                        case "Принимаемые документы":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Responseto.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogresponseto(attrname, doc, values);
+                            break;
+                        case "Пункты Срок исполнения":
+                            for (String value : values)
+                                if (value.contains("рабочий день")) {
+                                    click("Радио",Document.Createform.Orddocument.Items.limitationdate_radiodays);
+                                    settext("Срок", Document.Createform.Orddocument.Items.limitationdate_radiodays_field, value.substring(0,value.indexOf("рабочий день")-1));
+                                    WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Orddocument.Items.limitationdate_radiodays_select));
+                                    Select select = new Select(selectElem);
+                                    select.selectByVisibleText("рабочий день");
+                                } else
+                                if (value.contains("календарный день")) {
+                                    click("Радио",Document.Createform.Orddocument.Items.limitationdate_radiodays);
+                                    settext("Срок", Document.Createform.Orddocument.Items.limitationdate_radiodays_field, value.substring(0,value.indexOf("календарный день")-1));
+                                    WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Orddocument.Items.limitationdate_radiodays_select));
+                                    Select select = new Select(selectElem);
+                                    select.selectByVisibleText("календарный день");
+                                } else
+                                if (value.contains("Без срока")) {
+                                    click("Радио",Document.Createform.Orddocument.Items.limitationdate_radiolimitless);
+                                } else {
+                                    click("Радио",Document.Createform.Orddocument.Items.limitationdate_radiodate);
+                                    settext("Срок", Document.Createform.Orddocument.Items.limitationdate_radiodate_field, value);
+                                }
+                            break;
+                        default:
+                            softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
+                            break;
+                    }
+                }else
+                    switch (attrname){
+                        case "Повторять":
+                            break;
+                        default:
+                            doc.put(attrname, new String[]{"(Нет)"});
+                            break;
+                    }
+                break;
+            case "errand":
+                if (values != null) {
+                    switch (attrname) {
+                        case "Текст поручения":
+                        case "Начало повторений":
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            break;
+                        case "Тип поручения":
+                        case "Заголовок":
+                        case "Исполнитель":
+                        case "Соисполнители":
+                        case "Контролер":
+                        case "Тематика":
+                            click("...", xpath);
+                            if (!waitelement(SelectDialog.Simple.dialog))
+                                clickagain("...", xpath);
+                            fillselectdialogsimple(attrname, doc, values);
+                            break;
+                        case "Срок исполнения":
+                            for (String value : values)
+                                if (value.contains("рабочий день")) {
+                                    click("Радио",Document.Createform.Erranddocument.limitationdate_radiodays);
+                                    settext("Срок", Document.Createform.Erranddocument.limitationdate_radiodays_field, value.substring(0,value.indexOf("рабочий день")-1));
+                                    WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Erranddocument.limitationdate_radiodays_select));
+                                    Select select = new Select(selectElem);
+                                    select.selectByVisibleText("рабочий день");
+                                    doc.put(attrname,new String[]{value.substring(0,value.indexOf("рабочий день")-1) + " р.д."});
+                                } else
+                                if (value.contains("календарный день")) {
+                                    click("Радио",Document.Createform.Erranddocument.limitationdate_radiodays);
+                                    settext("Срок", Document.Createform.Erranddocument.limitationdate_radiodays_field, value.substring(0,value.indexOf("календарный день")-1));
+                                    WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Erranddocument.limitationdate_radiodays_select));
+                                    Select select = new Select(selectElem);
+                                    select.selectByVisibleText("календарный день");
+                                    doc.put(attrname,new String[]{value.substring(0,value.indexOf("рабочий день")-1) + " к.д."});
+                                } else
+                                if (value.contains("Без срока")) {
+                                    click("Радио",Document.Createform.Erranddocument.limitationdate_radiolimitless);
+                                } else {
+                                    click("Радио",Document.Createform.Erranddocument.limitationdate_radiodate);
+                                    settext("Дата", Document.Createform.Erranddocument.limitationdate_radiodate_field, value);
+                                }
+                            break;
+                        case "Окончание повторений":
+                            switch (values[0]){
+                                case "После":
+                                    click("Радио",Document.Createform.Erranddocument.periodend_radiorepeatcount);
+                                    settext("Срок", Document.Createform.Erranddocument.periodend_radiorepeatcount_field, values[1]);
+                                    break;
+                                case "Через":
+                                    click("Радио",Document.Createform.Erranddocument.periodend_radioduring);
+                                    settext("Срок", Document.Createform.Erranddocument.periodend_radioduring_field, values[1]);
+                                    WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Erranddocument.periodend_radioduring_select));
+                                    Select select = new Select(selectElem);
+                                    select.selectByVisibleText(values[2]);
+                                    break;
+                                case "Нет конечной даты":
+                                    click("Радио",Document.Createform.Erranddocument.periodend_radioendless);
+                                    break;
+                                default:
+                                    click("Радио",Document.Createform.Erranddocument.periodend_radiodate);
+                                    settext("Срок", Document.Createform.Erranddocument.periodend_radiodate_field, values[0]);
+                                    break;
+                            }
+                            break;
+                        case "Требуется отчет":
+                        case "Важное":
+                            for (String value : values)
+                                if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
+                                    click(attrname, xpath);
+                            break;
+                        case "Повторять":
+                            if (values[0].equals("Еженедельно")){
+                                WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Erranddocument.reiterationruletype_select));
+                                Select select = new Select(selectElem);
+                                select.selectByVisibleText("Еженедельно");
+                                for (String val:values)
+                                    if (!val.equals("Еженедельно"))
+                                        click(val,"//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[@class='item' and text()='" + val + "']");
+                                click("Сохранить", Document.Createform.Erranddocument.reiterationrulesave_button);
+                            } else
+                            if (values[0].equals("Ежемесячно")){
+                                WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Erranddocument.reiterationruletype_select));
+                                Select select = new Select(selectElem);
+                                select.selectByVisibleText("Ежемесячно");
+                                for (String val:values)
+                                    if (!val.equals("Ежемесячно"))
+                                        click(val,"//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[@class='item' and text()='" + val + "']");
+                                click("Сохранить", Document.Createform.Erranddocument.reiterationrulesave_button);
+                            } else
+                            if (values[0].equals("Ежеквартально")){
+                                WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Erranddocument.reiterationruletype_select));
+                                Select select = new Select(selectElem);
+                                select.selectByVisibleText("Ежеквартально");
+                                for (String val:values)
+                                    if (!val.equals("Ежеквартально"))
+                                        click(val,"//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[@class='item' and text()='" + val + "']");
+                                click("Сохранить", Document.Createform.Erranddocument.reiterationrulesave_button);
+                            }
+                            break;
+                        case "Направлять периодически":
+                            for (String value : values)
+                                if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
+                                    click(attrname, xpath);
+                            break;
+                        case "Получатель отчета":
+                            WebElement selectElem = driver.findElement(By.xpath(xpath));
+                            for (String val:values) {
+                                Select select = new Select(selectElem);
+                                select.selectByVisibleText(val);
+                            }
+                            break;
+                        default:
+                            softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
+                            break;
+                    }
+                }else
+                    switch (attrname){
+                        case "Закрывает вышестоящее поручение":
+                        case "Направлять периодически":
+                        case "Требуется отчет":
+                            break;
+                        default:
+                            doc.put(attrname, new String[]{"(Нет)"});
+                            break;
+                    }
+                break;
+            default:
+                softassertfail(attrname + " - Тест не знает такого типа, надо дописать");
+                break;
+        }
     }
 
     @Step("Проверить наличие атрибута <{0}>")
@@ -1274,6 +1782,7 @@ class Base {
         driver.findElement(By.xpath(xpath)).click();
         waitForLoad();
     }
+
     @Step("Переклик кнопки <{0}>")
     private static void clickagain(String report, String xpath) {
         waitForLoad();

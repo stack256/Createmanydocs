@@ -1,12 +1,12 @@
 package Box;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.*;
 import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.annotations.*;
 import ru.yandex.qatools.allure.annotations.Description;
 import ru.yandex.qatools.allure.model.*;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +48,7 @@ public class MainTest {
     }
 
 
+
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Features("Входящий")
@@ -57,6 +58,7 @@ public class MainTest {
     public void test1() {
         User user = getuserbyroles("СЭД. Регистраторы");
 
+        doc.put("document", new String[]{"incoming"});
         doc.put("Заголовок", new String[]{"Заголовок"});
         doc.put("Вид документа", new String[]{"Запрос"});
         doc.put("Способ доставки", new String[]{"Личный прием"});
@@ -89,6 +91,7 @@ public class MainTest {
     }
 
 
+
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Features("Внутренний")
@@ -98,6 +101,7 @@ public class MainTest {
     public void test2() {
         User user = getuserbyroles("Внутренние. Создатели");
 
+        doc.put("document", new String[]{"internal"});
         doc.put("Составитель", new String[]{user.full});
         doc.put("Исполнитель", new String[]{user.full});
         doc.put("Заголовок", new String[]{"Заголовок"});
@@ -126,6 +130,7 @@ public class MainTest {
     }
 
 
+
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Features("Исходящий")
@@ -135,6 +140,7 @@ public class MainTest {
     public void test3() {
         User user = getuserbyroles("Исходящие. Создатели");
 
+        doc.put("document", new String[]{"outgoing"});
         doc.put("Составитель", new String[]{user.full});
         doc.put("Исполнитель", new String[]{user.full});
         doc.put("Заголовок", new String[]{"Заголовок"});
@@ -167,6 +173,7 @@ public class MainTest {
     }
 
 
+
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Features("Нормативные документы")
@@ -176,6 +183,7 @@ public class MainTest {
     public void test4() {
         User user = getuserbyroles("НД. Создатели");
 
+        doc.put("document", new String[]{"nd"});
         doc.put("Составитель", new String[]{user.full});
         doc.put("Исполнитель", new String[]{user.full});
         doc.put("Заголовок", new String[]{"Заголовок"});
@@ -204,6 +212,7 @@ public class MainTest {
     }
 
 
+
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Features("Организационно-распорядительный документ")
@@ -213,6 +222,7 @@ public class MainTest {
     public void test5() {
         User user = getuserbyroles("ОРД. Создатели");
 
+        doc.put("document", new String[]{"ord"});
         doc.put("Составитель", new String[]{user.full});
         doc.put("Исполнитель", new String[]{user.full});
         doc.put("Вид документа", new String[]{"Категории подписываемых вложений"});
@@ -234,6 +244,7 @@ public class MainTest {
         //doc.put("Принимаемые документы Номер", new String[]{"00094"});
 
         item = new HashMap<String, String[]>();
+        item.put("document", new String[]{"ord"});
         item.put("Пункты Заголовок", new String[]{"Заголовок"});
         item.put("Пункты Автор", new String[]{user.full});
         item.put("Пункты Содержание", new String[]{"Содержание"});
@@ -253,5 +264,46 @@ public class MainTest {
         readhistory(doc.get("Запись в бж"),doc);
         //if (!stack.get(0).value)
         removedocs();
+    }
+
+
+
+    @Description("Какое то описание")
+    @Severity(SeverityLevel.CRITICAL)
+    @Features("Поручение")
+    @Stories("Жизненный цикл")
+    @Title("Создать поручение")
+    @Test
+    public void test6() {
+        User user = getuserbyroles("Поручения. Инициатор");
+
+        doc.put("document", new String[]{"errand"});
+        doc.put("Тип поручения", new String[]{"На исполнение (неконтрольное)"});
+        doc.put("Заголовок", new String[]{"Ознакомить подчиненных"});
+        doc.put("Текст поручения", new String[]{"Заголовок"});
+        doc.put("Исполнитель", new String[]{getuserbylogin("kozlov").full});
+        doc.put("Соисполнители", new String[]{getuserbylogin("denisov").full});
+        doc.put("Срок исполнения", new String[]{"21.12.2019"});
+        doc.put("Направлять периодически", new String[]{"Да"});
+        doc.put("Повторять", new String[]{"Ежедневно"});
+        doc.put("Начало повторений", new String[]{"21.12.2018"});
+        doc.put("Окончание повторений", new String[]{"21.12.2019"});
+        doc.put("Контролер", new String[]{getuserbylogin("denisov").full});
+        doc.put("Требуется отчет", new String[]{"Да"});
+        doc.put("Получатель отчета", new String[]{"Контролер"});
+        doc.put("Важное", new String[]{"Да"});
+        doc.put("Тематика", new String[]{"Доставка воды"});
+
+        //авторизоваться
+        auth(user.famio,user.login,user.pass);
+        //создать входящий документ
+        createerrand(doc, "Сохранить черновик");
+        readerrand(doc);
+        doc.put("Запись в бж",new String[]{historystandartcreateerrand(doc)});
+        readhistory(doc.get("Запись в бж"),doc);
+        //if (!stack.get(0).value)
+        removedocs();
+
+
     }
 }

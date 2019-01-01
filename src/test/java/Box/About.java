@@ -22,6 +22,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static Box.Users.*;
+
 class About {
 
     static WebDriver driver;
@@ -224,5 +226,17 @@ class About {
 
     static String historystandartcreate(Map<String, String[]> doc){
         return current_user + " создал(а) новый документ \"" + incoming_header(doc.get("Вид документа"), doc.get("Номер")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
+    }
+
+    private static String incoming_headererrand(String[] title, String[] regnum, String[] executor, String[] limitdate) {
+        for (User user:users)
+            if (user.full.equals(executor[0]))
+                executor[0] = user.famio;
+        return "№ " + regnum[0] + ", " + title[0] + ", Исполнитель " + executor[0] + ", срок: " + limitdate[0];
+
+    }
+
+    static String historystandartcreateerrand(Map<String, String[]> doc){
+        return current_user + " создал(а) новый документ \"" + incoming_headererrand(doc.get("Заголовок"), doc.get("Номер"), doc.get("Исполнитель"), doc.get("Срок исполнения")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
     }
 }
