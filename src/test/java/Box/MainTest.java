@@ -198,4 +198,42 @@ public class MainTest {
         //if (!stack.get(0).value)
         removedocs();
     }
+
+/*
+    @Description("Какое то описание")
+    @Severity(SeverityLevel.CRITICAL)
+    @Features("Организационно-распорядительный документ")
+    @Stories("Жизненный цикл")
+    @Title("Создать организационно-распорядительный документ")
+    @Test
+    public void test5() {
+        User user = getuserbyroles("ОРД. Создатели");
+
+        doc.put("Составитель", new String[]{user.full});
+        doc.put("Исполнитель", new String[]{user.full});
+        doc.put("Вид документа", new String[]{"Категории подписываемых вложений"});
+        doc.put("Заголовок", new String[]{"Заголовок"});
+        doc.put("Срок исполнения", new String[]{"21.12.2019"});
+        doc.put("Содержание", new String[]{"21.12.2019"});
+        doc.put("Подписано на бумажном носителе", new String[]{"Да"});
+        doc.put("Подписанты", new String[]{getuserbylogin("fomin").full, getuserbylogin("kozlov").full});
+        doc.put("Дата подписания", new String[]{"21.12.2019"});
+        doc.put("Контролёр", new String[]{getuserbylogin("denisov").full});
+        doc.put("Примечание", new String[]{"21"});
+        doc.put("Количество листов", new String[]{"21"});
+        doc.put("Тематика", new String[]{"Доставка воды"});
+        doc.put("Номер дела", new String[]{"2018","Управление","Рабочее подразделение","ALL-Дело для всех типов документов"});
+        //doc.put("Отменяемые документы", new String[]{"Внутренний документ: 1234567890, № NA-00094 от 28.09.2019"});
+        //doc.put("Принимаемые документы", new String[]{"00094"});
+        doc.put("Пункты", new String[]{"AT_Organization"});
+
+        //авторизоваться
+        auth(user.famio,user.login,user.pass);
+        //создать входящий документ
+        creatend(doc);
+        readnd(doc);
+        readhistory(doc.get("Запись в бж"),doc);
+        //if (!stack.get(0).value)
+        removedocs();
+    }*/
 }
