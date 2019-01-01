@@ -59,8 +59,8 @@ public class MainTest {
         doc.put("Корреспондент", new String[]{"AT_Organization"});
         doc.put("Корреспондент Тип", new String[]{"Внутренний контрагент"});
         doc.put("Корреспондент Наименование", new String[]{"AT_Organization"});
-        doc.put("Представитель корреспондента", new String[]{"Денисов Руслан Всеволодович Тестировщик AT_Subdivision2"});
-        doc.put("Получатель", new String[]{"Сотрудник","John D. John D. jdd Еще один дегустатор Название организации"});
+        doc.put("Представитель корреспондента", new String[]{getuserbylogin("denisov").full});
+        doc.put("Получатель", new String[]{"Сотрудник",getuserbylogin("filippova").full});
         //doc.put("В ответ на", new String[]{"Исходящий документ: А1 ЭП только Прочее, № ИСХ-01035/17 от 24.10.2017"});
         //doc.put("В ответ на Номер", new String[]{"1035"});
         doc.put("Исходящий номер", new String[]{"Outgoing-number"});
@@ -68,7 +68,7 @@ public class MainTest {
         doc.put("Содержание", new String[]{"21.12.2019"});
         doc.put("Количество листов", new String[]{"21"});
         doc.put("Тематика", new String[]{"Доставка воды"});
-        doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
+        //doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
         doc.put("Примечание", new String[]{"21"});
         doc.put("Срок исполнения", new String[]{"21.12.2019"});
         doc.put("На контроле", new String[]{"Да"});
@@ -99,17 +99,16 @@ public class MainTest {
         doc.put("Заголовок", new String[]{"Заголовок"});
         doc.put("Вид документа", new String[]{"Аналитическая записка"});
         doc.put("Срок ответа", new String[]{"21.12.2019"});
-        doc.put("Получатель", new String[]{"Сотрудник",getuserbylogin("jd5").full});
-        doc.put("Содержание", new String[]{"21.12.2019"});
+        doc.put("Получатель", new String[]{"Сотрудник",getuserbylogin("filippova").full});
         doc.put("Содержание", new String[]{"21.12.2019"});
         doc.put("Подписано на бумажном носителе", new String[]{"Да"});
-        doc.put("Подписанты", new String[]{getuserbylogin("jd3").full, getuserbylogin("jd4").full});
+        doc.put("Подписанты", new String[]{getuserbylogin("fomin").full, getuserbylogin("kozlov").full});
         doc.put("Дата подписания", new String[]{"21.12.2019"});
         //doc.put("В ответ на", new String[]{"Внутренний документ: 1234567890, № NA-00094 от 28.09.2018"});
         //doc.put("В ответ на Номер", new String[]{"00094"});
         doc.put("Количество листов", new String[]{"21"});
         doc.put("Тематика", new String[]{"Доставка воды"});
-        doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
+        //doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
         doc.put("Примечание", new String[]{"21"});
 
         //авторизоваться
@@ -140,16 +139,16 @@ public class MainTest {
         doc.put("Корреспондент", new String[]{"AT_Organization"});
         doc.put("Корреспондент Тип", new String[]{"Внутренний контрагент"});
         doc.put("Корреспондент Наименование", new String[]{"AT_Organization"});
-        doc.put("Адресат корреспондента", new String[]{"Денисов Руслан Всеволодович Тестировщик AT_Subdivision2"});
+        doc.put("Адресат корреспондента", new String[]{getuserbylogin("denisov").full});
         doc.put("Содержание", new String[]{"21.12.2019"});
         doc.put("Подписано на бумажном носителе", new String[]{"Да"});
-        doc.put("Подписанты", new String[]{getuserbylogin("jd3").full, getuserbylogin("jd4").full});
+        doc.put("Подписанты", new String[]{getuserbylogin("fomin").full, getuserbylogin("kozlov").full});
         doc.put("Дата подписания", new String[]{"21.12.2019"});
         //doc.put("В ответ на", new String[]{"Внутренний документ: 1234567890, № NA-00094 от 28.09.2019"});
         //doc.put("В ответ на Номер", new String[]{"00094"});
         doc.put("Количество листов", new String[]{"21"});
         doc.put("Тематика", new String[]{"Доставка воды"});
-        doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
+        //doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
         doc.put("Примечание", new String[]{"21"});
         doc.put("Завершающий", new String[]{"Нет"});
 

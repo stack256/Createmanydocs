@@ -49,6 +49,175 @@ class Users {
 
     static void usersinitial(){
         User newuser = new User();
+        newuser.login = "shestakov";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("Внутренние. Создатели");
+        newuser.roles.add("Внутренние. Создатели");
+        newuser.roles.add("Договор. Исполнитель");
+        newuser.roles.add("Исходящие. Создатели");
+        newuser.roles.add("НД.Создатели");
+        newuser.roles.add("ОРД. Создатели");
+        newuser.roles.add("Подписанты документов");
+        newuser.roles.add("Поручения. Инициатор");
+        newuser.famio = "Шестаков А.Г.";
+        newuser.fio = "Шестаков Альфред Гордеевич";
+        newuser.full = "Шестаков Альфред Гордеевич Тестировщик AT_Subdivision1";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "moiseev";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("Подписанты документов");
+        newuser.roles.add("Поручения. Инициатор");
+        newuser.famio = "Моисеев В.В.";
+        newuser.fio = "Моисеев Вадим Викторович";
+        newuser.full = "Моисеев Вадим Викторович Тестировщик AT_Subdivision1";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "timofeev";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("Исходящие. Создатели");
+        newuser.roles.add("Поручения.Инициатор");
+        newuser.roles.add("СЭД. Регистраторы");
+        newuser.famio = "Тимофеев Л.В.";
+        newuser.fio = "Тимофеев Людвиг Вячеславович";
+        newuser.full = "Тимофеев Людвиг Вячеславович Тестировщик AT_Subdivision1";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "udin";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("Внутренние. Создатели");
+        newuser.roles.add("Договор. Куратор");
+        newuser.roles.add("Исходящие. Отправляющие");
+        newuser.roles.add("Поручения.Инициатор");
+        newuser.roles.add("Резолюции Создатель");
+        newuser.famio = "Юдин Л.В.";
+        newuser.fio = "Юдин Лукьян Вадимович";
+        newuser.full = "Юдин Лукьян Вадимович Тестировщик AT_Subdivision1";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "samoilov";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("Исходящие. Создатели");
+        newuser.roles.add("Подписанты документов");
+        newuser.roles.add("Поручения.Инициатор");
+        newuser.roles.add("Руководитель высшего звена");
+        newuser.famio = "Самойлов Г.Л.";
+        newuser.fio = "Самойлов Григорий Лукьевич";
+        newuser.full = "Самойлов Григорий Лукьевич Тестировщик AT_Subdivision1";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "makarov";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("Подписанты документов");
+        newuser.famio = "Макаров П.П.";
+        newuser.fio = "Макаров Петр Пантелеймонович";
+        newuser.full = "Макаров Петр Пантелеймонович Тестировщик AT_Subdivision1";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "fadeev";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("Подписанты документов");
+        newuser.roles.add("Поручения.Инициатор");
+        newuser.roles.add("Совещания.Создатели");
+        newuser.famio = "Фадеев Е.А.";
+        newuser.fio = "Фадеев Евгений Аркадьевич";
+        newuser.full = "Фадеев Евгений Аркадьевич Тестировщик AT_Subdivision1";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "belakov";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("Договор. Регистратор");
+        newuser.roles.add("СЭД. Регистраторы");
+        newuser.famio = "Беляков С.Л.";
+        newuser.fio = "Беляков Савелий Лаврентьевич";
+        newuser.full = "Беляков Савелий Лаврентьевич Тестировщик AT_Subdivision2";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "fomin";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("Поручения. Инициатор");
+        newuser.roles.add("СЭД. Регистраторы");
+        newuser.famio = "Фомин Т.Ф.";
+        newuser.fio = "Фомин Трофим Федотович";
+        newuser.full = "Фомин Трофим Федотович Тестировщик AT_Subdivision2";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "kozlov";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("Подписанты документов");
+        newuser.famio = "Козлов М.А.";
+        newuser.fio = "Козлов Михаил Аристархович";
+        newuser.full = "Козлов Михаил Аристархович Тестировщик AT_Subdivision2";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "ribakov";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("СЭД.Контролёры");
+        newuser.roles.add("Согласующие документов");
+        newuser.famio = "Рыбаков С.Д.";
+        newuser.fio = "Рыбаков Самуил Демьянович";
+        newuser.full = "Рыбаков Самуил Демьянович Тестировщик AT_Subdivision2";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "filippova";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("Согласующие документов");
+        newuser.famio = "Филиппова М.А.";
+        newuser.fio = "Филиппова Мила Агафоновна";
+        newuser.full = "Филиппова Мила Агафоновна Тестировщик AT_Subdivision2";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "denisov";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("СЭД.Контролёры");
+        newuser.roles.add("Согласующие документов");
+        newuser.famio = "Денисов Р.В.";
+        newuser.fio = "Денисов Руслан Всеволодович";
+        newuser.full = "Денисов Руслан Всеволодович Тестировщик AT_Subdivision2";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "maslova";
+        newuser.pass = "Par@ol1";
+        newuser.roles.add("Согласующие документов");
+        newuser.famio = "Маслова А.Г.";
+        newuser.fio = "Маслова Алевтина Глебовна";
+        newuser.full = "Маслова Алевтина Глебовна Тестировщик AT_Subdivision2";
+        users.add(newuser);
+
+
+
+
+
+
+
+        /*
+        User newuser = new User();
 
         newuser.login = "jd1";
         newuser.pass = "123";
@@ -107,7 +276,7 @@ class Users {
         newuser.full = "Тихомирова Саломея 2 Тестировщик Подразделение 1";
         users.add(newuser);
         newuser = new User();*/
-
+/*
         newuser.login = "jd3";
         newuser.pass = "123";
         newuser.roles.add("Внутренние. Создатели");
@@ -261,6 +430,6 @@ class Users {
         newuser.fio = "John D. John D. jdd";
         newuser.full = "John D. John D. jdd Еще один дегустатор Название организации";
         users.add(newuser);
-        newuser = new User();
+        newuser = new User();*/
     }
 }

@@ -72,7 +72,7 @@ class Base {
 
     @Step("Удаление документов после успешного теста")
     static void removedocs() {
-        auth("Admin","admin","uVPmD7pd");
+        auth("Admin","admin",System.getProperty("admin.pass"));
         for (String val:removedoc){
             driver.get(val);
             admindelete();
@@ -276,7 +276,7 @@ class Base {
             }
         }
         doc.put("Статус",new String[]{"Черновик"});
-        doc.put("Номер",new String[]{"Не присвоен"});
+        doc.put("Номер",new String[]{"Не присвоено"});
         doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
     }
 
@@ -296,7 +296,7 @@ class Base {
             }
         }
         doc.put("Статус",new String[]{"Черновик"});
-        doc.put("Номер",new String[]{"Не присвоен"});
+        doc.put("Номер",new String[]{"Не присвоено"});
         doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
     }
 
@@ -316,7 +316,7 @@ class Base {
             }
         }
         doc.put("Статус",new String[]{"Черновик"});
-        doc.put("Номер",new String[]{"Не присвоен"});
+        doc.put("Номер",new String[]{"Не присвоено"});
         doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
     }
 

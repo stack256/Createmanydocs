@@ -56,6 +56,9 @@ class About {
             buf = new Stack();
             buf.number = stack.size();
             stack.add(buf);
+            //если понадобится логгирование прям в консоль дженкинса
+            //то разблокировать строку ниже
+            //System.out.println(event.getTitle());
         }
 
         @Override
