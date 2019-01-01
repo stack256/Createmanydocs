@@ -1259,27 +1259,19 @@ class Base {
                         case "Способ доставки":
                         case "Представитель корреспондента":
                         case "Тематика":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Simple.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Simple.dialog);
                             fillselectdialogsimple(attrname, doc, values);
                             break;
                         case "Корреспондент":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Sender.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Sender.dialog);
                             fillselectdialogsender(attrname, values, doc);
                             break;
                         case "Получатель":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Recipient.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Recipient.dialog);
                             fillselectdialogrecipient(attrname, doc, values);
                             break;
                         case "В ответ на":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Responseto.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Responseto.dialog);
                             fillselectdialogresponseto(attrname, doc, values);
                             break;
                         case "Содержание":
@@ -1289,9 +1281,7 @@ class Base {
                             driver.switchTo().defaultContent();
                             break;
                         case "Номер дела":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Fileregister.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Fileregister.dialog);
                             fillselectdialogfileregister(attrname, doc, values);
                             break;
                         case "На контроле":
@@ -1332,15 +1322,11 @@ class Base {
                         case "Вид документа":
                         case "Подписанты":
                         case "Тематика":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Simple.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Simple.dialog);
                             fillselectdialogsimple(attrname, doc, values);
                             break;
                         case "Получатель":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Recipient.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Recipient.dialog);
                             fillselectdialogrecipient(attrname, doc, values);
                             break;
                         case "Содержание":
@@ -1355,15 +1341,11 @@ class Base {
                                     click(attrname, xpath);
                             break;
                         case "В ответ на":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Responseto.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Responseto.dialog);
                             fillselectdialogresponseto(attrname, doc, values);
                             break;
                         case "Номер дела":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Fileregister.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Fileregister.dialog);
                             fillselectdialogfileregister(attrname, doc, values);
                             break;
                         default:
@@ -1397,15 +1379,11 @@ class Base {
                         case "Адресат корреспондента":
                         case "Подписанты":
                         case "Тематика":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Simple.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Simple.dialog);
                             fillselectdialogsimple(attrname, doc, values);
                             break;
                         case "Корреспондент":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Sender.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Sender.dialog);
                             fillselectdialogsender(attrname, values, doc);
                             break;
                         case "Содержание":
@@ -1421,15 +1399,11 @@ class Base {
                                     click(attrname, xpath);
                             break;
                         case "В ответ на":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Responseto.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Responseto.dialog);
                             fillselectdialogresponseto(attrname, doc, values);
                             break;
                         case "Номер дела":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Fileregister.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Fileregister.dialog);
                             fillselectdialogfileregister(attrname, doc, values);
                             break;
                         default:
@@ -1461,9 +1435,7 @@ class Base {
                         case "Подписанты":
                         case "Тематика":
                         case "Подразделения":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Simple.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Simple.dialog);
                             fillselectdialogsimple(attrname, doc, values);
                             break;
                         case "Содержание":
@@ -1479,9 +1451,7 @@ class Base {
                                     click(attrname, xpath);
                             break;
                         case "Номер дела":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Fileregister.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Fileregister.dialog);
                             fillselectdialogfileregister(attrname, doc, values);
                             break;
                         default:
@@ -1519,9 +1489,7 @@ class Base {
                         case "Пункты Соисполнители":
                         case "Пункты Контролер":
                         case "Пункты Тематика":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Simple.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Simple.dialog);
                             fillselectdialogsimple(attrname, doc, values);
                             break;
                         case "Содержание":
@@ -1538,16 +1506,12 @@ class Base {
                                     click(attrname, xpath);
                             break;
                         case "Номер дела":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Fileregister.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Fileregister.dialog);
                             fillselectdialogfileregister(attrname, doc, values);
                             break;
                         case "Отменяемые документы":
                         case "Принимаемые документы":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Responseto.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Responseto.dialog);
                             fillselectdialogresponseto(attrname, doc, values);
                             break;
                         case "Пункты Срок исполнения":
@@ -1600,9 +1564,7 @@ class Base {
                         case "Соисполнители":
                         case "Контролер":
                         case "Тематика":
-                            click("...", xpath);
-                            if (!waitelement(SelectDialog.Simple.dialog))
-                                clickagain("...", xpath);
+                            click("...", xpath, SelectDialog.Simple.dialog);
                             fillselectdialogsimple(attrname, doc, values);
                             break;
                         case "Срок исполнения":
@@ -1740,10 +1702,9 @@ class Base {
             (new WebDriverWait(driver, timeoutlnseconds))
                     .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
         } catch (Exception e) {
-            if (!xpath.equals(SelectDialog.Simple.dialog)) {
+            if (!xpath.equals(SelectDialog.Simple.dialog))
                 softassertfail("Не найден элемент " + xpath);
-                return false;
-            }
+            return false;
         }
         waitForLoad();
         return true;
@@ -1782,6 +1743,15 @@ class Base {
         }
         driver.findElement(By.xpath(xpath)).click();
         waitForLoad();
+    }
+
+    private static void click(String report, String xpath, String waitdialog) {
+        click("...", xpath);
+        int i = 10;
+        while (!waitelement(SelectDialog.Simple.dialog) && i > 0) {
+            clickagain("...", xpath);
+            i--;
+        }
     }
 
     @Step("Переклик кнопки <{0}>")
