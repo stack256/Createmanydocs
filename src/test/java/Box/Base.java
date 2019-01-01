@@ -93,6 +93,26 @@ class Base {
         timeoutlnseconds = 30;
     }
 
+    @Step("Создать входящий документ")
+    static void createincoming(Map<String, String[]> doc) {
+        gotoarmsed();
+        click("Создать",ARMSED.createButton);
+        click("Входящий документ", ARMSED.Createmenu.incomingdocument);
+        fillcreateincoming(doc);
+        String currenturl = driver.getCurrentUrl();
+        click("Создать",Document.Createform.create_button);
+        while (currenturl.equals(driver.getCurrentUrl())) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        doc.put("Статус",new String[]{"Черновик"});
+        doc.put("Номер",new String[]{"Не присвоено"});
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+    }
+
     @Step("Заполнить атрибуты")
     private static void fillcreateincoming(Map<String, String[]> doc) {
         verifyattr("Вложения", Document.Createform.Incomingdocument.attachments_label);
@@ -149,177 +169,6 @@ class Base {
         fillfield("Нерегистрируемый",Document.Createform.Incomingdocument.is_not_registered_checkbox, doc.get("Нерегистрируемый"), doc);
     }
 
-    @Step("Заполнить атрибуты")
-    private static void fillcreateinternal(Map<String, String[]> doc) {
-        verifyattr("Вложения", Document.Createform.Internaldocument.attachments_label);
-
-        verifyattr("Заголовок", Document.Createform.Internaldocument.title_label);
-        fillfield("Заголовок",Document.Createform.Internaldocument.title_field, doc.get("Заголовок"), doc);
-
-        verifyattr("Вид документа", Document.Createform.Internaldocument.type_label);
-        fillfield("Вид документа",Document.Createform.Internaldocument.type_button, doc.get("Вид документа"), doc);
-
-        verifyattr("Срок ответа", Document.Createform.Internaldocument.execution_date_label);
-        fillfield("Срок ответа",Document.Createform.Internaldocument.execution_date_field, doc.get("Срок ответа"), doc);
-
-        verifyattr("Получатель", Document.Createform.Internaldocument.recipient_label);
-        fillfield("Получатель",Document.Createform.Internaldocument.recipient_button, doc.get("Получатель"), doc);
-
-        verifyattr("Содержание", Document.Createform.Internaldocument.summarycontent_label);
-        fillfield("Содержание",Document.Createform.Internaldocument.summarycontent_field, doc.get("Содержание"), doc);
-
-        verifyattr("Подписано на бумажном носителе", Document.Createform.Internaldocument.signedbypaper_label);
-        fillfield("Подписано на бумажном носителе",Document.Createform.Internaldocument.signedbypaper_checkbox, doc.get("Подписано на бумажном носителе"), doc);
-
-        boolean t = false;
-        for (String val:doc.get("Подписано на бумажном носителе"))
-            if (val.equals("Да")) t = true;
-        if (t) {
-            verifyattr("Подписанты", Document.Createform.Internaldocument.signers_label);
-            fillfield("Подписанты", Document.Createform.Internaldocument.signers_button, doc.get("Подписанты"), doc);
-
-            verifyattr("Дата подписания", Document.Createform.Internaldocument.signing_date_label);
-            fillfield("Дата подписания", Document.Createform.Internaldocument.signing_date_field, doc.get("Дата подписания"), doc);
-
-            doc.put("Подписан", new String[]{"Да"});
-        }
-
-        verifyattr("В ответ на", Document.Createform.Internaldocument.response_to_label);
-        fillfield("В ответ на", Document.Createform.Internaldocument.response_to_button, doc.get("В ответ на"), doc);
-
-        verifyattr("Количество листов", Document.Createform.Internaldocument.sheets_number_label);
-        fillfield("Количество листов", Document.Createform.Internaldocument.sheets_number_field, doc.get("Количество листов"), doc);
-
-        verifyattr("Тематика", Document.Createform.Internaldocument.subject_label);
-        fillfield("Тематика", Document.Createform.Internaldocument.subject_button, doc.get("Тематика"), doc);
-
-        verifyattr("Номер дела", Document.Createform.Internaldocument.file_register_label);
-        fillfield("Номер дела", Document.Createform.Internaldocument.file_register_button, doc.get("Номер дела"), doc);
-
-        verifyattr("Примечание", Document.Createform.Internaldocument.note_label);
-        fillfield("Примечание", Document.Createform.Internaldocument.note_field, doc.get("Примечание"), doc);
-
-    }
-
-    @Step("Заполнить атрибуты")
-    private static void fillcreateoutgoing(Map<String, String[]> doc) {
-        verifyattr("Вложения", Document.Createform.Outgoingdocument.attachments_label);
-
-        verifyattr("Заголовок", Document.Createform.Outgoingdocument.title_label);
-        fillfield("Заголовок",Document.Createform.Outgoingdocument.title_field, doc.get("Заголовок"), doc);
-
-        verifyattr("Вид документа", Document.Createform.Outgoingdocument.type_label);
-        fillfield("Вид документа",Document.Createform.Outgoingdocument.type_button, doc.get("Вид документа"), doc);
-
-        verifyattr("Способ доставки", Document.Createform.Outgoingdocument.delivery_method_label);
-        fillfield("Способ доставки",Document.Createform.Outgoingdocument.delivery_method_button, doc.get("Способ доставки"), doc);
-
-        verifyattr("Корреспондент", Document.Createform.Outgoingdocument.sender_label);
-        fillfield("Корреспондент",Document.Createform.Outgoingdocument.sender_button, doc.get("Корреспондент"), doc);
-
-        verifyattr("Адресат корреспондента", Document.Createform.Outgoingdocument.addressee_label);
-        fillfield("Адресат корреспондента",Document.Createform.Outgoingdocument.addressee_button, doc.get("Адресат корреспондента"), doc);
-
-        verifyattr("Содержание", Document.Createform.Outgoingdocument.summarycontent_label);
-        fillfield("Содержание",Document.Createform.Outgoingdocument.summarycontent_field, doc.get("Содержание"), doc);
-
-        verifyattr("Подписано на бумажном носителе", Document.Createform.Outgoingdocument.signedbypaper_label);
-        fillfield("Подписано на бумажном носителе",Document.Createform.Outgoingdocument.signedbypaper_checkbox, doc.get("Подписано на бумажном носителе"), doc);
-
-        boolean t = false;
-        for (String val:doc.get("Подписано на бумажном носителе"))
-            if (val.equals("Да")) t = true;
-        if (t) {
-            verifyattr("Подписанты", Document.Createform.Outgoingdocument.signers_label);
-            fillfield("Подписанты", Document.Createform.Outgoingdocument.signers_button, doc.get("Подписанты"), doc);
-
-            verifyattr("Дата подписания", Document.Createform.Outgoingdocument.signing_date_label);
-            fillfield("Дата подписания", Document.Createform.Outgoingdocument.signing_date_field, doc.get("Дата подписания"), doc);
-
-            doc.put("Подписан", new String[]{"Да"});
-        }
-
-        verifyattr("В ответ на", Document.Createform.Outgoingdocument.response_to_label);
-        fillfield("В ответ на", Document.Createform.Outgoingdocument.response_to_button, doc.get("В ответ на"), doc);
-
-        verifyattr("Количество листов", Document.Createform.Outgoingdocument.sheets_number_label);
-        fillfield("Количество листов", Document.Createform.Outgoingdocument.sheets_number_field, doc.get("Количество листов"), doc);
-
-        verifyattr("Тематика", Document.Createform.Outgoingdocument.subject_label);
-        fillfield("Тематика", Document.Createform.Outgoingdocument.subject_button, doc.get("Тематика"), doc);
-
-        verifyattr("Номер дела", Document.Createform.Outgoingdocument.file_register_label);
-        fillfield("Номер дела", Document.Createform.Outgoingdocument.file_register_button, doc.get("Номер дела"), doc);
-
-        verifyattr("Примечание", Document.Createform.Outgoingdocument.note_label);
-        fillfield("Примечание", Document.Createform.Outgoingdocument.note_field, doc.get("Примечание"), doc);
-
-        verifyattr("Завершающий", Document.Createform.Outgoingdocument.finishing_label);
-        //fillfield("Завершающий", Document.Createform.Outgoingdocument.finishing_field, doc.get("Завершающий"), doc);
-        //атрибут временно залочен, хз насколько
-
-    }
-
-    @Step("Создать входящий документ")
-    static void createincoming(Map<String, String[]> doc) {
-        gotoarmsed();
-        click("Создать",ARMSED.createButton);
-        click("Входящий документ", ARMSED.Createmenu.incomingdocument);
-        fillcreateincoming(doc);
-        String currenturl = driver.getCurrentUrl();
-        click("Создать",Document.Createform.create_button);
-        while (currenturl.equals(driver.getCurrentUrl())) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        doc.put("Статус",new String[]{"Черновик"});
-        doc.put("Номер",new String[]{"Не присвоено"});
-        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
-    }
-
-    @Step("Создать внутренний документ")
-    static void createinternal(Map<String, String[]> doc) {
-        gotoarmsed();
-        click("Создать",ARMSED.createButton);
-        click("Внутренний документ", ARMSED.Createmenu.internaldocument);
-        fillcreateinternal(doc);
-        String currenturl = driver.getCurrentUrl();
-        click("Создать",Document.Createform.create_button);
-        while (currenturl.equals(driver.getCurrentUrl())) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        doc.put("Статус",new String[]{"Черновик"});
-        doc.put("Номер",new String[]{"Не присвоено"});
-        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
-    }
-
-    @Step("Создать исходящий документ")
-    static void createoutgoing(Map<String, String[]> doc) {
-        gotoarmsed();
-        click("Создать",ARMSED.createButton);
-        click("Исходящий документ", ARMSED.Createmenu.outgoingdocument);
-        fillcreateoutgoing(doc);
-        String currenturl = driver.getCurrentUrl();
-        click("Создать",Document.Createform.create_button);
-        while (currenturl.equals(driver.getCurrentUrl())) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        doc.put("Статус",new String[]{"Черновик"});
-        doc.put("Номер",new String[]{"Не присвоено"});
-        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
-    }
-
     @Step("Проверить наличие атрибутов и их значения на форме просмотра")
     static void readincoming(Map<String, String[]> doc) {
         waitForLoad();
@@ -372,6 +221,78 @@ class Base {
         }
         if (!removedoc.contains(currenturl))
             removedoc.add(currenturl);
+    }
+
+    @Step("Создать внутренний документ")
+    static void createinternal(Map<String, String[]> doc) {
+        gotoarmsed();
+        click("Создать",ARMSED.createButton);
+        click("Внутренний документ", ARMSED.Createmenu.internaldocument);
+        fillcreateinternal(doc);
+        String currenturl = driver.getCurrentUrl();
+        click("Создать",Document.Createform.create_button);
+        while (currenturl.equals(driver.getCurrentUrl())) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        doc.put("Статус",new String[]{"Черновик"});
+        doc.put("Номер",new String[]{"Не присвоено"});
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+    }
+
+    @Step("Заполнить атрибуты")
+    private static void fillcreateinternal(Map<String, String[]> doc) {
+        verifyattr("Вложения", Document.Createform.Internaldocument.attachments_label);
+
+        verifyattr("Заголовок", Document.Createform.Internaldocument.title_label);
+        fillfield("Заголовок",Document.Createform.Internaldocument.title_field, doc.get("Заголовок"), doc);
+
+        verifyattr("Вид документа", Document.Createform.Internaldocument.type_label);
+        fillfield("Вид документа",Document.Createform.Internaldocument.type_button, doc.get("Вид документа"), doc);
+
+        verifyattr("Срок ответа", Document.Createform.Internaldocument.execution_date_label);
+        fillfield("Срок ответа",Document.Createform.Internaldocument.execution_date_field, doc.get("Срок ответа"), doc);
+
+        verifyattr("Получатель", Document.Createform.Internaldocument.recipient_label);
+        fillfield("Получатель",Document.Createform.Internaldocument.recipient_button, doc.get("Получатель"), doc);
+
+        verifyattr("Содержание", Document.Createform.Internaldocument.summarycontent_label);
+        fillfield("Содержание",Document.Createform.Internaldocument.summarycontent_field, doc.get("Содержание"), doc);
+
+        verifyattr("Подписано на бумажном носителе", Document.Createform.Internaldocument.signedbypaper_label);
+        fillfield("Подписано на бумажном носителе",Document.Createform.Internaldocument.signedbypaper_checkbox, doc.get("Подписано на бумажном носителе"), doc);
+
+        boolean t = false;
+        for (String val:doc.get("Подписано на бумажном носителе"))
+            if (val.equals("Да")) t = true;
+        if (t) {
+            verifyattr("Подписанты", Document.Createform.Internaldocument.signers_label);
+            fillfield("Подписанты", Document.Createform.Internaldocument.signers_button, doc.get("Подписанты"), doc);
+
+            verifyattr("Дата подписания", Document.Createform.Internaldocument.signing_date_label);
+            fillfield("Дата подписания", Document.Createform.Internaldocument.signing_date_field, doc.get("Дата подписания"), doc);
+
+            doc.put("Подписан", new String[]{"Да"});
+        }
+
+        verifyattr("В ответ на", Document.Createform.Internaldocument.response_to_label);
+        fillfield("В ответ на", Document.Createform.Internaldocument.response_to_button, doc.get("В ответ на"), doc);
+
+        verifyattr("Количество листов", Document.Createform.Internaldocument.sheets_number_label);
+        fillfield("Количество листов", Document.Createform.Internaldocument.sheets_number_field, doc.get("Количество листов"), doc);
+
+        verifyattr("Тематика", Document.Createform.Internaldocument.subject_label);
+        fillfield("Тематика", Document.Createform.Internaldocument.subject_button, doc.get("Тематика"), doc);
+
+        verifyattr("Номер дела", Document.Createform.Internaldocument.file_register_label);
+        fillfield("Номер дела", Document.Createform.Internaldocument.file_register_button, doc.get("Номер дела"), doc);
+
+        verifyattr("Примечание", Document.Createform.Internaldocument.note_label);
+        fillfield("Примечание", Document.Createform.Internaldocument.note_field, doc.get("Примечание"), doc);
+
     }
 
     @Step("Проверить наличие атрибутов и их значения на форме просмотра")
@@ -434,8 +355,228 @@ class Base {
             removedoc.add(currenturl);
     }
 
+    @Step("Создать исходящий документ")
+    static void createoutgoing(Map<String, String[]> doc) {
+        gotoarmsed();
+        click("Создать",ARMSED.createButton);
+        click("Исходящий документ", ARMSED.Createmenu.outgoingdocument);
+        fillcreateoutgoing(doc);
+        String currenturl = driver.getCurrentUrl();
+        click("Создать",Document.Createform.create_button);
+        while (currenturl.equals(driver.getCurrentUrl())) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        doc.put("Статус",new String[]{"Черновик"});
+        doc.put("Номер",new String[]{"Не присвоено"});
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+    }
+
+    @Step("Заполнить атрибуты")
+    private static void fillcreateoutgoing(Map<String, String[]> doc) {
+        verifyattr("Вложения", Document.Createform.Outgoingdocument.attachments_label);
+
+        verifyattr("Заголовок", Document.Createform.Outgoingdocument.title_label);
+        fillfield("Заголовок",Document.Createform.Outgoingdocument.title_field, doc.get("Заголовок"), doc);
+
+        verifyattr("Вид документа", Document.Createform.Outgoingdocument.type_label);
+        fillfield("Вид документа",Document.Createform.Outgoingdocument.type_button, doc.get("Вид документа"), doc);
+
+        verifyattr("Способ доставки", Document.Createform.Outgoingdocument.delivery_method_label);
+        fillfield("Способ доставки",Document.Createform.Outgoingdocument.delivery_method_button, doc.get("Способ доставки"), doc);
+
+        verifyattr("Корреспондент", Document.Createform.Outgoingdocument.sender_label);
+        fillfield("Корреспондент",Document.Createform.Outgoingdocument.sender_button, doc.get("Корреспондент"), doc);
+
+        verifyattr("Адресат корреспондента", Document.Createform.Outgoingdocument.addressee_label);
+        fillfield("Адресат корреспондента",Document.Createform.Outgoingdocument.addressee_button, doc.get("Адресат корреспондента"), doc);
+
+        verifyattr("Содержание", Document.Createform.Outgoingdocument.summarycontent_label);
+        fillfield("Содержание",Document.Createform.Outgoingdocument.summarycontent_field, doc.get("Содержание"), doc);
+
+        verifyattr("Подписано на бумажном носителе", Document.Createform.Outgoingdocument.signedbypaper_label);
+        fillfield("Подписано на бумажном носителе",Document.Createform.Outgoingdocument.signedbypaper_checkbox, doc.get("Подписано на бумажном носителе"), doc);
+
+        boolean t = false;
+        for (String val:doc.get("Подписано на бумажном носителе"))
+            if (val.equals("Да")) t = true;
+        if (t) {
+            verifyattr("Подписанты", Document.Createform.Outgoingdocument.signers_label);
+            fillfield("Подписанты", Document.Createform.Outgoingdocument.signers_button, doc.get("Подписанты"), doc);
+
+            verifyattr("Дата подписания", Document.Createform.Outgoingdocument.signing_date_label);
+            fillfield("Дата подписания", Document.Createform.Outgoingdocument.signing_date_field, doc.get("Дата подписания"), doc);
+
+            doc.put("Подписан", new String[]{"Да"});
+        }
+
+        verifyattr("В ответ на", Document.Createform.Outgoingdocument.response_to_label);
+        fillfield("В ответ на", Document.Createform.Outgoingdocument.response_to_button, doc.get("В ответ на"), doc);
+
+        verifyattr("Количество листов", Document.Createform.Outgoingdocument.sheets_number_label);
+        fillfield("Количество листов", Document.Createform.Outgoingdocument.sheets_number_field, doc.get("Количество листов"), doc);
+
+        verifyattr("Тематика", Document.Createform.Outgoingdocument.subject_label);
+        fillfield("Тематика", Document.Createform.Outgoingdocument.subject_button, doc.get("Тематика"), doc);
+
+        verifyattr("Номер дела", Document.Createform.Outgoingdocument.file_register_label);
+        fillfield("Номер дела", Document.Createform.Outgoingdocument.file_register_button, doc.get("Номер дела"), doc);
+
+        verifyattr("Примечание", Document.Createform.Outgoingdocument.note_label);
+        fillfield("Примечание", Document.Createform.Outgoingdocument.note_field, doc.get("Примечание"), doc);
+
+        verifyattr("Завершающий", Document.Createform.Outgoingdocument.finishing_label);
+        //fillfield("Завершающий", Document.Createform.Outgoingdocument.finishing_field, doc.get("Завершающий"), doc);
+        //атрибут временно залочен, хз насколько
+
+    }
+
     @Step("Проверить наличие атрибутов и их значения на форме просмотра")
     static void readoutgoing(Map<String, String[]> doc) {
+        waitForLoad();
+        String status = null;
+        for (String val:doc.get("Статус"))
+            status = val;
+        waitelement(Document.Viewform.Outgoingdocument.status_field);
+        if (!driver.findElement(By.xpath(Document.Viewform.Outgoingdocument.status_field)).getText().equals(status)){
+            driver.get(driver.getCurrentUrl());
+        }
+        checkfield("Номер", Document.Viewform.Outgoingdocument.regnum_label, Document.Viewform.Outgoingdocument.regnum_field, doc);
+
+        checkfield("Дата регистрации", Document.Viewform.Outgoingdocument.reg_data_label, Document.Viewform.Outgoingdocument.reg_data_field, doc);
+
+        checkfield("Заголовок", Document.Viewform.Outgoingdocument.title_label, Document.Viewform.Outgoingdocument.title_field, doc);
+
+        checkfield("Вид документа", Document.Viewform.Outgoingdocument.type_label, Document.Viewform.Outgoingdocument.type_field, doc);
+
+        checkfield("Способ доставки", Document.Viewform.Outgoingdocument.delivery_method_label, Document.Viewform.Outgoingdocument.delivery_method_field, doc);
+
+        checkfield("Корреспондент", Document.Viewform.Outgoingdocument.sender_label, Document.Viewform.Outgoingdocument.sender_field, doc);
+
+        checkfield("Адресат корреспондента", Document.Viewform.Outgoingdocument.addressee_label, Document.Viewform.Outgoingdocument.addressee_field, doc);
+
+        checkfield("Содержание", Document.Viewform.Outgoingdocument.summary_label, Document.Viewform.Outgoingdocument.summary_field, doc);
+
+        checkfield("Количество листов", Document.Viewform.Outgoingdocument.sheets_number_label, Document.Viewform.Outgoingdocument.sheets_number_field, doc);
+
+        checkfield("Тематика", Document.Viewform.Outgoingdocument.subject_label, Document.Viewform.Outgoingdocument.subject_field, doc);
+
+        checkfield("Примечание", Document.Viewform.Outgoingdocument.note_label, Document.Viewform.Outgoingdocument.note_field, doc);
+
+        checkfield("Номер дела", Document.Viewform.Outgoingdocument.file_register_label, Document.Viewform.Outgoingdocument.file_register_field, doc);
+
+        checkfield("Составитель", Document.Viewform.Outgoingdocument.author_label, Document.Viewform.Outgoingdocument.author_field, doc);
+
+        checkfield("Исполнитель", Document.Viewform.Outgoingdocument.executor_label, Document.Viewform.Outgoingdocument.executor_field, doc);
+
+        checkfield("Номер проекта", Document.Viewform.Outgoingdocument.regnumproject_label, Document.Viewform.Outgoingdocument.regnumproject_field, doc);
+
+        checkfield("Дата регистрации проекта", Document.Viewform.Outgoingdocument.regproject_data_label, Document.Viewform.Outgoingdocument.regproject_data_field, doc);
+
+        checkfield("Подписано на бумажном носителе", Document.Viewform.Outgoingdocument.signedonpaper_label, Document.Viewform.Outgoingdocument.signedonpaper_field, doc);
+
+        checkfield("Подписанты", Document.Viewform.Outgoingdocument.signers_label, Document.Viewform.Outgoingdocument.signers_field, doc);
+
+        checkfield("Подписан", Document.Viewform.Outgoingdocument.signed_label, Document.Viewform.Outgoingdocument.signed_field, doc);
+
+        checkfield("Дата подписания", Document.Viewform.Outgoingdocument.signingDate_label, Document.Viewform.Outgoingdocument.signingDate_field, doc);
+
+        checkfield("Регистратор", Document.Viewform.Outgoingdocument.registrator_label, Document.Viewform.Outgoingdocument.registrator_field, doc);
+
+        checkfield("Завершающий", Document.Viewform.Outgoingdocument.finishing_label, Document.Viewform.Outgoingdocument.finishing_field, doc);
+
+        String currenturl = driver.getCurrentUrl();
+        if (currenturl.contains("#")){
+            currenturl = currenturl.substring(0,currenturl.indexOf('#'));
+        }
+        if (!removedoc.contains(currenturl))
+            removedoc.add(currenturl);
+    }
+
+    @Step("Создать исходящий документ")
+    static void creatend(Map<String, String[]> doc) {
+        gotoarmsed();
+        click("Создать",ARMSED.createButton);
+        click("НД", ARMSED.Createmenu.nddocument);
+        fillcreatend(doc);
+        String currenturl = driver.getCurrentUrl();
+        click("Создать",Document.Createform.create_button);
+        while (currenturl.equals(driver.getCurrentUrl())) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        doc.put("Статус",new String[]{"Черновик"});
+        doc.put("Номер",new String[]{"Не присвоено"});
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+    }
+
+    @Step("Заполнить атрибуты")
+    private static void fillcreatend(Map<String, String[]> doc) {
+        verifyattr("Вложения", Document.Createform.Outgoingdocument.attachments_label);
+
+        verifyattr("Заголовок", Document.Createform.Outgoingdocument.title_label);
+        fillfield("Заголовок",Document.Createform.Outgoingdocument.title_field, doc.get("Заголовок"), doc);
+
+        verifyattr("Вид документа", Document.Createform.Outgoingdocument.type_label);
+        fillfield("Вид документа",Document.Createform.Outgoingdocument.type_button, doc.get("Вид документа"), doc);
+
+        verifyattr("Способ доставки", Document.Createform.Outgoingdocument.delivery_method_label);
+        fillfield("Способ доставки",Document.Createform.Outgoingdocument.delivery_method_button, doc.get("Способ доставки"), doc);
+
+        verifyattr("Корреспондент", Document.Createform.Outgoingdocument.sender_label);
+        fillfield("Корреспондент",Document.Createform.Outgoingdocument.sender_button, doc.get("Корреспондент"), doc);
+
+        verifyattr("Адресат корреспондента", Document.Createform.Outgoingdocument.addressee_label);
+        fillfield("Адресат корреспондента",Document.Createform.Outgoingdocument.addressee_button, doc.get("Адресат корреспондента"), doc);
+
+        verifyattr("Содержание", Document.Createform.Outgoingdocument.summarycontent_label);
+        fillfield("Содержание",Document.Createform.Outgoingdocument.summarycontent_field, doc.get("Содержание"), doc);
+
+        verifyattr("Подписано на бумажном носителе", Document.Createform.Outgoingdocument.signedbypaper_label);
+        fillfield("Подписано на бумажном носителе",Document.Createform.Outgoingdocument.signedbypaper_checkbox, doc.get("Подписано на бумажном носителе"), doc);
+
+        boolean t = false;
+        for (String val:doc.get("Подписано на бумажном носителе"))
+            if (val.equals("Да")) t = true;
+        if (t) {
+            verifyattr("Подписанты", Document.Createform.Outgoingdocument.signers_label);
+            fillfield("Подписанты", Document.Createform.Outgoingdocument.signers_button, doc.get("Подписанты"), doc);
+
+            verifyattr("Дата подписания", Document.Createform.Outgoingdocument.signing_date_label);
+            fillfield("Дата подписания", Document.Createform.Outgoingdocument.signing_date_field, doc.get("Дата подписания"), doc);
+
+            doc.put("Подписан", new String[]{"Да"});
+        }
+
+        verifyattr("В ответ на", Document.Createform.Outgoingdocument.response_to_label);
+        fillfield("В ответ на", Document.Createform.Outgoingdocument.response_to_button, doc.get("В ответ на"), doc);
+
+        verifyattr("Количество листов", Document.Createform.Outgoingdocument.sheets_number_label);
+        fillfield("Количество листов", Document.Createform.Outgoingdocument.sheets_number_field, doc.get("Количество листов"), doc);
+
+        verifyattr("Тематика", Document.Createform.Outgoingdocument.subject_label);
+        fillfield("Тематика", Document.Createform.Outgoingdocument.subject_button, doc.get("Тематика"), doc);
+
+        verifyattr("Номер дела", Document.Createform.Outgoingdocument.file_register_label);
+        fillfield("Номер дела", Document.Createform.Outgoingdocument.file_register_button, doc.get("Номер дела"), doc);
+
+        verifyattr("Примечание", Document.Createform.Outgoingdocument.note_label);
+        fillfield("Примечание", Document.Createform.Outgoingdocument.note_field, doc.get("Примечание"), doc);
+
+        verifyattr("Завершающий", Document.Createform.Outgoingdocument.finishing_label);
+        //fillfield("Завершающий", Document.Createform.Outgoingdocument.finishing_field, doc.get("Завершающий"), doc);
+        //атрибут временно залочен, хз насколько
+
+    }
+
+    @Step("Проверить наличие атрибутов и их значения на форме просмотра")
+    static void readnd(Map<String, String[]> doc) {
         waitForLoad();
         String status = null;
         for (String val:doc.get("Статус"))

@@ -378,6 +378,7 @@ class Objects {
             static String incomingdocument = "//ul//a[text()='Входящий документ']";
             static String internaldocument = "//ul//a[text()='Внутренний документ']";
             static String outgoingdocument = "//ul//a[text()='Исходящий документ']";
+            static String nddocument = "//ul//a[text()='НД']";
         }
         static String createButton = "//button[text()='Создать']";
     }

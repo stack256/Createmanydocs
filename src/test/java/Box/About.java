@@ -138,7 +138,7 @@ class About {
     }
 
     static void waitForLoad() {
-        ExpectedCondition<Boolean> pageLoadCondition = new
+        /*ExpectedCondition<Boolean> pageLoadCondition = new
                 ExpectedCondition<Boolean>() {
                     public Boolean apply(WebDriver driver) {
                         return ((JavascriptExecutor)driver).executeScript("return document.readyState").equals("complete");
@@ -146,6 +146,23 @@ class About {
                 };
         WebDriverWait wait = new WebDriverWait(driver, 30);
         wait.until(pageLoadCondition);
+*/
+        WebDriver jsWaitDriver;
+        jsWaitDriver = driver;
+        WebDriverWait wait = new WebDriverWait(jsWaitDriver,15);
+        JavascriptExecutor jsExec = (JavascriptExecutor) jsWaitDriver;
+
+        //Wait for Javascript to load
+        ExpectedCondition<Boolean> jsLoad = driver -> ((JavascriptExecutor) jsWaitDriver)
+                .executeScript("return document.readyState").toString().equals("complete");
+
+        //Get JS is Ready
+        boolean jsReady =  (Boolean) jsExec.executeScript("return document.readyState").toString().equals("complete");
+
+        //Wait Javascript until it is Ready!
+        if(!jsReady)
+            wait.until(jsLoad);
+
     }
 
     static String sd_simple_tableadd(String selectorValue) {
