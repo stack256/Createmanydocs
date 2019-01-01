@@ -4,6 +4,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -18,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static Box.Base.removedocs;
 
 class About {
 
@@ -84,10 +85,20 @@ class About {
         return report;
     }
 
+    @Attachment(value = "Логи", type = "text/application")
+    private static LogEntries saveAllureText(LogEntries logEntries) {
+        return logEntries;
+    }
+
     static void report(String report) {
         saveAllureScreenshot();
         saveAllureText(report);
+        LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
+        saveAllureText(logEntries);
+        for (LogEntry entry : logEntries)
+            System.out.println(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage());
     }
+
 
     static void softassertfail(Boolean value, String report) {
         if (!value)
