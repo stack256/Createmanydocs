@@ -1746,10 +1746,10 @@ class Base {
     }
 
     private static void click(String report, String xpath, String waitdialog) {
-        click("...", xpath);
+        click(report, xpath);
         int i = 10;
-        while (!waitelement(SelectDialog.Simple.dialog) && i > 0) {
-            clickagain("...", xpath);
+        while (!waitelement(waitdialog) && i > 0) {
+            clickagain(report, xpath);
             i--;
         }
     }
