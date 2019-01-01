@@ -3,10 +3,12 @@ package Box;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.allure.annotations.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -494,7 +496,7 @@ class Base {
             removedoc.add(currenturl);
     }
 
-    @Step("Создать исходящий документ")
+    @Step("Создать нормативный документ")
     static void creatend(Map<String, String[]> doc) {
         gotoarmsed();
         click("Создать",ARMSED.createButton);
@@ -630,6 +632,192 @@ class Base {
             removedoc.add(currenturl);
     }
 
+    @Step("Создать организационно-распорядительный документ")
+    static void createord(Map<String, String[]> doc, HashMap<String, HashMap<String, String[]>> items) {
+        gotoarmsed();
+        click("Создать",ARMSED.createButton);
+        click("ОРД", ARMSED.Createmenu.orddocument);
+        fillcreateord(doc, items);
+        String currenturl = driver.getCurrentUrl();
+        click("Создать",Document.Createform.create_button);
+        while (currenturl.equals(driver.getCurrentUrl())) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        doc.put("Статус",new String[]{"Черновик"});
+        doc.put("Номер",new String[]{"Не присвоено"});
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+    }
+
+    @Step("Заполнить атрибуты")
+    private static void fillcreateord(Map<String, String[]> doc, HashMap<String, HashMap<String, String[]>> items) {
+        verifyattr("Вложения", Document.Createform.Orddocument.attachments_label);
+
+        verifyattr("Вид документа", Document.Createform.Orddocument.type_label);
+        fillfield("Вид документа",Document.Createform.Orddocument.type_button, doc.get("Вид документа"), doc);
+
+        verifyattr("Заголовок", Document.Createform.Orddocument.title_label);
+        fillfield("Заголовок",Document.Createform.Orddocument.title_field, doc.get("Заголовок"), doc);
+
+        verifyattr("Срок исполнения", Document.Createform.Orddocument.executiondate_label);
+        fillfield("Срок исполнения",Document.Createform.Orddocument.executiondate_field, doc.get("Срок исполнения"), doc);
+
+        verifyattr("Содержание", Document.Createform.Orddocument.summarycontent_label);
+        fillfield("Содержание",Document.Createform.Orddocument.summarycontent_field, doc.get("Содержание"), doc);
+
+        verifyattr("Подписано на бумажном носителе", Document.Createform.Orddocument.signedbypaper_label);
+        fillfield("Подписано на бумажном носителе",Document.Createform.Orddocument.signedbypaper_checkbox, doc.get("Подписано на бумажном носителе"), doc);
+
+        boolean t = false;
+        for (String val:doc.get("Подписано на бумажном носителе"))
+            if (val.equals("Да")) t = true;
+        if (t) {
+            verifyattr("Подписанты", Document.Createform.Orddocument.signers_label);
+            fillfield("Подписанты", Document.Createform.Orddocument.signers_button, doc.get("Подписанты"), doc);
+
+            verifyattr("Дата подписания", Document.Createform.Orddocument.signing_date_label);
+            fillfield("Дата подписания", Document.Createform.Orddocument.signing_date_field, doc.get("Дата подписания"), doc);
+
+            doc.put("Подписан", new String[]{"Да"});
+        }
+
+        verifyattr("Контролёр", Document.Createform.Orddocument.controller_label);
+        fillfield("Контролёр", Document.Createform.Orddocument.controller_button, doc.get("Контролёр"), doc);
+
+        if (doc.get("Контролёр") != null) {
+            verifyattr("Подтверждать завершение работы по документу", Document.Createform.Orddocument.signing_date_label);
+            fillfield("Подтверждать завершение работы по документу", Document.Createform.Orddocument.signing_date_field, doc.get("Подтверждать завершение работы по документу"), doc);
+        }
+
+        verifyattr("Примечание", Document.Createform.Orddocument.note_label);
+        fillfield("Примечание", Document.Createform.Orddocument.note_field, doc.get("Примечание"), doc);
+
+        verifyattr("Количество листов", Document.Createform.Orddocument.sheets_number_label);
+        fillfield("Количество листов", Document.Createform.Orddocument.sheets_number_field, doc.get("Количество листов"), doc);
+
+        verifyattr("Тематика", Document.Createform.Orddocument.subject_label);
+        fillfield("Тематика", Document.Createform.Orddocument.subject_button, doc.get("Тематика"), doc);
+
+        verifyattr("Номер дела", Document.Createform.Orddocument.file_register_label);
+        fillfield("Номер дела", Document.Createform.Orddocument.file_register_button, doc.get("Номер дела"), doc);
+
+        verifyattr("Отменяемые документы", Document.Createform.Orddocument.canceled_label);
+        fillfield("Отменяемые документы", Document.Createform.Orddocument.canceled_button, doc.get("Отменяемые документы"), doc);
+
+        verifyattr("Принимаемые документы", Document.Createform.Orddocument.accepted_label);
+        fillfield("Принимаемые документы", Document.Createform.Orddocument.accepted_button, doc.get("Принимаемые документы"), doc);
+
+
+        if (!items.isEmpty()){
+            //метод для заполнения формы создания пунктов (которая еще не описана)
+            int k = items.size();
+
+            click("Создание", Document.Createform.Orddocument.items_button);
+
+            for (int i=0; i<k; i++) {
+                System.out.println(items.get("1"));
+                item = items.get(Integer.toString(i+1));
+                verifyattr("Пункты Заголовок", Document.Createform.Orddocument.Items.title_label);
+                fillfield("Пункты Заголовок", Document.Createform.Orddocument.Items.title_field, item.get("Пункты Заголовок"), item);
+
+                verifyattr("Пункты Автор", Document.Createform.Orddocument.Items.author_label);
+                //fillfield("Пункты Автор", Document.Createform.Orddocument.Items.author_button, items.get("Пункты Автор"), items);
+
+                verifyattr("Пункты Содержание", Document.Createform.Orddocument.Items.summary_label);
+                fillfield("Пункты Содержание", Document.Createform.Orddocument.Items.summary_field, item.get("Пункты Содержание"), item);
+
+                verifyattr("Пункты Исполнитель", Document.Createform.Orddocument.Items.executor_label);
+                fillfield("Пункты Исполнитель", Document.Createform.Orddocument.Items.executor_button, item.get("Пункты Исполнитель"), item);
+
+                verifyattr("Пункты Соисполнители", Document.Createform.Orddocument.Items.coexecutors_label);
+                fillfield("Пункты Соисполнители", Document.Createform.Orddocument.Items.coexecutors_button, item.get("Пункты Соисполнители"), item);
+
+                verifyattr("Пункты Срок исполнения", Document.Createform.Orddocument.Items.limitationdate_label);
+                fillfield("Пункты Срок исполнения", Document.Createform.Orddocument.Items.limitationdate_radiodate, item.get("Пункты Срок исполнения"), item);
+
+                verifyattr("Пункты Требуется отчет", Document.Createform.Orddocument.Items.needreport_label);
+                fillfield("Пункты Требуется отчет", Document.Createform.Orddocument.Items.needreport_checkbox, item.get("Пункты Требуется отчет"), item);
+
+                verifyattr("Пункты Контролер", Document.Createform.Orddocument.Items.controller_label);
+                fillfield("Пункты Контролер", Document.Createform.Orddocument.Items.controller_button, item.get("Пункты Контролер"), item);
+
+                verifyattr("Пункты Тематика", Document.Createform.Orddocument.Items.subject_label);
+                fillfield("Пункты Тематика", Document.Createform.Orddocument.Items.subject_button, item.get("Пункты Тематика"), item);
+                if (i > 0)
+                    click("Сохранить и создать новый", Document.Createform.Orddocument.Items.saveandcreate_button);
+                else
+                    click("Закрыть", Document.Createform.Orddocument.Items.close_button);
+            }
+        }
+
+    }
+
+    @Step("Проверить наличие атрибутов и их значения на форме просмотра")
+    static void readord(Map<String, String[]> doc) {
+        waitForLoad();
+        String status = null;
+        for (String val:doc.get("Статус"))
+            status = val;
+        waitelement(Document.Viewform.Orddocument.status_field);
+        if (!driver.findElement(By.xpath(Document.Viewform.Orddocument.status_field)).getText().equals(status)){
+            driver.get(driver.getCurrentUrl());
+        }
+        checkfield("Номер", Document.Viewform.Orddocument.regnum_label, Document.Viewform.Orddocument.regnum_field, doc);
+
+        checkfield("Дата регистрации", Document.Viewform.Orddocument.reg_data_label, Document.Viewform.Orddocument.reg_data_field, doc);
+
+        checkfield("Вид документа", Document.Viewform.Orddocument.type_label, Document.Viewform.Orddocument.type_field, doc);
+
+        checkfield("Заголовок", Document.Viewform.Orddocument.title_label, Document.Viewform.Orddocument.title_field, doc);
+
+        checkfield("Срок исполнения", Document.Viewform.Orddocument.executiondate_field, Document.Viewform.Orddocument.executiondate_field, doc);
+
+        checkfield("Содержание", Document.Viewform.Orddocument.summary_label, Document.Viewform.Orddocument.summary_field, doc);
+
+        checkfield("Контролёр", Document.Viewform.Orddocument.controller_label, Document.Viewform.Orddocument.controller_field, doc);
+
+        checkfield("Примечание", Document.Viewform.Orddocument.note_label, Document.Viewform.Orddocument.note_field, doc);
+
+        checkfield("Количество листов", Document.Viewform.Orddocument.sheets_number_label, Document.Viewform.Orddocument.sheets_number_field, doc);
+
+        checkfield("Тематика", Document.Viewform.Orddocument.subject_label, Document.Viewform.Orddocument.subject_field, doc);
+
+        checkfield("Номер дела", Document.Viewform.Orddocument.file_register_label, Document.Viewform.Orddocument.file_register_field, doc);
+
+        checkfield("Отменяемые документы", Document.Viewform.Orddocument.canceled_label, Document.Viewform.Orddocument.canceled_field, doc);
+
+        checkfield("Принимаемые документы", Document.Viewform.Orddocument.accepted_label, Document.Viewform.Orddocument.accepted_field, doc);
+
+        checkfield("Составитель", Document.Viewform.Orddocument.author_label, Document.Viewform.Orddocument.author_field, doc);
+
+        checkfield("Исполнитель", Document.Viewform.Orddocument.executor_label, Document.Viewform.Orddocument.executor_field, doc);
+
+        checkfield("Номер проекта", Document.Viewform.Orddocument.regnumproject_label, Document.Viewform.Orddocument.regnumproject_field, doc);
+
+        checkfield("Дата регистрации проекта", Document.Viewform.Orddocument.regproject_data_label, Document.Viewform.Orddocument.regproject_data_field, doc);
+
+        checkfield("Подписано на бумажном носителе", Document.Viewform.Orddocument.signedonpaper_label, Document.Viewform.Orddocument.signedonpaper_field, doc);
+
+        checkfield("Подписанты", Document.Viewform.Orddocument.signers_label, Document.Viewform.Orddocument.signers_field, doc);
+
+        checkfield("Подписан", Document.Viewform.Orddocument.signed_label, Document.Viewform.Orddocument.signed_field, doc);
+
+        checkfield("Дата подписания", Document.Viewform.Orddocument.signingDate_label, Document.Viewform.Orddocument.signingDate_field, doc);
+
+        checkfield("Регистратор", Document.Viewform.Orddocument.registrator_label, Document.Viewform.Orddocument.registrator_field, doc);
+
+
+        String currenturl = driver.getCurrentUrl();
+        if (currenturl.contains("#")){
+            currenturl = currenturl.substring(0,currenturl.indexOf('#'));
+        }
+        if (!removedoc.contains(currenturl))
+            removedoc.add(currenturl);
+    }
+
     @Step("Атрибут <{0}>")
     private static void checkfield(String attrname, String xpath, String xpathfield, Map<String, String[]> doc) {
         waitForLoad();
@@ -701,8 +889,7 @@ class Base {
     @Step("Заполнить атрибут <{0}> значением <{2}>")
     private static void fillselectdialogsimple(String attrname, Map<String, String[]> doc, String... values) {
         waitelement(SelectDialog.Simple.dialog);
-
-
+        click("Очистить", SelectDialog.clearall);
         for(String value:values){
             settext("Поиск",SelectDialog.Simple.input,value);
             click("Поиск",SelectDialog.Simple.search_button);
@@ -743,6 +930,7 @@ class Base {
     @Step("Заполнить атрибут <{0}> значением <{2}>")
     private static void fillselectdialogrecipient(String attrname, Map<String, String[]> doc, String... values) {
         waitelement(SelectDialog.Recipient.dialog);
+        click("Очистить", SelectDialog.clearall);
         for (String val:values)
             switch (val){
                 case "Сотрудник":
@@ -777,6 +965,7 @@ class Base {
     @Step("Заполнить атрибут <{0}> значением <{2}>")
     private static void fillselectdialogresponseto(String attrname, Map<String, String[]> doc, String... values) {
         waitelement(SelectDialog.Responseto.dialog);
+        click("Очистить", SelectDialog.clearall);
         click("Показать дополнительные параметры поиска",SelectDialog.Responseto.show_parametrs);
         fillfield("Содержит в названии", SelectDialog.Responseto.search_text_field, doc.get("В ответ на Содержит в названии"), doc);
         fillfield("Номер", SelectDialog.Responseto.regnum_field, doc.get("В ответ на Номер"), doc);
@@ -807,6 +996,7 @@ class Base {
     @Step("Заполнить атрибут <{0}> значением <{2}>")
     private static void fillselectdialogfileregister(String attrname, Map<String, String[]> doc, String... values) {
         waitelement(SelectDialog.Fileregister.dialog);
+        click("Очистить", SelectDialog.clearall);
         int k = values.length;
         if (k == 1)
             doc.put(attrname, new String[]{"/" + values[k-1]});
@@ -842,6 +1032,7 @@ class Base {
             for (String val:doc.get("Корреспондент Тип"))
                 type = val;
         waitelement(SelectDialog.Sender.dialog);
+        click("Очистить", SelectDialog.clearall);
         if ((type == null) || (type.equals("Внешний контрагент"))) {
             click("Показать дополнительные параметры поиска", SelectDialog.Sender.show_parametrs);
             fillfield("Наименование",SelectDialog.Sender.fullname_field,doc.get("Корреспондент Наименование"),doc);
@@ -913,6 +1104,8 @@ class Base {
                 case "Дата подписания":
                 case "Период действия С":
                 case "Период действия По":
+                case "Пункты Заголовок":
+                case "Пункты Содержание":
                     for (String value : values)
                         settext(attrname, xpath, value);
                     break;
@@ -925,6 +1118,12 @@ class Base {
                 case "Тематика":
                 case "Подписанты":
                 case "Подразделения":
+                case "Контролёр":
+                case "Пункты Автор":
+                case "Пункты Исполнитель":
+                case "Пункты Соисполнители":
+                case "Пункты Контролер":
+                case "Пункты Тематика":
                     click("...", xpath);
                     fillselectdialogsimple(attrname, doc, values);
                     break;
@@ -950,22 +1149,40 @@ class Base {
                         settext(attrname, xpath, value);
                     driver.switchTo().defaultContent();
                     break;
-                //чекбоксы которые по умолчанию в "Нет"
+                case "Пункты Срок исполнения":
+                    for (String value : values)
+                        if (value.contains("рабочий день")) {
+                            click("Радио",Document.Createform.Orddocument.Items.limitationdate_radiodays);
+                            settext("Срок", Document.Createform.Orddocument.Items.limitationdate_radiodays_field, value.substring(0,value.indexOf("рабочий день")-1));
+                            WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Orddocument.Items.limitationdate_radiodays_select));
+                            Select select = new Select(selectElem);
+                            select.selectByVisibleText("рабочий день");
+                        } else
+                        if (value.contains("календарный день")) {
+                            click("Радио",Document.Createform.Orddocument.Items.limitationdate_radiodays);
+                            settext("Срок", Document.Createform.Orddocument.Items.limitationdate_radiodays_field, value.substring(0,value.indexOf("календарный день")-1));
+                            WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Orddocument.Items.limitationdate_radiodays_select));
+                            Select select = new Select(selectElem);
+                            select.selectByVisibleText("календарный день");
+                        } else
+                        if (value.contains("Без срока")) {
+                            click("Радио",Document.Createform.Orddocument.Items.limitationdate_radiolimitless);
+                        } else {
+                            click("Радио",Document.Createform.Orddocument.Items.limitationdate_radiodate);
+                            settext("Срок", Document.Createform.Orddocument.Items.limitationdate_radiodate_field, value);
+                        }
+                    break;
                 case "На контроле":
                 case "Нерегистрируемый":
                 case "Подписано на бумажном носителе":
                 case "Завершающий":
                 case "Бессрочный":
+                case "Пункты Требуется отчет":
+                case "Подтверждать завершение работы по документу":
                     for (String value : values)
-                        if (value.equals("Да"))
+                        if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
                             click(attrname, xpath);
                     break;
-                /*чекбоксы которые по умолчанию в "Да"
-                case "name of check":
-                    for (String value : values)
-                        if (value.equals("Нет"))
-                            click(attrname, xpath);
-                    break;*/
                 default:
                     softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
                     break;

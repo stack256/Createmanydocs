@@ -22,6 +22,7 @@ public class MainTest {
     public void setUp() {
         current_login = null;
         doc = new HashMap<String, String[]>();
+        items = new HashMap<String, HashMap<String, String[]>>();
         usersinitial();
         timeoutlnseconds = 30;
         Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
@@ -37,6 +38,8 @@ public class MainTest {
     @AfterMethod
     public void tiredDown() {
         doc.clear();
+        items.clear();
+        item.clear();
         stack.clear();
         removedoc.clear();
         users.clear();
@@ -199,7 +202,7 @@ public class MainTest {
         removedocs();
     }
 
-/*
+
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Features("Организационно-распорядительный документ")
@@ -219,21 +222,36 @@ public class MainTest {
         doc.put("Подписанты", new String[]{getuserbylogin("fomin").full, getuserbylogin("kozlov").full});
         doc.put("Дата подписания", new String[]{"21.12.2019"});
         doc.put("Контролёр", new String[]{getuserbylogin("denisov").full});
+        doc.put("Подтверждать завершение работы по документу", new String[]{"Да"});
         doc.put("Примечание", new String[]{"21"});
         doc.put("Количество листов", new String[]{"21"});
         doc.put("Тематика", new String[]{"Доставка воды"});
         doc.put("Номер дела", new String[]{"2018","Управление","Рабочее подразделение","ALL-Дело для всех типов документов"});
         //doc.put("Отменяемые документы", new String[]{"Внутренний документ: 1234567890, № NA-00094 от 28.09.2019"});
-        //doc.put("Принимаемые документы", new String[]{"00094"});
-        doc.put("Пункты", new String[]{"AT_Organization"});
+        //doc.put("Отменяемые документы Номер", new String[]{"00094"});
+        //doc.put("Принимаемые документы", new String[]{"Внутренний документ: 1234567890, № NA-00094 от 28.09.2019"});
+        //doc.put("Принимаемые документы Номер", new String[]{"00094"});
+
+        item = new HashMap<String, String[]>();
+        item.put("Пункты Заголовок", new String[]{"Заголовок"});
+        item.put("Пункты Автор", new String[]{user.full});
+        item.put("Пункты Содержание", new String[]{"Содержание"});
+        item.put("Пункты Исполнитель", new String[]{getuserbylogin("denisov").full});
+        item.put("Пункты Соисполнители", new String[]{getuserbylogin("kozlov").full});
+        item.put("Пункты Срок исполнения", new String[]{"Без срока"});
+        item.put("Пункты Требуется отчет", new String[]{"Да"});
+        item.put("Пункты Контролер", new String[]{getuserbylogin("denisov").full});
+        item.put("Пункты Тематика", new String[]{"Доставка воды"});
+        items.put("1", item);
+        item = new HashMap<String, String[]>();
 
         //авторизоваться
         auth(user.famio,user.login,user.pass);
         //создать входящий документ
-        creatend(doc);
-        readnd(doc);
+        createord(doc, items);
+        readord(doc);
         readhistory(doc.get("Запись в бж"),doc);
         //if (!stack.get(0).value)
         removedocs();
-    }*/
+    }
 }
