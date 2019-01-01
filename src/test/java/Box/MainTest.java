@@ -43,7 +43,7 @@ public class MainTest {
         driver.quit();
     }
 
-/*
+
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Features("Входящий")
@@ -162,7 +162,7 @@ public class MainTest {
         removedocs();
     }
 
-*/
+/*
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Features("Нормативные документы")
@@ -197,5 +197,5 @@ public class MainTest {
         readhistory(doc.get("Запись в бж"),doc);
         //if (!stack.get(0).value)
         removedocs();
-    }
+    }*/
 }
