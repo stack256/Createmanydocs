@@ -71,7 +71,7 @@ class Objects {
             static String ok_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='ОК']";
             static String dialog = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]";
         }
-        static String clearall = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[contains(@class,'elements-label')]//*[text()='Очистить' and contains(@onclick,'clearAll')]";
+        static String clearall = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//span[text()='Очистить']";
     }
 
     static class Document{
