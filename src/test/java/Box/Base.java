@@ -1125,22 +1125,32 @@ class Base {
                 case "Пункты Контролер":
                 case "Пункты Тематика":
                     click("...", xpath);
+                    if (!waitelement(SelectDialog.Simple.dialog))
+                        clickagain("...", xpath);
                     fillselectdialogsimple(attrname, doc, values);
                     break;
                 case "Корреспондент":
                     click("...", xpath);
+                    if (!waitelement(SelectDialog.Sender.dialog))
+                        clickagain("...", xpath);
                     fillselectdialogsender(attrname, values, doc);
                     break;
                 case "Номер дела":
                     click("...", xpath);
+                    if (!waitelement(SelectDialog.Fileregister.dialog))
+                        clickagain("...", xpath);
                     fillselectdialogfileregister(attrname, doc, values);
                     break;
                 case "Получатель":
                     click("...", xpath);
+                    if (!waitelement(SelectDialog.Recipient.dialog))
+                        clickagain("...", xpath);
                     fillselectdialogrecipient(attrname, doc, values);
                     break;
                 case "В ответ на":
                     click("...", xpath);
+                    if (!waitelement(SelectDialog.Responseto.dialog))
+                        clickagain("...", xpath);
                     fillselectdialogresponseto(attrname, doc, values);
                     break;
                 case "Содержание":
@@ -1215,7 +1225,7 @@ class Base {
         waitForLoad();
     }
 
-    private static void waitelement(String xpath) {
+    private static Boolean waitelement(String xpath) {
         waitForLoad();
         try {
             (new WebDriverWait(driver, timeoutlnseconds))
@@ -1224,8 +1234,10 @@ class Base {
                     .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
         } catch (Exception e) {
             softassertfail("Не найден элемент " + xpath);
+            return false;
         }
         waitForLoad();
+        return true;
     }
 
     @Step("Заполнить атрибут <{0}> значением <{2}>")
@@ -1246,6 +1258,24 @@ class Base {
 
     @Step("Нажать кнопку <{0}>")
     private static void click(String report, String xpath) {
+        waitForLoad();
+        try {
+            (new WebDriverWait(driver, timeoutlnseconds))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+        } catch (Exception e) {
+            hardassertfail("Не найден элемент " + xpath);
+        }
+        try {
+            (new WebDriverWait(driver, timeoutlnseconds))
+                    .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
+        } catch (Exception e) {
+            hardassertfail("Не кликабелен элемент " + xpath);
+        }
+        driver.findElement(By.xpath(xpath)).click();
+        waitForLoad();
+    }
+    @Step("Переклик кнопки <{0}>")
+    private static void clickagain(String report, String xpath) {
         waitForLoad();
         try {
             (new WebDriverWait(driver, timeoutlnseconds))
