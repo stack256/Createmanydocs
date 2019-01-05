@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -26,7 +27,7 @@ import static Box.Users.*;
 
 class About {
 
-    static WebDriver driver;
+    static RemoteWebDriver driver;
     static Integer timeoutlnseconds;
     static HashMap<String, String[]> doc;
     static HashMap<String, HashMap<String, String[]>> items;

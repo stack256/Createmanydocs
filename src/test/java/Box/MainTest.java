@@ -1,13 +1,15 @@
 package Box;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.*;
 import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.annotations.*;
 import ru.yandex.qatools.allure.annotations.Description;
 import ru.yandex.qatools.allure.model.*;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +32,16 @@ public class MainTest {
         stack = new ArrayList<About.Stack>();
         removedoc = new ArrayList<>();
         stack.add(new About.Stack());
-        driver = new ChromeDriver();
+
+        DesiredCapabilities capability = DesiredCapabilities.chrome();
+        try {
+            driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capability);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        //driver = new RemoteWebDriver(hostURL, new ChromeOptions());
+        //driver = new ChromeDriver();
         driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
         String baseUrl = System.getProperty("stend.url");
         driver.get(baseUrl);
