@@ -38,7 +38,7 @@ public class MainTest {
 
 
 
-        if (!System.getProperty("remote.grid").equals(null)) {
+        if (System.getProperty("remote.grid") != null) {
             DesiredCapabilities capability = DesiredCapabilities.chrome();
             try {
                 driver = new RemoteWebDriver(new URL(System.getProperty("remote.grid")), capability);
@@ -323,7 +323,7 @@ public class MainTest {
         //if (!stack.get(0).value)
         removedocs();
     }
-/*
+
 
 
     @Description("Какое то описание")
@@ -340,29 +340,31 @@ public class MainTest {
         doc.put("Тематика", new String[]{"Доставка воды"});
         doc.put("Автор", new String[]{getuserbylogin(user.login).full});
         doc.put("Контролер", new String[]{getuserbylogin("denisov").full});
-        doc.put("Завершающий", new String[]{"Контролер"});
+        doc.put("Завершающий", new String[]{"Контролёр"});
         doc.put("Контроль", new String[]{"Да"});
         doc.put("Срок исполнения", new String[]{"1 календарный день"});
 
         errand = new HashMap<String, String[]>();
-        errand.put("Тип поручения", new String[]{"На исполнение (неконтрольное)"});
-        errand.put("Заголовок", new String[]{"Ознакомить подчиненных"});
-        errand.put("Исполнитель", new String[]{getuserbylogin("kozlov").full});
-        errand.put("Соисполнители", new String[]{getuserbylogin("denisov").full});
-        errand.put("Контролер", new String[]{getuserbylogin("denisov").full});
-        errand.put("Срок исполнения", new String[]{"Без срока"});
-        errand.put("Требуется отчет", new String[]{"Да"});
+        errand.put("document", new String[]{"resolutions"});
+        errand.put("Поручения Тип поручения", new String[]{"На исполнение (неконтрольное)"});
+        errand.put("Поручения Заголовок", new String[]{"Ознакомить подчиненных"});
+        errand.put("Поручения Исполнитель", new String[]{getuserbylogin("kozlov").full});
+        errand.put("Поручения Соисполнители", new String[]{getuserbylogin("denisov").full});
+        errand.put("Поручения Контролер", new String[]{getuserbylogin("denisov").full});
+        errand.put("Поручения Срок исполнения", new String[]{"Без срока"});
+        errand.put("Поручения Требуется отчет", new String[]{"Да"});
+        errand.put("Поручения Получатель отчета", new String[]{"Контролер"});
         errands.put("1",errand);
         errand = new HashMap<String, String[]>();
 
         //авторизоваться
         auth(user.famio,user.login,user.pass);
         //создать входящий документ
-        createresolutions(doc, "Сохранить черновик");
+        createresolutions(doc, "Направить");
         readresolutions(doc);
-        doc.put("Запись в бж",new String[]{historystandartcreateerrand(doc)});
+        doc.put("Запись в бж",new String[]{historystandartcreateresolutions(doc)});
         readhistory(doc.get("Запись в бж"),doc);
         //if (!stack.get(0).value)
         removedocs();
-    }*/
+    }
 }

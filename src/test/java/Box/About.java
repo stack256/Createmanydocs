@@ -18,10 +18,7 @@ import ru.yandex.qatools.allure.events.*;
 import ru.yandex.qatools.allure.experimental.LifecycleListener;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static Box.Users.*;
 
@@ -231,15 +228,28 @@ class About {
         return current_user + " создал(а) новый документ \"" + incoming_header(doc.get("Вид документа"), doc.get("Номер")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
     }
 
-    private static String incoming_headererrand(String[] title, String[] regnum, String[] executor, String[] limitdate) {
+    private static String errand_header(String[] title, String[] regnum, String[] executor, String[] limitdate) {
         for (User user:users)
             if (user.full.equals(executor[0]))
                 executor[0] = user.famio;
         return "№ " + regnum[0] + ", " + title[0] + ", Исполнитель " + executor[0] + ", срок: " + limitdate[0];
-
     }
 
     static String historystandartcreateerrand(Map<String, String[]> doc){
-        return current_user + " создал(а) новый документ \"" + incoming_headererrand(doc.get("Заголовок"), doc.get("Номер"), doc.get("Исполнитель"), doc.get("Срок исполнения")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
+        return current_user + " создал(а) новый документ \"" + errand_header(doc.get("Заголовок"), doc.get("Номер"), doc.get("Исполнитель"), doc.get("Срок исполнения")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
+    }
+
+    private static String resolutions_header(String[] regnum, String[] date, String[] limitdate) {
+        if (date == null)
+            return "№ " + regnum[0] + " от , срок: " + limitdate[0];
+        else
+            return "№ " + regnum[0] + " от " + date[0] + ", срок: " + limitdate[0];
+    }
+
+    static String historystandartcreateresolutions(Map<String, String[]> doc){
+        if (doc.get("Статус")[0].contains("Черновик"))
+            return current_user + " создал(а) новый документ \"" + resolutions_header(doc.get("Номер"), doc.get("Дата"), doc.get("Срок исполнения")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
+        else
+            return current_user + " создал(а) новый документ \"" + resolutions_header(doc.get("Номер_old"), doc.get("Дата"), doc.get("Срок исполнения_old")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
     }
 }

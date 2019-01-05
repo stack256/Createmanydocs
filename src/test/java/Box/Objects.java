@@ -408,6 +408,62 @@ class Objects {
                 static String save_button = "//div[@class='document-metadata']//button[text()='Сохранить черновик']";
                 static String default_button = "//div[@class='document-metadata']//button[text()='Направить']";
             }
+            static class Resolutionsdocument {
+                static String approvedoutsidesystem_label = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Утверждено вне системы')]";
+                static String approvedoutsidesystem_checkbox = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Утверждено вне системы')]//ancestor::div[contains(@class,'control')]//input[@type='checkbox']";
+                static String subject_label = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Тематика:')]";
+                static String subject_field = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Тематика:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String subject_button = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Тематика:')]//ancestor::div[contains(@class,'control')]//button";
+                static String author_label = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Автор:')]";
+                static String author_field = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Автор:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String author_button = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Автор:')]//ancestor::div[contains(@class,'control')]//button";
+                static String controller_label = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Контролер:')]";
+                static String controller_field = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Контролер:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String controller_button = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Контролер:')]//ancestor::div[contains(@class,'control')]//button";
+                static String closers_label = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Завершающий:')]";
+                static String closers_select = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Завершающий:')]//ancestor::div[contains(@class,'control')]//select";
+                static String isoncontrol_label = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Контроль')]";
+                static String isoncontrol_checkbox = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Контроль')]//ancestor::div[contains(@class,'control')]//input[@type='checkbox']";
+                static String limitationdate_label = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Срок исполнения:')]";
+                static String limitationdate_radiodays = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//input[@type='radio' and @value='DAYS']";
+                static String limitationdate_radiodays_field = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//input[contains(@id,'limitation-date') and @type='text']";
+                static String limitationdate_radiodays_select = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//select";
+                static String limitationdate_radiodate = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//input[@type='radio' and @value='DATE']";
+                static String limitationdate_radiodate_field = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//input[contains(@id,'date-cntrl-date') and @type='text']";
+                static String limitationdate_radiolimitless = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//input[@type='radio' and @value='LIMITLESS']";
+                static class Errands{
+                    static String type_label = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Тип поручения:')]";
+                    static String type_field = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Тип поручения:')]//ancestor::div[contains(@class,'control editmode')]//div[@class='cropped-item']";
+                    static String type_button = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Тип поручения:')]//ancestor::div[contains(@class,'control editmode')]//button";
+                    static String title_label = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Заголовок:')]";
+                    static String title_field = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Заголовок:')]//ancestor::div[contains(@class,'text editmode')]//div[@class='cropped-item']";
+                    static String title_button = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Заголовок:')]//ancestor::div[contains(@class,'text editmode')]//button";
+                    static String executor_label = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Исполнитель:')]";
+                    static String executor_field = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Исполнитель:')]//ancestor::div[contains(@class,'control editmode')]//div[@class='cropped-item']";
+                    static String executor_button = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Исполнитель:')]//ancestor::div[contains(@class,'control editmode')]//button";
+                    static String coexecutor_label = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Соисполнители:')]";
+                    static String coexecutor_field = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Соисполнители:')]//ancestor::div[contains(@class,'control editmode')]//div[@class='cropped-item']";
+                    static String coexecutor_button = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Соисполнители:')]//ancestor::div[contains(@class,'control editmode')]//button";
+                    static String controller_label = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Контролер:')]";
+                    static String controller_field = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Контролер:')]//ancestor::div[contains(@class,'control editmode')]//div[@class='cropped-item']";
+                    static String controller_button = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Контролер:')]//ancestor::div[contains(@class,'control editmode')]//button";
+                    static String limitationdate_label = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Срок исполнения:')]";
+                    static String limitationdate_radiodays = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//input[@type='radio' and @value='DAYS']";
+                    static String limitationdate_radiodays_field = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//input[contains(@id,'limitation-date') and @type='text']";
+                    static String limitationdate_radiodays_select = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//select";
+                    static String limitationdate_radiodate = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//input[@type='radio' and @value='DATE']";
+                    static String limitationdate_radiodate_field = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//input[contains(@id,'date-cntrl-date') and @type='text']";
+                    static String limitationdate_radiolimitless = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//input[@type='radio' and @value='LIMITLESS']";
+                    static String needreport_label = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Требуется отчет')]";
+                    static String needreport_checkbox = "//div[contains(@class,'document-metadata')]//ul[@class='multi-form-documents-list']//*[contains(text(),'Требуется отчет')]//ancestor::div[contains(@class,'control editmode')]//input[@type='checkbox']";
+                    static String reportrecipient_label = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Получатель отчета:')]";
+                    static String reportrecipient_select = "//div[contains(@class,'document-metadata')]//*[contains(text(),'Получатель отчета:')]//ancestor::div[contains(@class,'control select')]//select";
+                }
+
+                static String adderrand_button = "//div[contains(@class,'document-metadata')]//button[text()='Добавить']";
+                static String save_button = "//div[contains(@class,'document-metadata')]//button[text()='Сохранить черновик']";
+                static String default_button = "//div[contains(@class,'document-metadata')]//button[text()='Направить']";
+            }
         }
         static class Viewform{
             static String zavershit_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Причина:')]";
@@ -683,6 +739,33 @@ class Objects {
 
                 static String status_field = "//div[contains(@id,'status')]//*[contains(@class,'value')]";
             }
+            static class Resolutionsdocument{
+                static String approvedoutsidesystem_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Утверждено вне системы:')]";
+                static String approvedoutsidesystem_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'approved-outside-system')]//div[contains(@class,'value')]";
+                static String basedocument_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Документ-основание:')]";
+                static String basedocument_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'base-document')]//div[contains(@class,'value')]";
+                static String base_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Основание:')]";
+                static String base_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'base-assoc')]//div[contains(@class,'value')]";
+                static String isoncontrol_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Контроль:')]";
+                static String isoncontrol_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'is-on-control')]//div[contains(@class,'value')]";
+                static String subject_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Тематика:')]";
+                static String subject_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'subject')]//div[contains(@class,'value')]";
+                static String resolutionsauthor_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Автор:')]";
+                static String resolutionsauthor_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'resolutions_author')]//div[contains(@class,'value')]";
+                static String documentauthor_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Создатель:')]";
+                static String documentauthor_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'document_author')]//div[contains(@class,'value')]";
+                static String closers_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Завершающий:')]";
+                static String closers_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'closers')]//div[contains(@class,'value')]";
+                static String controller_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Контролер:')]";
+                static String controller_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'controller')]//div[contains(@class,'value')]";
+                static String limitationdate_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Срок исполнения:')]";
+                static String limitationdate_date_radio = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//input[@type='radio' and @value='DATE']";
+                static String limitationdate_date_field = "//div[contains(@class,'metadata-form')]//div[contains(@class,'errands-limitation-date-set-date')]";
+                static String limitationdate_limitless_radio = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'limitation-date-set')]//input[@type='radio' and @value='LIMITLESS']";
+                static String limitationdate_limitless_field = "//div[contains(@class,'metadata-form')]//div[contains(@class,'errands-limitation-date-set-limitless')]";
+
+                static String status_field = "//div[contains(@id,'status')]//*[contains(@class,'value')]";
+            }
         }
     }
 
@@ -694,6 +777,7 @@ class Objects {
             static String nddocument = "//ul//a[text()='НД']";
             static String orddocument = "//ul//a[text()='ОРД']";
             static String erranddocument = "//ul//a[text()='Поручение']";
+            static String resolutionsdocument = "//ul//a[text()='Резолюция']";
         }
         static String createButton = "//button[text()='Создать']";
     }

@@ -920,8 +920,8 @@ class Base {
         String status = null;
         for (String val:doc.get("Статус"))
             status = val;
-        waitelement(Document.Viewform.Incomingdocument.status_field);
-        if (!driver.findElement(By.xpath(Document.Viewform.Incomingdocument.status_field)).getText().equals(status)){
+        waitelement(Document.Viewform.Erranddocument.status_field);
+        if (!driver.findElement(By.xpath(Document.Viewform.Erranddocument.status_field)).getText().equals(status)){
             driver.get(driver.getCurrentUrl());
         }
 
@@ -971,6 +971,207 @@ class Base {
             removedoc.add(currenturl);
     }
 
+    @Step("Создать резолюцию")
+    static void createresolutions(Map<String, String[]> doc, String button) {
+        gotoarmsed();
+        click("Создать",ARMSED.createButton);
+        click("Рехолюция", ARMSED.Createmenu.resolutionsdocument);
+        fillcreateresolutions(doc);
+        String currenturl = driver.getCurrentUrl();
+        if (button.equals("Сохранить черновик")) {
+            click("Сохранить черновик", Document.Createform.Resolutionsdocument.save_button);
+            doc.put("Статус", new String[]{"Черновик"});
+        }
+        else
+        if (button.equals("Направить")) {
+            click("Направить", Document.Createform.Resolutionsdocument.default_button);
+            doc.put("Статус",new String[]{"На исполнении"});
+        }
+        else hardassertfail(button + " - Нет такой кнопки на форме создания поручения");
+        while (currenturl.equals(driver.getCurrentUrl())) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (doc.get("Создатель") == null)
+            doc.put("Создатель", new String[]{getuserbylogin(current_login).full});
+    }
+
+    @Step("Заполнить атрибуты")
+    private static void fillcreateresolutions(Map<String, String[]> doc) {
+        verifyattr("Утверждено вне системы", Document.Createform.Resolutionsdocument.approvedoutsidesystem_label);
+        fillfield("Утверждено вне системы",Document.Createform.Resolutionsdocument.approvedoutsidesystem_checkbox, doc.get("Утверждено вне системы"), doc);
+
+        verifyattr("Тематика", Document.Createform.Resolutionsdocument.subject_label);
+        fillfield("Тематика",Document.Createform.Resolutionsdocument.subject_button, doc.get("Тематика"), doc);
+
+        verifyattr("Автор", Document.Createform.Resolutionsdocument.author_label);
+        fillfield("Автор",Document.Createform.Resolutionsdocument.author_button, doc.get("Автор"), doc);
+
+        verifyattr("Контролер", Document.Createform.Resolutionsdocument.controller_label);
+        fillfield("Контролер",Document.Createform.Resolutionsdocument.controller_button, doc.get("Контролер"), doc);
+
+        verifyattr("Завершающий", Document.Createform.Resolutionsdocument.closers_label);
+        fillfield("Завершающий",Document.Createform.Resolutionsdocument.closers_select, doc.get("Завершающий"), doc);
+
+        verifyattr("Контроль", Document.Createform.Resolutionsdocument.isoncontrol_label);
+        fillfield("Контроль",Document.Createform.Resolutionsdocument.isoncontrol_checkbox, doc.get("Контроль"), doc);
+
+        verifyattr("Срок исполнения", Document.Createform.Resolutionsdocument.limitationdate_label);
+        fillfield("Срок исполнения",Document.Createform.Resolutionsdocument.limitationdate_radiodate, doc.get("Срок исполнения"), doc);
+
+        if (!errands.isEmpty()){
+            //метод для заполнения формы создания пунктов (которая еще не описана)
+            int k = errands.size();
+
+            click("Добавить", Document.Createform.Resolutionsdocument.adderrand_button);
+
+            for (int i=0; i<k; i++) {
+                errand = errands.get(Integer.toString(i+1));
+                verifyattr("Поручения Тип поручения", "(" + Document.Createform.Resolutionsdocument.Errands.type_label + ")[" + Integer.toString(i+1) + "]");
+                fillfield("Поручения Тип поручения", "(" + Document.Createform.Resolutionsdocument.Errands.type_button + ")[" + Integer.toString(i+1) + "]", errand.get("Поручения Тип поручения"), errand);
+
+                verifyattr("Поручения Заголовок", "(" + Document.Createform.Resolutionsdocument.Errands.title_label + ")[" + Integer.toString(i+1) + "]");
+                fillfield("Поручения Заголовок", "(" + Document.Createform.Resolutionsdocument.Errands.title_button + ")[" + Integer.toString(i+1) + "]", errand.get("Поручения Заголовок"), errand);
+
+                verifyattr("Поручения Исполнитель", "(" + Document.Createform.Resolutionsdocument.Errands.executor_label + ")[" + Integer.toString(i+1) + "]");
+                fillfield("Поручения Исполнитель", "(" + Document.Createform.Resolutionsdocument.Errands.executor_button + ")[" + Integer.toString(i+1) + "]", errand.get("Поручения Исполнитель"), errand);
+
+                verifyattr("Поручения Соисполнители", "(" + Document.Createform.Resolutionsdocument.Errands.coexecutor_label + ")[" + Integer.toString(i+1) + "]");
+                fillfield("Поручения Соисполнители", "(" + Document.Createform.Resolutionsdocument.Errands.coexecutor_button + ")[" + Integer.toString(i+1) + "]", errand.get("Поручения Соисполнители"), errand);
+
+                verifyattr("Поручения Контролер", "(" + Document.Createform.Resolutionsdocument.Errands.controller_label + ")[" + Integer.toString(i+1) + "]");
+                fillfield("Поручения Контролер", "(" + Document.Createform.Resolutionsdocument.Errands.controller_button + ")[" + Integer.toString(i+1) + "]", errand.get("Поручения Контролер"), errand);
+
+                verifyattr("Поручения Срок исполнения", "(" + Document.Createform.Resolutionsdocument.Errands.limitationdate_label + ")[" + Integer.toString(i+1) + "]");
+                fillfield("Поручения Срок исполнения", "(" + Document.Createform.Resolutionsdocument.Errands.limitationdate_radiodate + ")[" + Integer.toString(i+1) + "]", errand.get("Поручения Срок исполнения"), errand);
+
+                verifyattr("Поручения Требуется отчет", "(" + Document.Createform.Resolutionsdocument.Errands.needreport_label + ")[" + Integer.toString(i+1) + "]");
+                fillfield("Поручения Требуется отчет", "(" + Document.Createform.Resolutionsdocument.Errands.needreport_checkbox + ")[" + Integer.toString(i+1) + "]", errand.get("Поручения Требуется отчет"), errand);
+
+                boolean t = false;
+                for (String val:errand.get("Поручения Требуется отчет"))
+                    if (val.equals("Да")) t = true;
+                if (t) {
+                    verifyattr("Поручения Получатель отчета", "(" + Document.Createform.Resolutionsdocument.Errands.reportrecipient_label + ")[" + Integer.toString(i + 1) + "]");
+                    fillfield("Поручения Получатель отчета", "(" + Document.Createform.Resolutionsdocument.Errands.reportrecipient_select+ ")[" + Integer.toString(i + 1) + "]", errand.get("Поручения Получатель отчета"), errand);
+                }
+            }
+        }
+    }
+
+    @Step("Проверить наличие атрибутов и их значения на форме просмотра")
+    static void readresolutions(Map<String, String[]> doc) {
+        waitForLoad();
+        String status = null;
+        for (String val:doc.get("Статус"))
+            status = val;
+        waitelement(Document.Viewform.Resolutionsdocument.status_field);
+        if (!driver.findElement(By.xpath(Document.Viewform.Incomingdocument.status_field)).getText().equals(status)){
+            driver.get(driver.getCurrentUrl());
+        }
+
+        String title = driver.findElement(By.xpath(Objects.Document.documenttitle)).getText();
+        doc.put("Номер",new String[]{title.substring(2,title.indexOf("от")-1)});
+
+        if (!status.contains("Черновик") && title.substring(2,title.indexOf("от")-1).equals("Не присвоено")) {
+            doc.put("Номер_old",new String[]{title.substring(2,title.indexOf("от")-1)});
+            doc.put("Срок исполнения_old", doc.get("Срок исполнения"));
+            driver.get(driver.getCurrentUrl());
+        }
+
+        title = driver.findElement(By.xpath(Objects.Document.documenttitle)).getText();
+        doc.put("Номер",new String[]{title.substring(2,title.indexOf("от")-1)});
+        doc.put("Срок исполнения", new String[]{title.substring(title.indexOf("срок:")+6,title.length())});
+
+        checkfield("Утверждено вне системы", Document.Viewform.Resolutionsdocument.approvedoutsidesystem_label, Document.Viewform.Resolutionsdocument.approvedoutsidesystem_field, doc);
+
+        checkfield("Документ-основание", Document.Viewform.Resolutionsdocument.base_label, Document.Viewform.Resolutionsdocument.base_field, doc);
+
+        checkfield("Основание", Document.Viewform.Resolutionsdocument.basedocument_label, Document.Viewform.Resolutionsdocument.basedocument_field, doc);
+
+        checkfield("Контроль", Document.Viewform.Resolutionsdocument.isoncontrol_label, Document.Viewform.Resolutionsdocument.isoncontrol_field, doc);
+
+        checkfield("Тематика", Document.Viewform.Resolutionsdocument.subject_label, Document.Viewform.Resolutionsdocument.subject_field, doc);
+
+        checkfield("Автор", Document.Viewform.Resolutionsdocument.resolutionsauthor_label, Document.Viewform.Resolutionsdocument.resolutionsauthor_field, doc);
+
+        checkfield("Создатель", Document.Viewform.Resolutionsdocument.documentauthor_label, Document.Viewform.Resolutionsdocument.documentauthor_field, doc);
+
+        checkfield("Завершающий", Document.Viewform.Resolutionsdocument.closers_label, Document.Viewform.Resolutionsdocument.closers_field, doc);
+
+        checkfield("Контролер", Document.Viewform.Resolutionsdocument.controller_label, Document.Viewform.Resolutionsdocument.controller_field, doc);
+
+        checkfield("Срок исполнения", Document.Viewform.Resolutionsdocument.limitationdate_label,
+                Document.Viewform.Resolutionsdocument.limitationdate_date_radio, Document.Viewform.Resolutionsdocument.limitationdate_date_field,
+                Document.Viewform.Resolutionsdocument.limitationdate_limitless_radio, Document.Viewform.Resolutionsdocument.limitationdate_limitless_field, doc);
+
+
+
+        String currenturl = driver.getCurrentUrl();
+        if (currenturl.contains("#")){
+            currenturl = currenturl.substring(0,currenturl.indexOf('#'));
+        }
+        if (!removedoc.contains(currenturl))
+            removedoc.add(currenturl);
+    }
+
+    @Step("Атрибут <{0}>")
+    private static void checkfield(String attrname, String xpath, String xpathradio1, String xpathfield1, String xpathradio2, String xpathfield2, Map<String, String[]> doc) {
+        waitForLoad();
+        try {
+            (new WebDriverWait(driver, timeoutlnseconds))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+        } catch (Exception e) {
+            hardassertfail("Не найден элемент " + xpath);
+        }
+
+        String value = null;
+        for (String val:doc.get(attrname))
+            value = val;
+
+        String status = null;
+        for (String val:doc.get("Статус"))
+            status = val;
+        if (!value.contains("Без срока"))
+            readfieldradio(xpathradio1, true);
+        else
+            readfieldradio(xpathradio1, false);
+        if (value.contains("Без срока") || ((value.contains("к.д.") || value.contains("р.д.")) && status.equals("Черновик")) || (!value.contains(".") && !status.equals("Черновик")))
+            readfieldchild(xpathfield1, attrname, "(Нет)");
+        else
+            readfieldchild(xpathfield1, attrname, doc.get(attrname));
+
+
+
+        if (value.contains("Без срока"))
+            readfieldradio(xpathradio2, true);
+        else
+            readfieldradio(xpathradio2, false);
+        readfieldchild(xpathfield2, attrname, "Без срока");
+
+
+    }
+
+
+    @Step("Значения радио <{1}>")
+    private static void readfieldradio(String xpath, boolean t) {
+        String value = null;
+        try{
+            value = driver.findElement(By.xpath(xpath)).getAttribute("checked");
+        } catch(Exception e){
+            value = Boolean.toString(false);
+        }
+        if (value == null)
+            value = Boolean.toString(false);
+        softassertfail(value,Boolean.toString(t));
+    }
+
+
+
     @Step("Атрибут <{0}>")
     private static void checkfield(String attrname, String xpath, String xpathfield, Map<String, String[]> doc) {
         waitForLoad();
@@ -1007,37 +1208,14 @@ class Base {
                 }
             }
         } else
-        for(String value:values) {
-            List<WebElement> elements = driver.findElements(By.xpath(xpath));
-            boolean t = false;
-            for (WebElement element : elements) {
-                if (element.getText().contains(value)) t = true;
+            for(String value:values) {
+                List<WebElement> elements = driver.findElements(By.xpath(xpath));
+                boolean t = false;
+                for (WebElement element : elements) {
+                    if (element.getText().contains(value)) t = true;
+                }
+                softassertfail(t, "Атрибут не содержит значение " + value);
             }
-            softassertfail(t, "Атрибут не содержит значение " + value);
-        }
-    }
-
-    @Step("Атрибут <{0}>")
-    private static void checkfield(String attrname, String xpath, String xpathfield, String xpathfield2, Map<String, String[]> doc) {
-        waitForLoad();
-        try {
-            (new WebDriverWait(driver, timeoutlnseconds))
-                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
-        } catch (Exception e) {
-            hardassertfail("Не найден элемент " + xpath);
-        }
-        readfield(attrname, xpathfield, xpathfield2, doc);
-    }
-
-    private static void readfield(String attrname, String xpath, String xpath2, Map<String, String[]> doc) {
-        if (doc.get(attrname) == null)
-            if (attrname.equals("Завершающий") || attrname.equals("На контроле") || attrname.equals("Нерегистрируемый") ||
-                    attrname.equals("Подписан") || attrname.equals("Подписано на бумажном носителе") || attrname.equals("Бессрочный"))
-                doc.put(attrname,new String[]{"Нет"});
-            else
-                doc.put(attrname,new String[]{"(Нет)"});
-        readfieldchild(xpath, attrname, doc.get(attrname));
-        readfieldchild(xpath2, attrname, doc.get(attrname));
     }
 
     @Step("Заполнить атрибут <{0}> значением <{2}>")
@@ -1583,7 +1761,7 @@ class Base {
                                     WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Erranddocument.limitationdate_radiodays_select));
                                     Select select = new Select(selectElem);
                                     select.selectByVisibleText("календарный день");
-                                    doc.put(attrname,new String[]{value.substring(0,value.indexOf("рабочий день")-1) + " к.д."});
+                                    doc.put(attrname,new String[]{value.substring(0,value.indexOf("календарный день")-1) + " к.д."});
                                 } else
                                 if (value.contains("Без срока")) {
                                     click("Радио",Document.Createform.Erranddocument.limitationdate_radiolimitless);
@@ -1670,6 +1848,105 @@ class Base {
                         case "Закрывает вышестоящее поручение":
                         case "Направлять периодически":
                         case "Требуется отчет":
+                            break;
+                        default:
+                            doc.put(attrname, new String[]{"(Нет)"});
+                            break;
+                    }
+                break;
+            case "resolutions":
+                if (values != null) {
+                    switch (attrname) {
+                        case "Текст поручения":
+                        case "Начало повторений":
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            break;
+                        case "Тематика":
+                        case "Автор":
+                        case "Контролер":
+                        case "Поручения Тип поручения":
+                        case "Поручения Заголовок":
+                        case "Поручения Исполнитель":
+                        case "Поручения Соисполнители":
+                        case "Поручения Контролер":
+                            click("...", xpath, SelectDialog.Simple.dialog);
+                            fillselectdialogsimple(attrname, doc, values);
+                            break;
+                        case "Срок исполнения":
+                            for (String value : values)
+                                if (value.contains("рабочий день")) {
+                                    click("Радио",Document.Createform.Resolutionsdocument.limitationdate_radiodays);
+                                    settext("Срок", Document.Createform.Resolutionsdocument.limitationdate_radiodays_field, value.substring(0,value.indexOf("рабочий день")-1));
+                                    WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Resolutionsdocument.limitationdate_radiodays_select));
+                                    Select select = new Select(selectElem);
+                                    select.selectByVisibleText("рабочий день");
+                                    doc.put(attrname,new String[]{value.substring(0,value.indexOf("рабочий день")-1) + " р.д."});
+                                } else
+                                if (value.contains("календарный день")) {
+                                    click("Радио",Document.Createform.Resolutionsdocument.limitationdate_radiodays);
+                                    settext("Срок", Document.Createform.Resolutionsdocument.limitationdate_radiodays_field, value.substring(0,value.indexOf("календарный день")-1));
+                                    WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Resolutionsdocument.limitationdate_radiodays_select));
+                                    Select select = new Select(selectElem);
+                                    select.selectByVisibleText("календарный день");
+                                    doc.put(attrname,new String[]{value.substring(0,value.indexOf("календарный день")-1) + " к.д."});
+                                } else
+                                if (value.contains("Без срока")) {
+                                    click("Радио",Document.Createform.Resolutionsdocument.limitationdate_radiolimitless);
+                                } else {
+                                    click("Радио",Document.Createform.Resolutionsdocument.limitationdate_radiodate);
+                                    settext("Дата", Document.Createform.Resolutionsdocument.limitationdate_radiodate_field, value);
+                                }
+                            break;
+                        case "Поручения Срок исполнения":
+                            for (String value : values)
+                                if (value.contains("рабочий день")) {
+                                    click("Радио",Document.Createform.Resolutionsdocument.Errands.limitationdate_radiodays);
+                                    settext("Срок", Document.Createform.Resolutionsdocument.Errands.limitationdate_radiodays_field, value.substring(0,value.indexOf("рабочий день")-1));
+                                    WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Resolutionsdocument.Errands.limitationdate_radiodays_select));
+                                    Select select = new Select(selectElem);
+                                    select.selectByVisibleText("рабочий день");
+                                    doc.put(attrname,new String[]{value.substring(0,value.indexOf("рабочий день")-1) + " р.д."});
+                                } else
+                                if (value.contains("календарный день")) {
+                                    click("Радио",Document.Createform.Resolutionsdocument.Errands.limitationdate_radiodays);
+                                    settext("Срок", Document.Createform.Resolutionsdocument.Errands.limitationdate_radiodays_field, value.substring(0,value.indexOf("календарный день")-1));
+                                    WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Resolutionsdocument.Errands.limitationdate_radiodays_select));
+                                    Select select = new Select(selectElem);
+                                    select.selectByVisibleText("календарный день");
+                                    doc.put(attrname,new String[]{value.substring(0,value.indexOf("календарный день")-1) + " к.д."});
+                                } else
+                                if (value.contains("Без срока")) {
+                                    click("Радио",Document.Createform.Resolutionsdocument.Errands.limitationdate_radiolimitless);
+                                } else {
+                                    click("Радио",Document.Createform.Resolutionsdocument.Errands.limitationdate_radiodate);
+                                    settext("Дата", Document.Createform.Resolutionsdocument.Errands.limitationdate_radiodate_field, value);
+                                }
+                            break;
+                        case "Поручения Требуется отчет":
+                        case "Утверждено вне системы":
+                        case "Контроль":
+                            for (String value : values)
+                                if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
+                                    click(attrname, xpath);
+                            break;
+                        case "Завершающий":
+                        case "Поручения Получатель отчета":
+                            WebElement selectElem = driver.findElement(By.xpath(xpath));
+                            for (String val:values) {
+                                Select select = new Select(selectElem);
+                                select.selectByVisibleText(val);
+                            }
+                            break;
+                        default:
+                            softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
+                            break;
+                    }
+                }else
+                    switch (attrname){
+                        case "Утверждено вне системы":
+                        case "Контроль":
+                            doc.put(attrname, new String[]{"Нет"});
                             break;
                         default:
                             doc.put(attrname, new String[]{"(Нет)"});
