@@ -32,6 +32,8 @@ class About {
     static HashMap<String, String[]> doc;
     static HashMap<String, HashMap<String, String[]>> items;
     static HashMap<String, String[]> item;
+    static HashMap<String, HashMap<String, String[]>> errands;
+    static HashMap<String, String[]> errand;
     static String current_user, current_login;
     static ArrayList<String> removedoc;
 

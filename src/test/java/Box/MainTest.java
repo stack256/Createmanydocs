@@ -1,5 +1,6 @@
 package Box;
 
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.*;
@@ -26,6 +27,8 @@ public class MainTest {
         doc = new HashMap<String, String[]>();
         items = new HashMap<String, HashMap<String, String[]>>();
         item = new HashMap<String, String[]>();
+        errands = new HashMap<String, HashMap<String, String[]>>();
+        errand = new HashMap<String, String[]>();
         usersinitial();
         timeoutlnseconds = 30;
         Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
@@ -33,15 +36,18 @@ public class MainTest {
         removedoc = new ArrayList<>();
         stack.add(new About.Stack());
 
-        DesiredCapabilities capability = DesiredCapabilities.chrome();
-        try {
-            driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capability);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
 
-        //driver = new RemoteWebDriver(hostURL, new ChromeOptions());
-        //driver = new ChromeDriver();
+
+        if (!System.getProperty("remote.grid").equals(null)) {
+            DesiredCapabilities capability = DesiredCapabilities.chrome();
+            try {
+                driver = new RemoteWebDriver(new URL(System.getProperty("remote.grid")), capability);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            driver = new ChromeDriver();
+        }
         driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
         String baseUrl = System.getProperty("stend.url");
         driver.get(baseUrl);
@@ -52,6 +58,8 @@ public class MainTest {
         doc.clear();
         items.clear();
         item.clear();
+        errands.clear();
+        errand.clear();
         stack.clear();
         removedoc.clear();
         users.clear();
@@ -315,4 +323,46 @@ public class MainTest {
         //if (!stack.get(0).value)
         removedocs();
     }
+/*
+
+
+    @Description("Какое то описание")
+    @Severity(SeverityLevel.CRITICAL)
+    @Features("Резолюция")
+    @Stories("Жизненный цикл")
+    @Title("Создать резолюцию")
+    @Test
+    public void test7() {
+        User user = getuserbyroles("Резолюции Создатель");
+
+        doc.put("document", new String[]{"resolutions"});
+        doc.put("Утверждено вне системы", new String[]{"Да"});
+        doc.put("Тематика", new String[]{"Доставка воды"});
+        doc.put("Автор", new String[]{getuserbylogin(user.login).full});
+        doc.put("Контролер", new String[]{getuserbylogin("denisov").full});
+        doc.put("Завершающий", new String[]{"Контролер"});
+        doc.put("Контроль", new String[]{"Да"});
+        doc.put("Срок исполнения", new String[]{"1 календарный день"});
+
+        errand = new HashMap<String, String[]>();
+        errand.put("Тип поручения", new String[]{"На исполнение (неконтрольное)"});
+        errand.put("Заголовок", new String[]{"Ознакомить подчиненных"});
+        errand.put("Исполнитель", new String[]{getuserbylogin("kozlov").full});
+        errand.put("Соисполнители", new String[]{getuserbylogin("denisov").full});
+        errand.put("Контролер", new String[]{getuserbylogin("denisov").full});
+        errand.put("Срок исполнения", new String[]{"Без срока"});
+        errand.put("Требуется отчет", new String[]{"Да"});
+        errands.put("1",errand);
+        errand = new HashMap<String, String[]>();
+
+        //авторизоваться
+        auth(user.famio,user.login,user.pass);
+        //создать входящий документ
+        createresolutions(doc, "Сохранить черновик");
+        readresolutions(doc);
+        doc.put("Запись в бж",new String[]{historystandartcreateerrand(doc)});
+        readhistory(doc.get("Запись в бж"),doc);
+        //if (!stack.get(0).value)
+        removedocs();
+    }*/
 }
