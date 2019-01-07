@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.allure.annotations.*;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -2176,7 +2177,7 @@ class Base {
         waitForLoad();
     }
 
-    private static Boolean waitelement(String xpath) {
+    private static Boolean waitelement(String xpath, boolean... flag) {
         waitForLoad();
         try {
             (new WebDriverWait(driver, timeoutlnseconds))
@@ -2184,7 +2185,7 @@ class Base {
             (new WebDriverWait(driver, timeoutlnseconds))
                     .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
         } catch (Exception e) {
-            if (!xpath.equals(SelectDialog.Simple.dialog))
+            if (flag.length == 0)
                 softassertfail("Не найден элемент " + xpath);
             return false;
         }
@@ -2230,7 +2231,7 @@ class Base {
     private static void click(String report, String xpath, String waitdialog) {
         click(report, xpath);
         int i = 10;
-        while (!waitelement(waitdialog) && i > 0) {
+        while (!waitelement(waitdialog,false) && i > 0) {
             clickagain(report, xpath);
             try {
                 Thread.sleep(1000);
