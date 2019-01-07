@@ -101,7 +101,7 @@ class Base {
         click("Входящий документ", ARMSED.Createmenu.incomingdocument);
         fillcreateincoming(doc);
         String currenturl = driver.getCurrentUrl();
-        click("Создать",Document.Createform.create_button);
+        click("Создать",Document.Createform.create_button,Document.Viewform.Incomingdocument.status_field);
         while (currenturl.equals(driver.getCurrentUrl())) {
             try {
                 Thread.sleep(100);
@@ -231,7 +231,7 @@ class Base {
         click("Внутренний документ", ARMSED.Createmenu.internaldocument);
         fillcreateinternal(doc);
         String currenturl = driver.getCurrentUrl();
-        click("Создать",Document.Createform.create_button);
+        click("Создать",Document.Createform.create_button,Document.Viewform.Internaldocument.status_field);
         while (currenturl.equals(driver.getCurrentUrl())) {
             try {
                 Thread.sleep(100);
@@ -363,7 +363,7 @@ class Base {
         click("Исходящий документ", ARMSED.Createmenu.outgoingdocument);
         fillcreateoutgoing(doc);
         String currenturl = driver.getCurrentUrl();
-        click("Создать",Document.Createform.create_button);
+        click("Создать",Document.Createform.create_button,Document.Viewform.Outgoingdocument.status_field);
         while (currenturl.equals(driver.getCurrentUrl())) {
             try {
                 Thread.sleep(100);
@@ -504,7 +504,7 @@ class Base {
         click("НД", ARMSED.Createmenu.nddocument);
         fillcreatend(doc);
         String currenturl = driver.getCurrentUrl();
-        click("Создать",Document.Createform.create_button);
+        click("Создать",Document.Createform.create_button,Document.Viewform.Nddocument.status_field);
         while (currenturl.equals(driver.getCurrentUrl())) {
             try {
                 Thread.sleep(100);
@@ -637,7 +637,7 @@ class Base {
     static void createord(Map<String, String[]> doc, HashMap<String, HashMap<String, String[]>> items) {
         gotoarmsed();
         click("Создать",ARMSED.createButton);
-        click("ОРД", ARMSED.Createmenu.orddocument);
+        click("ОРД", ARMSED.Createmenu.orddocument,Document.Viewform.Orddocument.status_field);
         fillcreateord(doc, items);
         String currenturl = driver.getCurrentUrl();
         click("Создать",Document.Createform.create_button);
@@ -822,7 +822,7 @@ class Base {
     static void createerrand(Map<String, String[]> doc, String button) {
         gotoarmsed();
         click("Создать",ARMSED.createButton);
-        click("Поручение", ARMSED.Createmenu.erranddocument);
+        click("Поручение", ARMSED.Createmenu.erranddocument,Document.Viewform.Erranddocument.status_field);
         fillcreateerrand(doc);
         String currenturl = driver.getCurrentUrl();
         if (button.equals("Сохранить черновик")) {
@@ -976,7 +976,7 @@ class Base {
     static void createresolutions(Map<String, String[]> doc, String button) {
         gotoarmsed();
         click("Создать",ARMSED.createButton);
-        click("Рехолюция", ARMSED.Createmenu.resolutionsdocument);
+        click("Рехолюция", ARMSED.Createmenu.resolutionsdocument,Document.Viewform.Resolutionsdocument.status_field);
         fillcreateresolutions(doc);
         String currenturl = driver.getCurrentUrl();
         if (button.equals("Сохранить черновик")) {
@@ -1124,7 +1124,7 @@ class Base {
     static void createprotocol(Map<String, String[]> doc) {
         gotoarmsed();
         click("Создать",ARMSED.createButton);
-        click("Протокол", ARMSED.Createmenu.protocoldocument);
+        click("Протокол", ARMSED.Createmenu.protocoldocument,Document.Viewform.Protocoldocument.status_field);
         fillcreateprotocol(doc, items);
         String currenturl = driver.getCurrentUrl();
         click("Создать",Document.Createform.create_button);
