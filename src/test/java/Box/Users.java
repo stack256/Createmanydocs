@@ -94,7 +94,7 @@ class Users {
         newuser.roles.add("Договор. Куратор");
         newuser.roles.add("Исходящие. Отправляющие");
         newuser.roles.add("Поручения.Инициатор");
-        newuser.roles.add("Резолюции Создатель");
+        newuser.roles.add("Резолюции. Создатели");
         newuser.famio = "Юдин Л.В.";
         newuser.fio = "Юдин Лукьян Вадимович";
         newuser.full = "Юдин Лукьян Вадимович Тестировщик AT_Subdivision1";

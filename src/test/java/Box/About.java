@@ -204,6 +204,16 @@ class About {
         return String.format(dynamicXPath, selectorValue);
     }
 
+    static String sd_reporter_tableadd(String selectorValue) {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        String dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[@class='form-fields']/div[(contains(@id,'employee') or contains(@id,'representative')) and not(contains(@class,'hidden'))]//td[contains(.,'%s')]/ancestor::tr//a[@title='Добавить']";
+        return String.format(dynamicXPath, selectorValue);
+    }
+
     static String sd_filergistertree_tableadd(String selectorValue) {
         try {
             Thread.sleep(500);
@@ -214,10 +224,14 @@ class About {
         return String.format(dynamicXPath, selectorValue);
     }
 
-    private static String incoming_header(String[] type, String[] regnum) {
+    static String currentdate() {
         Date currentdate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        return type[0] + ", № " + regnum[0] + " от " + sdf.format(currentdate);
+        return sdf.format(currentdate);
+    }
+
+    private static String incoming_header(String[] type, String[] regnum) {
+        return type[0] + ", № " + regnum[0] + " от " + currentdate();
     }
 
     public static String incoming_header(String[] type, String[] regnum, String[] date) {
@@ -251,5 +265,14 @@ class About {
             return current_user + " создал(а) новый документ \"" + resolutions_header(doc.get("Номер"), doc.get("Дата"), doc.get("Срок исполнения")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
         else
             return current_user + " создал(а) новый документ \"" + resolutions_header(doc.get("Номер_old"), doc.get("Дата"), doc.get("Срок исполнения_old")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
+    }
+
+    private static String protocol_header(String[] type, String[] regnum, String[] date) {
+
+        return type[0] + ", № " + regnum[0] + " от " + date[0];
+    }
+
+    static String historystandartcreateprotocol(Map<String, String[]> doc){
+        return current_user + " создал(а) новый документ \"" + protocol_header(doc.get("Вид документа"), doc.get("Номер"), doc.get("Дата")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
     }
 }

@@ -71,6 +71,16 @@ class Objects {
             static String ok_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='ОК']";
             static String dialog = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]";
         }
+        static class Reporter {
+            static String selected_elements = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[contains(@id,'picker-items')]";
+            static String select_type_adresant = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//li//a[text()='Адресант']";
+            static String select_type_employee = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//li//a[text()='Сотрудник']";
+            static String select_type = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[contains(@id,'select-button')]";
+            static String search_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[@class='form-fields']/div[(contains(@id,'employee') or contains(@id,'representative')) and not(contains(@class,'hidden'))]//input[contains(@id,'search-text')]";
+            static String search_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[@class='form-fields']/div[(contains(@id,'employee') or contains(@id,'representative')) and not(contains(@class,'hidden'))]//button[contains(@id,'search-button')]";
+            static String ok_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='ОК']";
+            static String dialog = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]";
+        }
         static String clearall = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//span[text()='Очистить']";
     }
 
@@ -464,6 +474,72 @@ class Objects {
                 static String save_button = "//div[contains(@class,'document-metadata')]//button[text()='Сохранить черновик']";
                 static String default_button = "//div[contains(@class,'document-metadata')]//button[text()='Направить']";
             }
+            static class Protocoldocument {
+                static String attachments_label = "//div[@class='document-metadata']//*[contains(text(),'Вложения:')]";
+                static String title_label = "//div[@class='document-metadata']//*[contains(text(),'Заголовок:')]";
+                static String title_field = "//div[@class='document-metadata']//*[contains(text(),'Заголовок:')]//ancestor::div[contains(@class,'control')]//input";
+                static String type_label = "//div[@class='document-metadata']//*[contains(text(),'Вид документа:')]";
+                static String type_field = "//div[@class='document-metadata']//*[contains(text(),'Вид документа:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String type_button = "//div[@class='document-metadata']//*[contains(text(),'Вид документа:')]//ancestor::div[contains(@class,'control')]//button";
+                static String executiondate_label = "//div[@class='document-metadata']//*[contains(text(),'Срок исполнения:')]";
+                static String executiondate_field = "//div[@class='document-metadata']//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'control')]//input[@type='text']";
+                static String summarycontent_label = "//div[@class='document-metadata']//*[contains(text(),'Содержание:')]";
+                static String summarycontent_iframe = "//iframe[contains(@id,'summaryContent')]";
+                static String summarycontent_field = "//body[@id='tinymce']";
+                static String signers_label = "//div[@class='document-metadata']//*[contains(text(),'Согласующие:')]";
+                static String signers_field = "//div[@class='document-metadata']//*[contains(text(),'Согласующие:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String signers_button = "//div[@class='document-metadata']//*[contains(text(),'Согласующие:')]//ancestor::div[contains(@class,'control')]//button";
+                static String chairman_label = "//div[@class='document-metadata']//*[contains(text(),'Председатель совещания:')]";
+                static String chairman_field = "//div[@class='document-metadata']//*[contains(text(),'Председатель совещания:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String chairman_button = "//div[@class='document-metadata']//*[contains(text(),'Председатель совещания:')]//ancestor::div[contains(@class,'control')]//button";
+                static String secretary_label = "//div[@class='document-metadata']//*[contains(text(),'Секретарь:')]";
+                static String secretary_field = "//div[@class='document-metadata']//*[contains(text(),'Секретарь:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String secretary_button = "//div[@class='document-metadata']//*[contains(text(),'Секретарь:')]//ancestor::div[contains(@class,'control')]//button";
+                static String attended_label = "//div[@class='document-metadata']//*[contains(text(),'Присутствовали:')]";
+                static String attended_field = "//div[@class='document-metadata']//*[contains(text(),'Присутствовали:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String attended_button = "//div[@class='document-metadata']//*[contains(text(),'Присутствовали:')]//ancestor::div[contains(@class,'control')]//button";
+                static String signedbypaper_label = "//div[@class='document-metadata']//*[contains(text(),'Подписано на бумажном носителе')]";
+                static String signedbypaper_checkbox = "//div[@class='document-metadata']//*[contains(text(),'Подписано на бумажном носителе')]//ancestor::div[contains(@class,'control')]//input[@type='checkbox']";
+                static String note_label = "//div[@class='document-metadata']//*[contains(text(),'Примечание:')]";
+                static String note_field = "//div[@class='document-metadata']//*[contains(text(),'Примечание:')]//ancestor::div[contains(@class,'control')]//textarea";
+                static String sheets_number_label = "//div[@class='document-metadata']//*[contains(text(),'Количество листов:')]";
+                static String sheets_number_field = "//div[@class='document-metadata']//*[contains(text(),'Количество листов:')]//ancestor::div[contains(@class,'control')]//input";
+                static String subject_label = "//div[@class='document-metadata']//*[contains(text(),'Тематика:')]";
+                static String subject_field = "//div[@class='document-metadata']//*[contains(text(),'Тематика:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String subject_button = "//div[@class='document-metadata']//*[contains(text(),'Тематика:')]//ancestor::div[contains(@class,'control')]//button";
+                static String file_register_label = "//div[@class='document-metadata']//*[contains(text(),'Номер дела:')]";
+                static String file_register_field = "//div[@class='document-metadata']//*[contains(text(),'Номер дела:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String file_register_button = "//div[@class='document-metadata']//*[contains(text(),'Номер дела:')]//ancestor::div[contains(@class,'control')]//button";
+                static String autocreation_label = "//div[@class='document-metadata']//*[contains(text(),'Автосоздание поручений')]";
+                static String autocreation_checkbox = "//div[@class='document-metadata']//*[contains(text(),'Автосоздание поручений')]//ancestor::div[contains(@class,'control')]//input[@type='checkbox']";
+                static class Items{
+                    static String formulation_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Формулировка:')]";
+                    static String formulation_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Формулировка:')]//ancestor::div[contains(@class,'control')]//input";
+                    static String reporter_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Докладчик:')]";
+                    static String reporter_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Докладчик:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                    static String reporter_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Докладчик:')]//ancestor::div[contains(@class,'control')]//button";
+                    static String coreporter_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Содокладчики:')]";
+                    static String coreporter_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Содокладчики:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                    static String coreporter_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Содокладчики:')]//ancestor::div[contains(@class,'control')]//button";
+                    static String point_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Описание:')]";
+                    static String point_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Описание:')]//ancestor::div[contains(@class,'control')]//textarea";
+                    static String menspoke_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Выступили:')]";
+                    static String menspoke_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Выступили:')]//ancestor::div[contains(@class,'control')]//textarea";
+                    static String decision_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Решение:')]";
+                    static String decision_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Решение:')]//ancestor::div[contains(@class,'control')]//textarea";
+                    static String executor_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Исполнитель:')]";
+                    static String executor_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Исполнитель:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                    static String executor_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Исполнитель:')]//ancestor::div[contains(@class,'control')]//button";
+                    static String executiondate_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Срок исполнения:')]";
+                    static String executiondate_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'control')]//input[@type='text']";
+                    static String note_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Примечание:')]";
+                    static String note_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Примечание:')]//ancestor::div[contains(@class,'control')]//textarea";
+                    static String saveandcreate_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='Сохранить и создать новый']";
+                    static String saveandclose_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='Сохранить и закрыть']";
+                    static String close_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='Закрыть']";
+                }
+                static String additem_button = "//div[contains(@class,'document-metadata')]//button[text()='Создание']";
+            }
         }
         static class Viewform{
             static String zavershit_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Причина:')]";
@@ -766,6 +842,36 @@ class Objects {
 
                 static String status_field = "//div[contains(@id,'status')]//*[contains(@class,'value')]";
             }
+            static class Protocoldocument{
+                static String title_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Заголовок:')]";
+                static String title_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'title')]//div[contains(@class,'value')]";
+                static String type_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Вид документа:')]";
+                static String type_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'type')]//div[contains(@class,'value')]";
+                static String executiondate_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Срок исполнения:')]";
+                static String executiondate_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'execution-date')]//div[contains(@class,'value')]";
+                static String summary_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Содержание:')]";
+                static String summary_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'summary')]//div[contains(@class,'value')]";
+                static String chairman_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Председатель совещания:')]";
+                static String chairman_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'chairman')]//div[contains(@class,'value')]";
+                static String secretary_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Секретарь:')]";
+                static String secretary_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'secretary')]//div[contains(@class,'value')]";
+                static String attended_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Присутствовали:')]";
+                static String attended_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'attended')]//div[contains(@class,'value')]";
+                static String signedonpaper_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Подписано на бумажном носителе:')]";
+                static String signedonpaper_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'signed-on-paper')]//div[contains(@class,'value')]";
+                static String note_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Примечание:')]";
+                static String note_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'note')]//div[contains(@class,'value')]";
+                static String sheetsnumber_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Количество листов:')]";
+                static String sheetsnumber_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'sheets-number')]//div[contains(@class,'value')]";
+                static String subject_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Тематика:')]";
+                static String subject_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'subject')]//div[contains(@class,'value')]";
+                static String fileregister_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Номер дела:')]";
+                static String fileregister_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'file-register')]//div[contains(@class,'value')]";
+                static String autocreation_label = "//div[contains(@class,'metadata-form')]//*[contains(text(),'Автосоздание поручений:')]";
+                static String autocreation_field = "//div[contains(@class,'metadata-form')]//div[contains(@id,'autocreation')]//div[contains(@class,'value')]";
+
+                static String status_field = "//div[contains(@id,'status')]//*[contains(@class,'value')]";
+            }
         }
     }
 
@@ -778,6 +884,7 @@ class Objects {
             static String orddocument = "//ul//a[text()='ОРД']";
             static String erranddocument = "//ul//a[text()='Поручение']";
             static String resolutionsdocument = "//ul//a[text()='Резолюция']";
+            static String protocoldocument = "//ul//a[text()='Протокол']";
         }
         static String createButton = "//button[text()='Создать']";
     }

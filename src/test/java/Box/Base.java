@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static Box.About.item;
 import static Box.Objects.*;
 import static Box.About.*;
 import static Box.Users.*;
@@ -1070,7 +1071,7 @@ class Base {
         for (String val:doc.get("Статус"))
             status = val;
         waitelement(Document.Viewform.Resolutionsdocument.status_field);
-        if (!driver.findElement(By.xpath(Document.Viewform.Incomingdocument.status_field)).getText().equals(status)){
+        if (!driver.findElement(By.xpath(Document.Viewform.Resolutionsdocument.status_field)).getText().equals(status)){
             driver.get(driver.getCurrentUrl());
         }
 
@@ -1119,6 +1120,172 @@ class Base {
             removedoc.add(currenturl);
     }
 
+    @Step("Создать протокол")
+    static void createprotocol(Map<String, String[]> doc) {
+        gotoarmsed();
+        click("Создать",ARMSED.createButton);
+        click("Протокол", ARMSED.Createmenu.protocoldocument);
+        fillcreateprotocol(doc, items);
+        String currenturl = driver.getCurrentUrl();
+        click("Создать",Document.Createform.create_button);
+        while (currenturl.equals(driver.getCurrentUrl())) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        doc.put("Статус",new String[]{"Черновик"});
+        doc.put("Номер",new String[]{"Не присвоено"});
+        doc.put("Дата",new String[]{currentdate()});
+    }
+
+    @Step("Заполнить атрибуты")
+    private static void fillcreateprotocol(Map<String, String[]> doc, HashMap<String, HashMap<String, String[]>> items) {
+        verifyattr("Вложения", Document.Createform.Protocoldocument.attachments_label);
+
+        verifyattr("Заголовок", Document.Createform.Protocoldocument.title_label);
+        fillfield("Заголовок",Document.Createform.Protocoldocument.title_field, doc.get("Заголовок"), doc);
+
+        verifyattr("Вид документа", Document.Createform.Protocoldocument.type_label);
+        fillfield("Вид документа",Document.Createform.Protocoldocument.type_button, doc.get("Вид документа"), doc);
+
+        verifyattr("Срок исполнения", Document.Createform.Protocoldocument.executiondate_label);
+        fillfield("Срок исполнения",Document.Createform.Protocoldocument.executiondate_field, doc.get("Срок исполнения"), doc);
+
+        verifyattr("Содержание", Document.Createform.Protocoldocument.summarycontent_label);
+        fillfield("Содержание",Document.Createform.Protocoldocument.summarycontent_field, doc.get("Содержание"), doc);
+
+        verifyattr("Согласующие", Document.Createform.Protocoldocument.signers_label);
+        fillfield("Согласующие",Document.Createform.Protocoldocument.signers_button, doc.get("Согласующие"), doc);
+
+        verifyattr("Председатель совещания", Document.Createform.Protocoldocument.chairman_label);
+        fillfield("Председатель совещания",Document.Createform.Protocoldocument.chairman_button, doc.get("Председатель совещания"), doc);
+
+        verifyattr("Секретарь", Document.Createform.Protocoldocument.secretary_label);
+        fillfield("Секретарь",Document.Createform.Protocoldocument.secretary_button, doc.get("Секретарь"), doc);
+
+        verifyattr("Присутствовали", Document.Createform.Protocoldocument.attended_label);
+        fillfield("Присутствовали",Document.Createform.Protocoldocument.attended_button, doc.get("Присутствовали"), doc);
+
+        verifyattr("Подписано на бумажном носителе", Document.Createform.Protocoldocument.signedbypaper_label);
+        fillfield("Подписано на бумажном носителе",Document.Createform.Protocoldocument.signedbypaper_checkbox, doc.get("Подписано на бумажном носителе"), doc);
+
+        verifyattr("Примечание", Document.Createform.Protocoldocument.note_label);
+        fillfield("Примечание",Document.Createform.Protocoldocument.note_field, doc.get("Примечание"), doc);
+
+        verifyattr("Количество листов", Document.Createform.Protocoldocument.sheets_number_label);
+        fillfield("Количество листов",Document.Createform.Protocoldocument.sheets_number_field, doc.get("Количество листов"), doc);
+
+        verifyattr("Тематика", Document.Createform.Protocoldocument.subject_label);
+        fillfield("Тематика",Document.Createform.Protocoldocument.subject_button, doc.get("Тематика"), doc);
+
+        verifyattr("Номер дела", Document.Createform.Protocoldocument.file_register_label);
+        fillfield("Номер дела",Document.Createform.Protocoldocument.file_register_button, doc.get("Номер дела"), doc);
+
+        verifyattr("Автосоздание поручений", Document.Createform.Protocoldocument.autocreation_label);
+        fillfield("Автосоздание поручений",Document.Createform.Protocoldocument.autocreation_checkbox, doc.get("Автосоздание поручений"), doc);
+
+
+        if (!items.isEmpty()){
+            //метод для заполнения формы создания пунктов (которая еще не описана)
+            click("Создание", Document.Createform.Protocoldocument.additem_button);
+            additemsprotocol(items);
+        }
+    }
+
+    @Step("Добавить пункты")
+    private static void additemsprotocol(HashMap<String, HashMap<String, String[]>> items) {
+        int k = items.size();
+        for (int i=0; i<k; i++) {
+            if (i!=0)
+                click("Сохранить и создать новый",Document.Createform.Protocoldocument.Items.saveandcreate_button);
+            item = items.get(Integer.toString(i+1));
+            fillitemprotocol(i,item);
+        }
+        click("Закрыть",Document.Createform.Protocoldocument.Items.close_button);
+    }
+
+    @Step("Заполнить пункт {0}")
+    private static void fillitemprotocol(Integer i, HashMap<String, String[]> item) {
+        verifyattr("Пункт Формулировка", "(" + Document.Createform.Protocoldocument.Items.formulation_label + ")[" + Integer.toString(i+1) + "]");
+        fillfield("Пункт Формулировка", "(" + Document.Createform.Protocoldocument.Items.formulation_field + ")[" + Integer.toString(i+1) + "]", item.get("Пункт Формулировка"), item);
+
+        verifyattr("Пункт Докладчик", "(" + Document.Createform.Protocoldocument.Items.reporter_label + ")[" + Integer.toString(i+1) + "]");
+        fillfield("Пункт Докладчик", "(" + Document.Createform.Protocoldocument.Items.reporter_button + ")[" + Integer.toString(i+1) + "]", item.get("Пункт Докладчик"), item);
+
+        verifyattr("Пункт Содокладчики", "(" + Document.Createform.Protocoldocument.Items.coreporter_label + ")[" + Integer.toString(i+1) + "]");
+        fillfield("Пункт Содокладчики", "(" + Document.Createform.Protocoldocument.Items.coreporter_button + ")[" + Integer.toString(i+1) + "]", item.get("Пункт Содокладчики"), item);
+
+        verifyattr("Пункт Описание", "(" + Document.Createform.Protocoldocument.Items.point_label + ")[" + Integer.toString(i+1) + "]");
+        fillfield("Пункт Описание", "(" + Document.Createform.Protocoldocument.Items.point_field + ")[" + Integer.toString(i+1) + "]", item.get("Пункт Описание"), item);
+
+        verifyattr("Пункт Выступили", "(" + Document.Createform.Protocoldocument.Items.menspoke_label + ")[" + Integer.toString(i+1) + "]");
+        fillfield("Пункт Выступили", "(" + Document.Createform.Protocoldocument.Items.menspoke_field + ")[" + Integer.toString(i+1) + "]", item.get("Пункт Выступили"), item);
+
+        verifyattr("Пункт Решение", "(" + Document.Createform.Protocoldocument.Items.decision_label + ")[" + Integer.toString(i+1) + "]");
+        fillfield("Пункт Решение", "(" + Document.Createform.Protocoldocument.Items.decision_field + ")[" + Integer.toString(i+1) + "]", item.get("Пункт Решение"), item);
+
+        verifyattr("Пункт Исполнитель", "(" + Document.Createform.Protocoldocument.Items.executor_label + ")[" + Integer.toString(i+1) + "]");
+        fillfield("Пункт Исполнитель", "(" + Document.Createform.Protocoldocument.Items.executor_button+ ")[" + Integer.toString(i+1) + "]", item.get("Пункт Исполнитель"), item);
+
+        verifyattr("Пункт Срок исполнения", "(" + Document.Createform.Protocoldocument.Items.executiondate_label + ")[" + Integer.toString(i+1) + "]");
+        fillfield("Пункт Срок исполнения", "(" + Document.Createform.Protocoldocument.Items.executiondate_field + ")[" + Integer.toString(i+1) + "]", item.get("Пункт Срок исполнения"), item);
+
+        verifyattr("Пункт Примечание", "(" + Document.Createform.Protocoldocument.Items.note_label + ")[" + Integer.toString(i+1) + "]");
+        fillfield("Пункт Примечание", "(" + Document.Createform.Protocoldocument.Items.note_field + ")[" + Integer.toString(i+1) + "]", item.get("Пункт Примечание"), item);
+    }
+
+    @Step("Проверить наличие атрибутов и их значения на форме просмотра")
+    static void readprotocol(Map<String, String[]> doc) {
+        waitForLoad();
+        String status = null;
+        for (String val:doc.get("Статус"))
+            status = val;
+        waitelement(Document.Viewform.Resolutionsdocument.status_field);
+        if (!driver.findElement(By.xpath(Document.Viewform.Protocoldocument.status_field)).getText().equals(status)){
+            driver.get(driver.getCurrentUrl());
+        }
+
+
+
+        String title = driver.findElement(By.xpath(Objects.Document.documenttitle)).getText();
+        doc.put("Номер",new String[]{title.substring(title.indexOf("№ ")+2,title.indexOf(" от "))});
+
+        checkfield("Заголовок", Document.Viewform.Protocoldocument.title_label, Document.Viewform.Protocoldocument.title_field, doc);
+
+        checkfield("Вид документа", Document.Viewform.Protocoldocument.type_label, Document.Viewform.Protocoldocument.type_field, doc);
+
+        checkfield("Срок исполнения", Document.Viewform.Protocoldocument.executiondate_label, Document.Viewform.Protocoldocument.executiondate_field, doc);
+
+        checkfield("Содержание", Document.Viewform.Protocoldocument.summary_label, Document.Viewform.Protocoldocument.summary_field, doc);
+
+        checkfield("Председатель совещания", Document.Viewform.Protocoldocument.chairman_label, Document.Viewform.Protocoldocument.chairman_field, doc);
+
+        checkfield("Секретарь", Document.Viewform.Protocoldocument.secretary_label, Document.Viewform.Protocoldocument.secretary_field, doc);
+
+        checkfield("Присутствовали", Document.Viewform.Protocoldocument.attended_label, Document.Viewform.Protocoldocument.attended_field, doc);
+
+        checkfield("Подписано на бумажном носителе", Document.Viewform.Protocoldocument.signedonpaper_label, Document.Viewform.Protocoldocument.signedonpaper_field, doc);
+
+        checkfield("Примечание", Document.Viewform.Protocoldocument.note_label, Document.Viewform.Protocoldocument.note_field, doc);
+
+        checkfield("Количество листов", Document.Viewform.Protocoldocument.sheetsnumber_label, Document.Viewform.Protocoldocument.sheetsnumber_field, doc);
+
+        checkfield("Тематика", Document.Viewform.Protocoldocument.subject_label, Document.Viewform.Protocoldocument.subject_field, doc);
+
+        checkfield("Номер дела", Document.Viewform.Protocoldocument.fileregister_label, Document.Viewform.Protocoldocument.fileregister_field, doc);
+
+        checkfield("Автосоздание поручений", Document.Viewform.Protocoldocument.autocreation_label, Document.Viewform.Protocoldocument.autocreation_field, doc);
+
+        String currenturl = driver.getCurrentUrl();
+        if (currenturl.contains("#")){
+            currenturl = currenturl.substring(0,currenturl.indexOf('#'));
+        }
+        if (!removedoc.contains(currenturl))
+            removedoc.add(currenturl);
+    }
+
     @Step("Атрибут <{0}>")
     private static void checkfield(String attrname, String xpath, String xpathradio1, String xpathfield1, String xpathradio2, String xpathfield2, Map<String, String[]> doc) {
         waitForLoad();
@@ -1156,7 +1323,6 @@ class Base {
 
     }
 
-
     @Step("Значения радио <{1}>")
     private static void readfieldradio(String xpath, boolean t) {
         String value = null;
@@ -1169,8 +1335,6 @@ class Base {
             value = Boolean.toString(false);
         softassertfail(value,Boolean.toString(t));
     }
-
-
 
     @Step("Атрибут <{0}>")
     private static void checkfield(String attrname, String xpath, String xpathfield, Map<String, String[]> doc) {
@@ -1403,8 +1567,46 @@ class Base {
         boolean t = false;
         for(WebElement element:elements)
             if (element.getText().contains(value)) t = true;
-            hardassertfail(t, "Не выбран элемент " + value);
-            click("ОК", SelectDialog.Sender.ok_button);
+        hardassertfail(t, "Не выбран элемент " + value);
+        click("ОК", SelectDialog.Sender.ok_button);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+    @Step("Заполнить атрибут <{0}> значением <{2}>")
+    private static void fillselectdialogreporter(String attrname, Map<String, String[]> doc, String... values) {
+        waitelement(SelectDialog.Reporter.dialog);
+        click("Очистить", SelectDialog.clearall);
+        for (String val:values)
+            switch (val){
+                case "Сотрудник":
+                    click("",SelectDialog.Reporter.select_type);
+                    click("Сотрудник",SelectDialog.Reporter.select_type_employee);
+                    break;
+                case "Адресант":
+                    click("",SelectDialog.Reporter.select_type);
+                    click("Адресант",SelectDialog.Reporter.select_type_adresant);
+                    break;
+                default:
+                    settext("",SelectDialog.Reporter.search_field,val);
+                    click("Поиск",SelectDialog.Reporter.search_button);
+                    waitForLoad();
+                    click("Добавить", sd_reporter_tableadd(val));
+                    List<WebElement> elements = driver.findElements(By.xpath(SelectDialog.Reporter.selected_elements));
+                    boolean t = false;
+                    for(WebElement element:elements)
+                        if (element.getText().contains(val)) t = true;
+                    hardassertfail(t, "Не выбран элемент " + val);
+                    break;
+            }
+
+        click("ОК", SelectDialog.Reporter.ok_button);
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -1464,11 +1666,6 @@ class Base {
                             break;
                         case "На контроле":
                         case "Нерегистрируемый":
-                        /*case "Подписано на бумажном носителе":
-                        case "Завершающий":
-                        case "Бессрочный":
-                        case "Пункты Требуется отчет":
-                        case "Подтверждать завершение работы по документу":*/
                             for (String value : values)
                                 if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
                                     click(attrname, xpath);
@@ -1937,6 +2134,68 @@ class Base {
                                 Select select = new Select(selectElem);
                                 select.selectByVisibleText(val);
                             }
+                            break;
+                        default:
+                            softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
+                            break;
+                    }
+                }else
+                    switch (attrname){
+                        case "Утверждено вне системы":
+                        case "Контроль":
+                            doc.put(attrname, new String[]{"Нет"});
+                            break;
+                        default:
+                            doc.put(attrname, new String[]{"(Нет)"});
+                            break;
+                    }
+                break;
+            case "protocol":
+                if (values != null) {
+                    switch (attrname) {
+                        case "Заголовок":
+                        case "Срок исполнения":
+                        case "Примечание":
+                        case "Количество листов":
+                        case "Пункт Формулировка":
+                        case "Пункт Описание":
+                        case "Пункт Выступили":
+                        case "Пункт Решение":
+                        case "Пункт Срок исполнения":
+                        case "Пункт Примечание":
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            break;
+                        case "Вид документа":
+                        case "Согласующие":
+                        case "Председатель совещания":
+                        case "Секретарь":
+                        case "Присутствовали":
+                        case "Тематика":
+                        case "Пункт Исполнитель":
+                            click("...", xpath, SelectDialog.Simple.dialog);
+                            fillselectdialogsimple(attrname, doc, values);
+                            break;
+                        case "Содержание":
+                            driver.switchTo().frame(driver.findElement(By.xpath(Document.Createform.Protocoldocument.summarycontent_iframe)));
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            driver.switchTo().defaultContent();
+                            break;
+                        case "Подписано на бумажном носителе":
+                        case "Автосоздание поручений":
+                            for (String value : values)
+                                if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
+                                    click(attrname, xpath);
+                            break;
+                        case "Номер дела":
+                            click("...", xpath, SelectDialog.Fileregister.dialog);
+                            fillselectdialogfileregister(attrname, doc, values);
+                            break;
+                        case "Пункт Докладчик":
+                        case "Пункт Содокладчики":
+                            click("...", xpath, SelectDialog.Reporter.dialog);
+                            fillselectdialogreporter(attrname, doc, values);
                             break;
                         default:
                             softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
