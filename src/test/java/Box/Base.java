@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static Box.About.item;
-import static Box.Objects.*;
 import static Box.About.*;
+import static Box.About.doc;
+import static Box.Objects.*;
 import static Box.Users.*;
 
 class Base {
@@ -111,7 +111,6 @@ class Base {
         }
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
-        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
     }
 
     @Step("Заполнить атрибуты")
@@ -225,11 +224,13 @@ class Base {
     }
 
     @Step("Создать внутренний документ")
-    static void createinternal(Map<String, String[]> doc) {
-        gotoarmsed();
-        click("Создать",ARMSED.createButton);
-        click("Внутренний документ", ARMSED.Createmenu.internaldocument);
-        fillcreateinternal(doc);
+    static void createinternal(Map<String, String[]> doc, boolean... flag) {
+        if (flag.length == 0) {
+            gotoarmsed();
+            click("Создать", ARMSED.createButton);
+            click("Внутренний документ", ARMSED.Createmenu.internaldocument);
+            fillcreateinternal(doc);
+        }
         String currenturl = driver.getCurrentUrl();
         click("Создать",Document.Createform.create_button,Document.Viewform.Internaldocument.status_field);
         while (currenturl.equals(driver.getCurrentUrl())) {
@@ -239,9 +240,12 @@ class Base {
                 e.printStackTrace();
             }
         }
+
+
+        doc.put("Составитель", new String[]{getuserbylogin(current_login).full});
+        doc.put("Исполнитель", new String[]{getuserbylogin(current_login).full});
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
-        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
     }
 
     @Step("Заполнить атрибуты")
@@ -306,6 +310,12 @@ class Base {
         if (!driver.findElement(By.xpath(Document.Viewform.Internaldocument.status_field)).getText().equals(status)){
             driver.get(driver.getCurrentUrl());
         }
+
+        String title = driver.findElement(By.xpath(Objects.Document.documenttitle)).getText();
+        doc.put("Номер",new String[]{title.substring(title.indexOf(" № ")+3,title.indexOf(" от "))});
+        if (status.equals("Проект"))
+            doc.put("Номер проекта",doc.get("Номер"));
+
         checkfield("Номер", Document.Viewform.Internaldocument.regnum_label, Document.Viewform.Internaldocument.regnum_field, doc);
 
         checkfield("Дата регистрации", Document.Viewform.Internaldocument.reg_data_label, Document.Viewform.Internaldocument.reg_data_field, doc);
@@ -373,7 +383,6 @@ class Base {
         }
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
-        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
     }
 
     @Step("Заполнить атрибуты")
@@ -514,7 +523,6 @@ class Base {
         }
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
-        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
     }
 
     @Step("Заполнить атрибуты")
@@ -650,7 +658,6 @@ class Base {
         }
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
-        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
     }
 
     @Step("Заполнить атрибуты")
@@ -2263,7 +2270,7 @@ class Base {
     }
 
     @Step("Нажать кнопку <{0}>")
-    private static void click(String report, String xpath) {
+    static void click(String report, String xpath) {
         waitForLoad();
         try {
             (new WebDriverWait(driver, timeoutlnseconds))
@@ -2309,17 +2316,52 @@ class Base {
         waitForLoad();
     }
 
-    @Step("Проверить наличие записи в бж: {0}")
+    @Step("Проверить наличие записей в бж")
     static void readhistory(String[] values, Map<String, String[]> doc){
         click("История", Document.Viewform.Rightblock.history_header);
         click("Развернуть", Document.Viewform.Rightblock.history_open);
+        waitelement(Document.table_history);
+        waitForLoad();
         String dynamicXPath = "//td[contains(.,\'%s\')]";
-        for (String value: values) {
-            String XPath = String.format(dynamicXPath, value);
-            waitelement(Document.table_history);
-            waitForLoad();
-            waitelement(XPath);
-        }
+        for (String value: values)
+            readhistoryitem(String.format(dynamicXPath, value));
     }
 
+    @Step("{0}")
+    static void readhistoryitem(String historyitem){
+        waitelement(historyitem);
+    }
+
+    @Step("Выполнить действие {0}")
+    static void righactionexecute(String action, String approve){
+        click(action, righaction(action));
+        click(approve,approveaction(approve));
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        waitForLoad();
+    }
+
+    @Step("Выполнить действие {0}")
+    static void righactionexecute(String action, String approve, String status){
+        click(action, righaction(action));
+        click(approve,approveaction(approve));
+        boolean t = false;
+        waitForLoad();
+        waitelement(Document.Viewform.status_field);
+        int i = 10;
+        while (i > 0 && !t){
+            try {
+                Thread.sleep(1000);
+                waitForLoad();
+                t = driver.findElement(By.xpath(Document.Viewform.status_field)).getText().equals(status);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            waitForLoad();
+            i--;
+        }
+    }
 }

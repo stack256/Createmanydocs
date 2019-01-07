@@ -226,6 +226,16 @@ class About {
         return String.format(dynamicXPath, selectorValue);
     }
 
+    static String righaction(String selectorValue) {
+        String dynamicXPath = "//div[contains(@id,'right-part')]//*[contains(text(),'Действия')]//ancestor::div[contains(@class,'widget')]//*[text()='%s']";
+        return String.format(dynamicXPath, selectorValue);
+    }
+
+    static String approveaction(String selectorValue) {
+        String dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s')]";
+        return String.format(dynamicXPath, selectorValue);
+    }
+
     static String currentdate() {
         Date currentdate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -242,6 +252,13 @@ class About {
 
     static String historystandartcreate(Map<String, String[]> doc){
         return current_user + " создал(а) новый документ \"" + incoming_header(doc.get("Вид документа"), doc.get("Номер")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
+    }
+
+    static String historystandartchangestatus(Map<String, String[]> doc){
+        if (doc.get("Статус")[0].equals("Проект"))
+            return current_user + " перевел(а) документ \"" + incoming_header(doc.get("Вид документа"), new String[]{"Не присвоено"}) + "\" в статус \"" + doc.get("Статус")[0] + "\"";
+        else
+            return current_user + " перевел(а) документ \"" + incoming_header(doc.get("Вид документа"), doc.get("Номер")) + "\" в статус \"" + doc.get("Статус")[0] + "\"";
     }
 
     private static String errand_header(String[] title, String[] regnum, String[] executor, String[] limitdate) {

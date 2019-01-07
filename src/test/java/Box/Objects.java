@@ -546,6 +546,8 @@ class Objects {
             static String zavershit_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//textarea";
             static String vernut_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Причина:')]";
             static String vernut_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//textarea";
+            static String copydoc_button = "//div[contains(@class,'document-header')]//button[@title='Копировать документ']";
+            static String status_field = "//div[contains(@id,'status')]//*[contains(@class,'value')]";
             static class Rightblock{
                 static String history_open = "//div[contains(@class,'widget')]//h2[contains(.,'История')]//*[contains(@title,'Развернуть')]";
                 static String history_header = "//div[contains(@class,'widget')]//h2[contains(.,'История')]";
