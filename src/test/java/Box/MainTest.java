@@ -31,7 +31,7 @@ public class MainTest {
         errands = new HashMap<String, HashMap<String, String[]>>();
         errand = new HashMap<String, String[]>();
         usersinitial();
-        timeoutlnseconds = 30;
+        timeoutlnseconds = 10;
         Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
         stack = new ArrayList<About.Stack>();
         removedoc = new ArrayList<>();

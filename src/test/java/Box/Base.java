@@ -91,7 +91,7 @@ class Base {
         click("Логика: СЭД", MenuBar.logsed);
         timeoutlnseconds = 120;
         waitelement(ARMSED.createButton);
-        timeoutlnseconds = 30;
+        timeoutlnseconds = 10;
     }
 
     @Step("Создать входящий документ")
@@ -102,13 +102,6 @@ class Base {
         fillcreateincoming(doc);
         String currenturl = driver.getCurrentUrl();
         click("Создать",Document.Createform.create_button,Document.Viewform.Incomingdocument.status_field);
-        while (currenturl.equals(driver.getCurrentUrl())) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
     }
@@ -233,15 +226,6 @@ class Base {
         }
         String currenturl = driver.getCurrentUrl();
         click("Создать",Document.Createform.create_button,Document.Viewform.Internaldocument.status_field);
-        while (currenturl.equals(driver.getCurrentUrl())) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-
         doc.put("Составитель", new String[]{getuserbylogin(current_login).full});
         doc.put("Исполнитель", new String[]{getuserbylogin(current_login).full});
         doc.put("Статус",new String[]{"Черновик"});
@@ -374,13 +358,6 @@ class Base {
         fillcreateoutgoing(doc);
         String currenturl = driver.getCurrentUrl();
         click("Создать",Document.Createform.create_button,Document.Viewform.Outgoingdocument.status_field);
-        while (currenturl.equals(driver.getCurrentUrl())) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
     }
@@ -514,13 +491,6 @@ class Base {
         fillcreatend(doc);
         String currenturl = driver.getCurrentUrl();
         click("Создать",Document.Createform.create_button,Document.Viewform.Nddocument.status_field);
-        while (currenturl.equals(driver.getCurrentUrl())) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
     }
@@ -649,13 +619,6 @@ class Base {
         fillcreateord(doc, items);
         String currenturl = driver.getCurrentUrl();
         click("Создать",Document.Createform.create_button,Document.Viewform.Orddocument.status_field);
-        while (currenturl.equals(driver.getCurrentUrl())) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
     }
@@ -838,17 +801,10 @@ class Base {
         }
         else
         if (button.equals("Направить")) {
-            click("Направить", Document.Createform.Erranddocument.default_button);
+            click("Направить", Document.Createform.Erranddocument.default_button,Document.Viewform.Erranddocument.status_field);
             doc.put("Статус",new String[]{"Ожидает исполнения"});
         }
         else hardassertfail(button + " - Нет такой кнопки на форме создания поручения");
-        while (currenturl.equals(driver.getCurrentUrl())) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
 
         if (doc.get("Автор") == null)
             doc.put("Автор", new String[]{getuserbylogin(current_login).full});
@@ -992,17 +948,10 @@ class Base {
         }
         else
         if (button.equals("Направить")) {
-            click("Направить", Document.Createform.Resolutionsdocument.default_button);
+            click("Направить", Document.Createform.Resolutionsdocument.default_button,Document.Viewform.Resolutionsdocument.status_field);
             doc.put("Статус",new String[]{"На исполнении"});
         }
         else hardassertfail(button + " - Нет такой кнопки на форме создания поручения");
-        while (currenturl.equals(driver.getCurrentUrl())) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
 
         if (doc.get("Создатель") == null)
             doc.put("Создатель", new String[]{getuserbylogin(current_login).full});
@@ -1135,13 +1084,6 @@ class Base {
         fillcreateprotocol(doc, items);
         String currenturl = driver.getCurrentUrl();
         click("Создать",Document.Createform.create_button,Document.Viewform.Protocoldocument.status_field);
-        while (currenturl.equals(driver.getCurrentUrl())) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
         doc.put("Дата",new String[]{currentdate()});
@@ -1582,9 +1524,6 @@ class Base {
             e.printStackTrace();
         }
     }
-
-
-
 
     @Step("Заполнить атрибут <{0}> значением <{2}>")
     private static void fillselectdialogreporter(String attrname, Map<String, String[]> doc, String... values) {
@@ -2293,6 +2232,11 @@ class Base {
         int i = 10;
         while (!waitelement(waitdialog) && i > 0) {
             clickagain(report, xpath);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             i--;
         }
     }
