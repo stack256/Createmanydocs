@@ -1,7 +1,7 @@
 package Box;
 
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.*;
 import ru.yandex.qatools.allure.Allure;
@@ -37,9 +37,8 @@ public class MainTest {
         stack.add(new About.Stack());
 
         if (System.getProperty("remote.grid") != null) {
-            DesiredCapabilities capability = DesiredCapabilities.chrome();
             try {
-                driver = new RemoteWebDriver(new URL(System.getProperty("remote.grid")), capability);
+                driver = new RemoteWebDriver(new URL(System.getProperty("remote.grid")), new ChromeOptions());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
