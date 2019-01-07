@@ -90,8 +90,8 @@ class About {
     }
 
     @Attachment(value = "Логи", type = "text/application")
-    private static LogEntries saveAllureText(LogEntries logEntries) {
-        return logEntries;
+    private static String saveAllureText(LogEntries logEntries) {
+        return logEntries.toString();
     }
 
     static void report(String report) {
@@ -99,8 +99,8 @@ class About {
         saveAllureText(report);
         LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
         saveAllureText(logEntries);
-        for (LogEntry entry : logEntries)
-            System.out.println(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage());
+        //for (LogEntry entry : logEntries)
+        //    System.out.println(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage());
     }
 
 
@@ -116,6 +116,7 @@ class About {
 
     @Step("{0}")
     static void softassertfail(String report) {
+        System.out.println("Есть неблокирующая ошибка");
         Allure.LIFECYCLE.fire(new StepFailureEvent());
         Allure.LIFECYCLE.fire(new TestCaseFailureEvent().withThrowable(new RuntimeException("Есть неблокирующие ошибки")));
         Stack buf = stack.get(stack.size() - 1);
@@ -137,6 +138,7 @@ class About {
 
     @Step("{0}")
     static void hardassertfail(String report) {
+        System.out.println("Есть блокирующая ошибка");
         report(report);
         Assert.fail(report);
     }
