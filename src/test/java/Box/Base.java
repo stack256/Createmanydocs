@@ -2,6 +2,7 @@ package Box;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -302,7 +303,8 @@ class Base {
             driver.get(driver.getCurrentUrl());
         }
 
-        String title = driver.findElement(By.xpath(Objects.Document.documenttitle)).getText();
+        waitelement(Document.documenttitle);
+        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
         doc.put("Номер",new String[]{title.substring(title.indexOf(" № ")+3,title.indexOf(" от "))});
         if (status.equals("Проект"))
             doc.put("Номер проекта",doc.get("Номер"));
@@ -438,6 +440,9 @@ class Base {
         if (!driver.findElement(By.xpath(Document.Viewform.Outgoingdocument.status_field)).getText().equals(status)){
             driver.get(driver.getCurrentUrl());
         }
+
+        waitelement(Document.documenttitle);
+        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
         checkfield("Номер", Document.Viewform.Outgoingdocument.regnum_label, Document.Viewform.Outgoingdocument.regnum_field, doc);
 
         checkfield("Дата регистрации", Document.Viewform.Outgoingdocument.reg_data_label, Document.Viewform.Outgoingdocument.reg_data_field, doc);
@@ -565,6 +570,9 @@ class Base {
         if (!driver.findElement(By.xpath(Document.Viewform.Nddocument.status_field)).getText().equals(status)){
             driver.get(driver.getCurrentUrl());
         }
+
+        waitelement(Document.documenttitle);
+        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
         checkfield("Номер", Document.Viewform.Nddocument.regnum_label, Document.Viewform.Nddocument.regnum_field, doc);
 
         checkfield("Дата регистрации", Document.Viewform.Nddocument.reg_data_label, Document.Viewform.Nddocument.reg_data_field, doc);
@@ -742,6 +750,10 @@ class Base {
         if (!driver.findElement(By.xpath(Document.Viewform.Orddocument.status_field)).getText().equals(status)){
             driver.get(driver.getCurrentUrl());
         }
+
+        waitelement(Document.documenttitle);
+        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+
         checkfield("Номер", Document.Viewform.Orddocument.regnum_label, Document.Viewform.Orddocument.regnum_field, doc);
 
         checkfield("Дата регистрации", Document.Viewform.Orddocument.reg_data_label, Document.Viewform.Orddocument.reg_data_field, doc);
@@ -897,7 +909,8 @@ class Base {
         }
 
 
-        String title = driver.findElement(By.xpath(Objects.Document.documenttitle)).getText();
+        waitelement(Document.documenttitle);
+        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
         doc.put("Номер",new String[]{title.substring(2,title.indexOf(","))});
         doc.put("Срок исполнения", new String[]{title.substring(title.indexOf("срок:")+6,title.length())});
 
@@ -1038,7 +1051,8 @@ class Base {
             driver.get(driver.getCurrentUrl());
         }
 
-        String title = driver.findElement(By.xpath(Objects.Document.documenttitle)).getText();
+        waitelement(Document.documenttitle);
+        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
         doc.put("Номер",new String[]{title.substring(2,title.indexOf("от")-1)});
 
         if (!status.contains("Черновик") && title.substring(2,title.indexOf("от")-1).equals("Не присвоено")) {
@@ -1205,7 +1219,8 @@ class Base {
 
 
 
-        String title = driver.findElement(By.xpath(Objects.Document.documenttitle)).getText();
+        waitelement(Document.documenttitle);
+        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
         doc.put("Номер",new String[]{title.substring(title.indexOf("№ ")+2,title.indexOf(" от "))});
 
         checkfield("Заголовок", Document.Viewform.Protocoldocument.title_label, Document.Viewform.Protocoldocument.title_field, doc);
@@ -2350,7 +2365,8 @@ class Base {
 
     @Step("Развернуть блок {0}")
     static void openrightblock(String value){
-        click(value, righblocktitle(value));
+        Actions actions = new Actions(driver);
+        actions.moveToElement(driver.findElement(By.xpath(righblocktitle(value)))).build().perform();
         click("Развернуть", righblockopen(value));
     }
 
