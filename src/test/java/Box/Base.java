@@ -173,6 +173,12 @@ class Base {
         if (!driver.findElement(By.xpath(Document.Viewform.Incomingdocument.status_field)).getText().equals(status)){
             driver.get(driver.getCurrentUrl());
         }
+
+        waitelement(Document.documenttitle);
+        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+        doc.put("Номер",new String[]{title.substring(title.indexOf(" № ")+3,title.indexOf(" от "))});
+        doc.put("Дата",new String[]{title.substring(title.indexOf(" от ")+4,title.length())});
+
         checkfield("Номер", Document.Viewform.Incomingdocument.regnum_label, Document.Viewform.Incomingdocument.regnum_field, doc);
 
         checkfield("Дата регистрации", Document.Viewform.Incomingdocument.reg_data_label, Document.Viewform.Incomingdocument.reg_data_field, doc);
@@ -1561,6 +1567,41 @@ class Base {
         }
     }
 
+    @Step("Заполнить атрибут <{0}> значением <{2}>")
+    private static void fillselectdialogapprove(String attrname, Map<String, String[]> doc, String... values) {
+        waitelement(SelectDialog.Approve.dialog);
+        click("Очистить", SelectDialog.clearall);
+        for (String val:values)
+            switch (val){
+                case "Сотрудник":
+                    click("",SelectDialog.Approve.select_type);
+                    click("Сотрудник",SelectDialog.Approve.select_type_employee);
+                    break;
+                case "Адресант":
+                    click("",SelectDialog.Approve.select_type);
+                    click("Макросы участников маршрута",SelectDialog.Approve.select_type_macros);
+                    break;
+                default:
+                    settext("",SelectDialog.Approve.search_field,val);
+                    click("Поиск",SelectDialog.Approve.search_button);
+                    waitForLoad();
+                    click("Добавить", sd_reporter_tableadd(val));
+                    List<WebElement> elements = driver.findElements(By.xpath(SelectDialog.Approve.selected_elements));
+                    boolean t = false;
+                    for(WebElement element:elements)
+                        if (element.getText().contains(val)) t = true;
+                    hardassertfail(t, "Не выбран элемент " + val);
+                    break;
+            }
+
+        click("ОК", SelectDialog.Approve.ok_button);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void fillfield(String attrname, String xpath, String[] values, Map<String, String[]> doc) {
         String docum = null;
         for (String value : doc.get("document"))
@@ -2159,6 +2200,52 @@ class Base {
                             break;
                     }
                 break;
+            case "approval":
+                if (values != null) {
+                    switch (attrname) {
+                        case "Согласование Завершать после первого отклонения согласующим":
+                        case "Согласование Уведомлять о каждой рецензии":
+                        case "Использовать правило для этапа":
+                            for (String value : values)
+                                if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
+                                    click(attrname, xpath);
+                            break;
+                        case "Согласование По истечении срока":
+                        case "Тип этапа":
+                            WebElement selectElem = driver.findElement(By.xpath(xpath));
+                            for (String val : values) {
+                                Select select = new Select(selectElem);
+                                select.selectByVisibleText(val);
+                            }
+                            break;
+                        case "Название этапа":
+                        case "Срок по умолчанию для согласующего (р. д.)":
+                            for (String value : values)
+                                settext(attrname, xpath, value);
+                            break;
+                        case "Правило для этапа":
+                            click("...", xpath, SelectDialog.Simple.dialog);
+                            fillselectdialogsimple(attrname, doc, values);
+                            break;
+                        case "Согласующие":
+                            click("...", xpath, SelectDialog.Approve.dialog);
+                            fillselectdialogapprove(attrname, doc, values);
+                            break;
+                        default:
+                            softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
+                            break;
+                    }
+                }else
+                    switch (attrname){
+                        case "Утверждено вне системы":
+                        case "Контроль":
+                            doc.put(attrname, new String[]{"Нет"});
+                            break;
+                        default:
+                            doc.put(attrname, new String[]{"(Нет)"});
+                            break;
+                    }
+                break;
             default:
                 softassertfail(attrname + " - Тест не знает такого типа, надо дописать");
                 break;
@@ -2261,10 +2348,15 @@ class Base {
         waitForLoad();
     }
 
+    @Step("Развернуть блок {0}")
+    static void openrightblock(String value){
+        click(value, righblocktitle(value));
+        click("Развернуть", righblockopen(value));
+    }
+
     @Step("Проверить наличие записей в бж")
     static void readhistory(String[] values, Map<String, String[]> doc){
-        click("История", Document.Viewform.Rightblock.history_header);
-        click("Развернуть", Document.Viewform.Rightblock.history_open);
+        openrightblock("История");
         waitelement(Document.table_history);
         waitForLoad();
         String dynamicXPath = "//td[contains(.,\'%s\')]";
@@ -2290,7 +2382,7 @@ class Base {
     }
 
     @Step("Выполнить действие {0}")
-    static void righactionexecute(String action, String approve, String status){
+    static void righactionexecute(String action, String approve, String status, HashMap<String, String[]> doc){
         click(action, righaction(action));
         click(approve,approveaction(approve));
         boolean t = false;
@@ -2303,10 +2395,103 @@ class Base {
                 waitForLoad();
                 t = driver.findElement(By.xpath(Document.Viewform.status_field)).getText().equals(status);
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             waitForLoad();
             i--;
         }
+        doc.put("Статус", new String[]{status});
+    }
+
+    @Step("Перейти на вкладку {0}")
+    static void changetab(String tab, HashMap<String, String[]> doc) {
+        switch (doc.get("document")[0]){
+            case "internal":
+                switch (tab){
+                    case "Атрибуты":
+                        click(tab,Document.Viewform.Internaldocument.tab_common);
+                        break;
+                    case "Согласование и подписание":
+                        click(tab,Document.Viewform.Internaldocument.tab_approvalAndSigning);
+                        break;
+                    case "Ответы":
+                        click(tab,Document.Viewform.Internaldocument.tab_answers);
+                        break;
+                    case "Исполнение":
+                        click(tab,Document.Viewform.Internaldocument.tab_executiontab);
+                        break;
+                    default:
+                        softassertfail(tab + " - Тест не знает такой вкладки, надо дописать");
+                        break;
+                }
+                break;
+            default:
+                softassertfail(doc.get("document")[0] + " - Тест не знает такого типа документа, надо дописать");
+                break;
+        }
+    }
+
+    @Step("Добавить маршрут согласования")
+    static void approvaladd(HashMap<String, String[]> doc, HashMap<String, HashMap<String, String[]>> approval) {
+        click("Создать маршрут", Document.Createform.Approval.createroute_button);
+        if (doc.get("Согласование")[0].equals("Нетиповой")){
+            click("Нетиповой", Document.Createform.Approval.nottipical_button);
+
+            String typebuf = doc.get("document")[0];
+            doc.put("document", new String[]{"approval"});
+
+            verifyattr("Согласование Завершать после первого отклонения согласующим", Document.Createform.Approval.finafterfirstno_label);
+            fillfield("Согласование Завершать после первого отклонения согласующим",Document.Createform.Approval.finafterfirstno_checkbox, doc.get("Согласование Завершать после первого отклонения согласующим"), doc);
+
+            verifyattr("Согласование Уведомлять о каждой рецензии", Document.Createform.Approval.notifyaboutevery_label);
+            fillfield("Согласование Уведомлять о каждой рецензии",Document.Createform.Approval.notifyaboutevery_checkbox, doc.get("Согласование Уведомлять о каждой рецензии"), doc);
+
+            verifyattr("Согласование По истечении срока", Document.Createform.Approval.afterApprovalExpired_label);
+            fillfield("Согласование По истечении срока",Document.Createform.Approval.afterApprovalExpired_select, doc.get("Согласование По истечении срока"), doc);
+
+            doc.put("document", new String[]{typebuf});
+
+            click("Сохранить",Document.Createform.Approval.saveroute_button);
+
+            if (!approval.isEmpty())
+                additemsapproval(approval);
+        }
+    }
+
+    @Step("Добавить этапы")
+    private static void additemsapproval(HashMap<String, HashMap<String, String[]>> approval) {
+        int k = approval.size();
+        for (int i=0; i<k; i++) {
+            if (i!=0)
+                click("Добавить этап",Document.Createform.Approval.additem_button,Document.Createform.Approval.title_label);
+            approvalitem = approval.get(Integer.toString(i+1));
+            fillitemapproval(i+1,approvalitem);
+        }
+    }
+
+
+    @Step("Заполнить этап {0}")
+    private static void fillitemapproval(Integer i, HashMap<String, String[]> approvalitem) {
+        verifyattr("Название этапа", Document.Createform.Approval.title_label);
+        fillfield("Название этапа", Document.Createform.Approval.title_field, approvalitem.get("Название этапа"), approvalitem);
+
+        verifyattr("Тип этапа", Document.Createform.Approval.type_label);
+        fillfield("Тип этапа", Document.Createform.Approval.type_select, approvalitem.get("Тип этапа"), approvalitem);
+
+        verifyattr("Срок по умолчанию для согласующего (р. д.)", Document.Createform.Approval.temporary_label);
+        fillfield("Срок по умолчанию для согласующего (р. д.)", Document.Createform.Approval.temporary_field, approvalitem.get("Срок по умолчанию для согласующего (р. д.)"), approvalitem);
+
+        verifyattr("Использовать правило для этапа", Document.Createform.Approval.userule_label);
+        fillfield("Использовать правило для этапа", Document.Createform.Approval.userule_checkbox, approvalitem.get("Использовать правило для этапа"), approvalitem);
+
+        verifyattr("Правило для этапа", Document.Createform.Approval.rule_label);
+        if (approvalitem.get("Использовать правило для этапа")[0].equals("Да"))
+            fillfield("Правило для этапа", Document.Createform.Approval.rule_button, approvalitem.get("Правило для этапа"), approvalitem);
+
+        verifyattr("Согласующие", Document.Createform.Approval.approvals_label);
+        if (approvalitem.get("Использовать правило для этапа")[0].equals("Нет"))
+            fillfield("Согласующие", Document.Createform.Approval.approvals_button, approvalitem.get("Согласующие"), approvalitem);
+
+        click("Сохранить",Document.Createform.Approval.saverouteitem_button);
     }
 }

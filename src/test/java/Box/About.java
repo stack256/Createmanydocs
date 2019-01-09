@@ -17,6 +17,8 @@ import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.allure.events.*;
 import ru.yandex.qatools.allure.experimental.LifecycleListener;
 
+import javax.mail.*;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -24,9 +26,72 @@ import static Box.Users.*;
 
 class About {
 
+    public static class EmailAuthenticator extends javax.mail.Authenticator
+    {
+        private String login   ;
+        private String password;
+        EmailAuthenticator(final String login, final String password)
+        {
+            this.login    = login;
+            this.password = password;
+        }
+        public PasswordAuthentication getPasswordAuthentication()
+        {
+            return new PasswordAuthentication(login, password);
+        }
+    }
+
+
+    static String   IMAP_Server     = "imap.yandex.ru";
+    static String   IMAP_Port       = "993";
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    static void ReadEmail(String IMAP_AUTH_EMAIL, String IMAP_AUTH_PWD)
+    {
+        Properties properties = new Properties();
+        properties.put("mail.debug"          , "false"  );
+        properties.put("mail.store.protocol" , "imaps"  );
+        properties.put("mail.imap.ssl.enable", "true"   );
+        properties.put("mail.imap.port"      , IMAP_Port);
+
+        Authenticator auth = new EmailAuthenticator(IMAP_AUTH_EMAIL, IMAP_AUTH_PWD);
+        Session session = Session.getDefaultInstance(properties, auth);
+        session.setDebug(false);
+        try {
+            Store store = session.getStore();
+
+            // Подключение к почтовому серверу
+            store.connect(IMAP_Server, IMAP_AUTH_EMAIL, IMAP_AUTH_PWD);
+
+            // Папка входящих сообщений
+            Folder inbox = store.getFolder("INBOX");
+
+            // Открываем папку в режиме только для чтения
+            inbox.open(Folder.READ_ONLY);
+
+            System.out.println("Количество сообщений : " +
+                    String.valueOf(inbox.getMessageCount()));
+            if (inbox.getMessageCount() == 0)
+                return;
+            // Последнее сообщение; первое сообщение под номером 1
+            Message message = inbox.getMessage(inbox.getMessageCount());
+            Multipart mp = (Multipart) message.getContent();
+            // Вывод содержимого в консоль
+            for (int i = 0; i < mp.getCount(); i++){
+                BodyPart  bp = mp.getBodyPart(i);
+                if (bp.getContentType().contains("text/plain"))
+                    System.out.println(i + ". сообщение : '" + bp.getContent() + "'");
+            }
+        } catch (MessagingException | IOException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+
     static RemoteWebDriver driver;
     static Integer timeoutlnseconds;
     static HashMap<String, String[]> doc;
+    static HashMap<String, HashMap<String, String[]>> approval;
+    static HashMap<String, String[]> approvalitem;
     static HashMap<String, HashMap<String, String[]>> items;
     static HashMap<String, String[]> item;
     static HashMap<String, HashMap<String, String[]>> errands;
@@ -226,6 +291,16 @@ class About {
         return String.format(dynamicXPath, selectorValue);
     }
 
+    static String righblocktitle(String selectorValue) {
+        String dynamicXPath = "//div[contains(@class,'widget')]//h2[contains(.,'%s')]";
+        return String.format(dynamicXPath, selectorValue);
+    }
+
+    static String righblockopen(String selectorValue) {
+        String dynamicXPath = "//div[contains(@class,'widget')]//h2[contains(.,'%s')]//*[contains(@title,'Развернуть')]";
+        return String.format(dynamicXPath, selectorValue);
+    }
+
     static String righaction(String selectorValue) {
         String dynamicXPath = "//div[contains(@id,'right-part')]//*[contains(text(),'Действия')]//ancestor::div[contains(@class,'widget')]//*[text()='%s']";
         return String.format(dynamicXPath, selectorValue);
@@ -242,7 +317,14 @@ class About {
         return sdf.format(currentdate);
     }
 
-    private static String incoming_header(String[] type, String[] regnum) {
+    static String currentdate(int i) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, i);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        return sdf.format(cal.getTime());
+    }
+
+    static String incoming_header(String[] type, String[] regnum) {
         return type[0] + ", № " + regnum[0] + " от " + currentdate();
     }
 

@@ -6,8 +6,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.*;
 import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.annotations.*;
-import ru.yandex.qatools.allure.annotations.Description;
-import ru.yandex.qatools.allure.model.*;
+import ru.yandex.qatools.allure.model.SeverityLevel;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,6 +25,8 @@ public class MainTest {
     public void setUp() {
         current_login = null;
         doc = new HashMap<String, String[]>();
+        approval = new HashMap<String, HashMap<String, String[]>>();
+        approvalitem = new HashMap<String, String[]>();
         items = new HashMap<String, HashMap<String, String[]>>();
         item = new HashMap<String, String[]>();
         errands = new HashMap<String, HashMap<String, String[]>>();
@@ -61,10 +62,22 @@ public class MainTest {
         stack.clear();
         removedoc.clear();
         users.clear();
+        approvalitem.clear();
+        approval.clear();
         driver.quit();
     }
 
 
+
+
+
+/*
+    @Title("Прочитать почту")
+    @Test
+    public void test1() {
+        ReadEmail("chsfmka@yandex.ru", "buhjrdgjrth1QW");
+    }
+*/
 
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
@@ -107,6 +120,224 @@ public class MainTest {
         //if (!stack.get(0).value)
         removedocs();
     }
+
+
+    @Description("Какое то описание")
+    @Severity(SeverityLevel.CRITICAL)
+    @Features("Входящий")
+    @Stories("Жизненный цикл")
+    @Title("Направить на регистрацию черновик")
+    @Test
+    public void test11() {
+        User user = getuserbyroles("СЭД. Регистраторы");
+
+        doc.put("document", new String[]{"incoming"});
+        doc.put("Заголовок", new String[]{"Заголовок"});
+        doc.put("Вид документа", new String[]{"Запрос"});
+        doc.put("Способ доставки", new String[]{"Личный прием"});
+        doc.put("Корреспондент", new String[]{"AT_Organization"});
+        doc.put("Корреспондент Тип", new String[]{"Внутренний контрагент"});
+        doc.put("Корреспондент Наименование", new String[]{"AT_Organization"});
+        doc.put("Представитель корреспондента", new String[]{getuserbylogin("denisov").full});
+        doc.put("Получатель", new String[]{"Сотрудник",getuserbylogin("filippova").full});
+        //doc.put("В ответ на", new String[]{"Исходящий документ: А1 ЭП только Прочее, № ИСХ-01035/17 от 24.10.2017"});
+        //doc.put("В ответ на Номер", new String[]{"1035"});
+        doc.put("Исходящий номер", new String[]{"Outgoing-number"});
+        doc.put("Исходящий от", new String[]{"21.12.2019"});
+        doc.put("Содержание", new String[]{"21.12.2019"});
+        doc.put("Количество листов", new String[]{"21"});
+        doc.put("Тематика", new String[]{"Доставка воды"});
+        //doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
+        doc.put("Примечание", new String[]{"21"});
+        doc.put("Срок исполнения", new String[]{"21.12.2019"});
+        doc.put("На контроле", new String[]{"Да"});
+        doc.put("Нерегистрируемый", new String[]{"Нет"});
+
+        //авторизоваться
+        auth(user.famio,user.login,user.pass);
+        //создать входящий документ
+        createincoming(doc);
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие записи в бж
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+        readhistory(doc.get("Запись в бж"),doc);
+        //выполнить действие Направить на регистрацию
+        righactionexecute("Направить на регистрацию","ОК","На обработке регистратором",doc);
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие записи в бж
+        doc.put("Запись в бж",new String[]{historystandartchangestatus(doc)});
+        readhistory(doc.get("Запись в бж"),doc);
+        //if (!stack.get(0).value)
+        removedocs();
+    }
+
+
+
+    @Description("Какое то описание")
+    @Severity(SeverityLevel.CRITICAL)
+    @Features("Входящий")
+    @Stories("Зарегистрировать черновик")
+    @Title("Проверка отправки уведомлений корреспонденту, если не заполнены данные по исходящему документу")
+    @Test
+    public void test12() {
+        User user = getuserbyroles("СЭД. Регистраторы");
+
+        doc.put("document", new String[]{"incoming"});
+        doc.put("Заголовок", new String[]{"Заголовок"});
+        doc.put("Вид документа", new String[]{"Запрос"});
+        doc.put("Способ доставки", new String[]{"Личный прием"});
+        doc.put("Корреспондент", new String[]{"ООО Ромашка"});
+        doc.put("Корреспондент Тип", new String[]{"Внешний контрагент"});
+        doc.put("Корреспондент Наименование", new String[]{"ООО Ромашка"});
+        //doc.put("Представитель корреспондента", new String[]{getuserbylogin("denisov").full});
+        doc.put("Получатель", new String[]{"Сотрудник",getuserbylogin("filippova").full});
+        //doc.put("В ответ на", new String[]{"Исходящий документ: А1 ЭП только Прочее, № ИСХ-01035/17 от 24.10.2017"});
+        //doc.put("В ответ на Номер", new String[]{"1035"});
+        //doc.put("Исходящий номер", new String[]{"Outgoing-number"});
+        //doc.put("Исходящий от", new String[]{"21.12.2019"});
+        doc.put("Содержание", new String[]{"21.12.2019"});
+        doc.put("Количество листов", new String[]{"21"});
+        doc.put("Тематика", new String[]{"Доставка воды"});
+        //doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
+        doc.put("Примечание", new String[]{"21"});
+        doc.put("Срок исполнения", new String[]{"21.12.2019"});
+        doc.put("На контроле", new String[]{"Да"});
+        doc.put("Нерегистрируемый", new String[]{"Нет"});
+
+        //авторизоваться
+        auth(user.famio,user.login,user.pass);
+        //создать входящий документ
+        createincoming(doc);
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие записи в бж
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+        readhistory(doc.get("Запись в бж"),doc);
+        //выполнить действие Направить на регистрацию
+        righactionexecute("Зарегистрировать","ОК","Зарегистрирован",doc);
+        doc.put("Дата регистрации",doc.get("Дата"));
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие записи в бж
+        doc.put("Запись в бж",new String[]{current_user + " перевел(а) документ \"" + incoming_header(doc.get("Вид документа"), new String[]{"Не присвоено"}) + "\" в статус \"" + doc.get("Статус")[0] + "\""});
+        readhistory(doc.get("Запись в бж"),doc);
+        //if (!stack.get(0).value)
+        removedocs();
+    }
+
+
+
+    @Description("Какое то описание")
+    @Severity(SeverityLevel.CRITICAL)
+    @Features("Входящий")
+    @Stories("Зарегистрировать черновик")
+    @Title("Проверка отправки уведомлений корреспонденту, если заполнены данные по исходящему документу")
+    @Test
+    public void test13() {
+        User user = getuserbyroles("СЭД. Регистраторы");
+
+        doc.put("document", new String[]{"incoming"});
+        doc.put("Заголовок", new String[]{"Тест"});
+        doc.put("Вид документа", new String[]{"Запрос"});
+        doc.put("Способ доставки", new String[]{"Личный прием"});
+        doc.put("Корреспондент", new String[]{"ООО Ромашка"});
+        doc.put("Корреспондент Тип", new String[]{"Внешний контрагент"});
+        doc.put("Корреспондент Наименование", new String[]{"ООО Ромашка"});
+        //doc.put("Представитель корреспондента", new String[]{getuserbylogin("denisov").full});
+        doc.put("Получатель", new String[]{"Сотрудник",getuserbylogin("filippova").full});
+        //doc.put("В ответ на", new String[]{"Исходящий документ: А1 ЭП только Прочее, № ИСХ-01035/17 от 24.10.2017"});
+        //doc.put("В ответ на Номер", new String[]{"1035"});
+        doc.put("Исходящий номер", new String[]{"78/2"});
+        doc.put("Исходящий от", new String[]{currentdate(-1)});
+        doc.put("Содержание", new String[]{"21.12.2019"});
+        doc.put("Количество листов", new String[]{"21"});
+        doc.put("Тематика", new String[]{"Доставка воды"});
+        //doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
+        doc.put("Примечание", new String[]{"21"});
+        doc.put("Срок исполнения", new String[]{"21.12.2019"});
+        doc.put("На контроле", new String[]{"Да"});
+        doc.put("Нерегистрируемый", new String[]{"Нет"});
+
+        //авторизоваться
+        auth(user.famio,user.login,user.pass);
+        //создать входящий документ
+        createincoming(doc);
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие записи в бж
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+        readhistory(doc.get("Запись в бж"),doc);
+        //выполнить действие Направить на регистрацию
+        righactionexecute("Зарегистрировать","ОК","Зарегистрирован",doc);
+        doc.put("Дата регистрации",doc.get("Дата"));
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие записи в бж
+        doc.put("Запись в бж",new String[]{current_user + " перевел(а) документ \"" + incoming_header(doc.get("Вид документа"), new String[]{"Не присвоено"}) + "\" в статус \"" + doc.get("Статус")[0] + "\""});
+        readhistory(doc.get("Запись в бж"),doc);
+        //if (!stack.get(0).value)
+        removedocs();
+    }
+
+
+
+    @Description("Какое то описание")
+    @Severity(SeverityLevel.CRITICAL)
+    @Features("Входящий")
+    @Stories("Зарегистрировать черновик")
+    @Title("Проверка отображения записи БЖ при отсутствии е мэйла у корреспондента")
+    @Test
+    public void test14() {
+        User user = getuserbyroles("СЭД. Регистраторы");
+
+        doc.put("document", new String[]{"incoming"});
+        doc.put("Заголовок", new String[]{"Тест"});
+        doc.put("Вид документа", new String[]{"Запрос"});
+        doc.put("Способ доставки", new String[]{"Личный прием"});
+        doc.put("Корреспондент", new String[]{"ООО Тюльпан"});
+        doc.put("Корреспондент Тип", new String[]{"Внешний контрагент"});
+        doc.put("Корреспондент Наименование", new String[]{"ООО Тюльпан"});
+        //doc.put("Представитель корреспондента", new String[]{getuserbylogin("denisov").full});
+        doc.put("Получатель", new String[]{"Сотрудник",getuserbylogin("filippova").full});
+        //doc.put("В ответ на", new String[]{"Исходящий документ: А1 ЭП только Прочее, № ИСХ-01035/17 от 24.10.2017"});
+        //doc.put("В ответ на Номер", new String[]{"1035"});
+        //doc.put("Исходящий номер", new String[]{"78/2"});
+        //doc.put("Исходящий от", new String[]{currentdate(-1)});
+        doc.put("Содержание", new String[]{"21.12.2019"});
+        doc.put("Количество листов", new String[]{"21"});
+        doc.put("Тематика", new String[]{"Доставка воды"});
+        //doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
+        doc.put("Примечание", new String[]{"21"});
+        doc.put("Срок исполнения", new String[]{"21.12.2019"});
+        doc.put("На контроле", new String[]{"Да"});
+        doc.put("Нерегистрируемый", new String[]{"Нет"});
+
+        //авторизоваться
+        auth(user.famio,user.login,user.pass);
+        //создать входящий документ
+        createincoming(doc);
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие записи в бж
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+        readhistory(doc.get("Запись в бж"),doc);
+        //выполнить действие Направить на регистрацию
+        righactionexecute("Зарегистрировать","ОК","Зарегистрирован",doc);
+        doc.put("Дата регистрации",doc.get("Дата"));
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие записи в бж
+        doc.put("Запись в бж",new String[]{
+                current_user + " перевел(а) документ \"" + incoming_header(doc.get("Вид документа"), new String[]{"Не присвоено"}) + "\" в статус \"" + doc.get("Статус")[0] + "\"",
+                "Корреспонденту ООО Тюльпан не было направлено уведомление по причине отсутствия адреса электронной почты"
+        });
+        readhistory(doc.get("Запись в бж"),doc);
+        //if (!stack.get(0).value)
+        removedocs();
+    }
+
 
 
 
@@ -244,8 +475,7 @@ public class MainTest {
         readhistory(doc.get("Запись в бж"),doc);
 
         //выполнить действие Зарегистрировать проект
-        righactionexecute("Зарегистрировать проект","ОК","Проект");
-        doc.put("Статус", new String[]{"Проект"});
+        righactionexecute("Зарегистрировать проект","ОК","Проект",doc);
         doc.put("Дата регистрации проекта", new String[]{currentdate()});
         doc.put("Дата", new String[]{currentdate()});
         //проверить атрибуты и их значения на форме просмотра
@@ -259,6 +489,79 @@ public class MainTest {
         //if (!stack.get(0).value)
         removedocs();
     }
+
+
+/*
+тут написано добавление маршрута согласования
+но не написано чтение маршрута согласования
+    @Description("Какое то описание")
+    @Severity(SeverityLevel.CRITICAL)
+    @Features("Внутренний")
+    @Stories("Жизненный цикл")
+    @Title("Создать внутренний документ")
+    @Test
+    public void test23() {
+        User user = getuserbyroles("Внутренние. Создатели");
+
+        doc.put("document", new String[]{"internal"});
+        doc.put("Составитель", new String[]{user.full});
+        doc.put("Исполнитель", new String[]{user.full});
+        doc.put("Заголовок", new String[]{"Заголовок"});
+        doc.put("Вид документа", new String[]{"Аналитическая записка"});
+        doc.put("Срок ответа", new String[]{"21.12.2019"});
+        doc.put("Получатель", new String[]{"Сотрудник",getuserbylogin("filippova").full});
+        doc.put("Содержание", new String[]{"21.12.2019"});
+        doc.put("Подписано на бумажном носителе", new String[]{"Да"});
+        doc.put("Подписанты", new String[]{getuserbylogin("fomin").full, getuserbylogin("kozlov").full});
+        doc.put("Дата подписания", new String[]{"21.12.2019"});
+        //doc.put("В ответ на", new String[]{"Внутренний документ: 1234567890, № NA-00094 от 28.09.2018"});
+        //doc.put("В ответ на Номер", new String[]{"00094"});
+        doc.put("Количество листов", new String[]{"21"});
+        doc.put("Тематика", new String[]{"Доставка воды"});
+        //doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
+        doc.put("Примечание", new String[]{"21"});
+
+        //авторизоваться
+        auth(user.famio,user.login,user.pass);
+        //создать входящий документ
+        createinternal(doc);
+        readinternal(doc);
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+        readhistory(doc.get("Запись в бж"),doc);
+        openrightblock("Основные сведения");
+
+        //auth("Шестаков", getuserbylogin("shestakov").login,getuserbylogin("shestakov").pass);
+        //driver.get("http://172.16.125.2:8080/ecm/page/document?nodeRef=workspace://SpacesStore/a0aa19a1-eb5f-450a-94d5-5b97f5421a06");
+        changetab("Согласование и подписание",doc);
+
+        doc.put("Согласование", new String[]{"Нетиповой"});
+        doc.put("Согласование Завершать после первого отклонения согласующим", new String[]{"Да"});
+        doc.put("Согласование Уведомлять о каждой рецензии", new String[]{"Да"});
+        doc.put("Согласование По истечении срока", new String[]{"Вернуть на доработку"});
+        approvalitem = new HashMap<String, String[]>();
+        approvalitem.put("document", new String[]{"approval"});
+        approvalitem.put("Название этапа", new String[]{"Первый"});
+        approvalitem.put("Тип этапа", new String[]{"Последовательно"});
+        approvalitem.put("Срок по умолчанию для согласующего (р. д.)", new String[]{"2"});
+        approvalitem.put("Использовать правило для этапа", new String[]{"Нет"});
+        approvalitem.put("Согласующие", new String[]{"Сотрудник",getuserbylogin("denisov").full});
+        approval.put("1",approvalitem);
+        approvalitem = new HashMap<String, String[]>();
+        approvalitem.put("document", new String[]{"approval"});
+        approvalitem.put("Название этапа", new String[]{"Второй"});
+        approvalitem.put("Тип этапа", new String[]{"Параллельно"});
+        approvalitem.put("Срок по умолчанию для согласующего (р. д.)", new String[]{"3"});
+        approvalitem.put("Использовать правило для этапа", new String[]{"Да"});
+        approvalitem.put("Правило для этапа", new String[]{"Руководители по иерархии"});
+        approval.put("2",approvalitem);
+
+        approvaladd(doc,approval);
+
+
+        //if (!stack.get(0).value)
+        removedocs();
+    }
+*/
 
 
 

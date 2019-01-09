@@ -81,11 +81,21 @@ class Objects {
             static String ok_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='ОК']";
             static String dialog = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]";
         }
+        static class Approve {
+            static String selected_elements = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[contains(@id,'picker-items')]";
+            static String select_type_macros = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//li//a[text()='Макросы участников маршрута']";
+            static String select_type_employee = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//li//a[text()='Сотрудник']";
+            static String select_type = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[contains(@id,'select-button')]";
+            static String search_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[@class='form-fields']/div[(contains(@id,'employee') or contains(@id,'macros')) and not(contains(@class,'hidden'))]//input[contains(@id,'search-text')]";
+            static String search_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[@class='form-fields']/div[(contains(@id,'employee') or contains(@id,'macros')) and not(contains(@class,'hidden'))]//button[contains(@id,'search-button')]";
+            static String ok_button = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='ОК']";
+            static String dialog = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]";
+        }
         static String clearall = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//span[text()='Очистить']";
     }
 
     static class Document{
-        static String documenttitle = "//div[@class='document-header']//span[@class='title']";
+        static String documenttitle = "//div[@class='document-header']//a[contains(@id,'title')]";
         static String table_history = "//table//*[text()='Описание']";
         static String delete_check = "//div[contains(text(),'Документ был удален.')]";
         static String copy_document = "//button[@title='Копировать документ']";
@@ -540,6 +550,35 @@ class Objects {
                 }
                 static String additem_button = "//div[contains(@class,'document-metadata')]//button[text()='Создание']";
             }
+            static class Approval{
+                static String createroute_button = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//button[text()='Создать маршрут']";
+                static String tipical_button = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//li//*[text()='Типовой']";
+                static String nottipical_button = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//li//*[text()='Нетиповой']";
+                static String finafterfirstno_label = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//*[contains(text(),'Завершать после первого отклонения согласующим')]";
+                static String finafterfirstno_checkbox = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//*[contains(text(),'Завершать после первого отклонения согласующим')]//ancestor::div[contains(@class,'control')]//input[@type='checkbox' and contains(@id,'routeInterruptAfterReject')]";
+                static String notifyaboutevery_label = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//*[contains(text(),'Уведомлять о каждой рецензии')]";
+                static String notifyaboutevery_checkbox = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//*[contains(text(),'Уведомлять о каждой рецензии')]//ancestor::div[contains(@class,'control')]//input[@type='checkbox' and contains(@id,'NotifyAboutEveryDecision')]";
+                static String afterApprovalExpired_label = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//*[contains(text(),'По истечении срока:')]";
+                static String afterApprovalExpired_select = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//*[contains(text(),'По истечении срока:')]//ancestor::div[contains(@class,'control select')]//select";
+                static String saveroute_button = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//button[text()='Сохранить']";
+                static String additem_button = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//button[text()='Добавить этап']";
+
+                static String title_label = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Название этапа:')]";
+                static String title_field = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Название этапа:')]//ancestor::div[contains(@class,'control') and contains(@class,'editmode')]//input";
+                static String type_label = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Тип этапа:')]";
+                static String type_select = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Тип этапа:')]//ancestor::div[contains(@class,'control select')]//select";
+                static String temporary_label = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Срок по умолчанию для согласующего (р. д.):')]";
+                static String temporary_field = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Срок по умолчанию для согласующего (р. д.):')]//ancestor::div[contains(@class,'control') and contains(@class,'editmode')]//input";
+                static String userule_label = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Использовать правило для этапа')]";
+                static String userule_checkbox = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Использовать правило для этапа')]//ancestor::div[contains(@class,'control')]//input[@type='checkbox' and contains(@id,'Rule')]";
+                static String rule_label = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Правило для этапа:')]";
+                static String rule_field = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Правило для этапа:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String rule_button = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Правило для этапа:')]//ancestor::div[contains(@class,'association-control')]//button";
+                static String approvals_label = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Согласующие:')]";
+                static String approvals_field = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Согласующие:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String approvals_button = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//*[contains(text(),'Согласующие:')]//ancestor::div[contains(@class,'association-control')]//button";
+                static String saverouteitem_button = "//div[contains(@class,'tab-approvalAndSigning')]//*[contains(text(),'Согласование:')]//ancestor::div[contains(@class,'panel approval')]//div[contains(@id,'create-stage')]//button[text()='Сохранить']";
+            }
         }
         static class Viewform{
             static String zavershit_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Причина:')]";
@@ -636,7 +675,13 @@ class Objects {
                 static String signingDate_field = "//div[contains(@class,'tab-common')]//div[contains(@id,'signingDate')]//div[contains(@class,'value')]";
                 static String registrator_label = "//div[contains(@class,'tab-common')]//*[contains(text(),'Регистратор:')]";
                 static String registrator_field = "//div[contains(@class,'tab-common')]//div[contains(@id,'registrator')]//div[contains(@class,'value')]";
+
                 static String status_field = "//div[contains(@id,'status')]//*[contains(@class,'value')]";
+
+                static String tab_common = "//a[@href='#common']";
+                static String tab_approvalAndSigning = "//a[@href='#approvalAndSigning']";
+                static String tab_answers = "//a[@href='#answers']";
+                static String tab_executiontab = "//a[@href='#execution-tab']";
             }
             static class Outgoingdocument{
                 static String regnum_label = "//div[contains(@class,'tab-common')]//*[contains(text(),'Номер:')]";
