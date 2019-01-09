@@ -2362,6 +2362,8 @@ class Base {
             }
             i--;
         }
+        if (!waitelement(waitdialog,false))
+            hardassertfail("Не удалось создать документ");
     }
 
     @Step("Переклик кнопки <{0}>")
