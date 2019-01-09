@@ -95,7 +95,7 @@ class Objects {
     }
 
     static class Document{
-        static String documenttitle = "//div[@class='document-header']//a[contains(@id,'title')]";
+        static String documenttitle = "//div[@class='document-header']//span[contains(@class,'title')]";
         static String table_history = "//table//*[text()='Описание']";
         static String delete_check = "//div[contains(text(),'Документ был удален.')]";
         static String copy_document = "//button[@title='Копировать документ']";

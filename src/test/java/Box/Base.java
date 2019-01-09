@@ -164,6 +164,34 @@ class Base {
         fillfield("Нерегистрируемый",Document.Createform.Incomingdocument.is_not_registered_checkbox, doc.get("Нерегистрируемый"), doc);
     }
 
+    static String docgettitle() {
+        String title = null;
+        try {
+            title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+        } catch (Exception e) {
+            try {
+                Thread.sleep(1000);
+                waitForLoad();
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+            title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+        }
+        if (title == null || title.length()==0){
+            try {
+                Thread.sleep(1000);
+                waitForLoad();
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+            title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+        }
+        if (title == null || title.length()==0){
+            hardassertfail("Не получилось прочитать заголовок документа");
+        }
+        return title;
+    }
+
     @Step("Проверить наличие атрибутов и их значения на форме просмотра")
     static void readincoming(Map<String, String[]> doc) {
         waitForLoad();
@@ -175,8 +203,8 @@ class Base {
             driver.get(driver.getCurrentUrl());
         }
 
-        waitelement(Document.documenttitle);
-        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+        //waitelement(Document.documenttitle);
+        String title = docgettitle();
         doc.put("Номер",new String[]{title.substring(title.indexOf(" № ")+3,title.indexOf(" от "))});
         doc.put("Дата",new String[]{title.substring(title.indexOf(" от ")+4,title.length())});
 
@@ -303,8 +331,7 @@ class Base {
             driver.get(driver.getCurrentUrl());
         }
 
-        waitelement(Document.documenttitle);
-        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+        String title = docgettitle();
         doc.put("Номер",new String[]{title.substring(title.indexOf(" № ")+3,title.indexOf(" от "))});
         if (status.equals("Проект"))
             doc.put("Номер проекта",doc.get("Номер"));
@@ -441,8 +468,7 @@ class Base {
             driver.get(driver.getCurrentUrl());
         }
 
-        waitelement(Document.documenttitle);
-        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+        String title = docgettitle();
         checkfield("Номер", Document.Viewform.Outgoingdocument.regnum_label, Document.Viewform.Outgoingdocument.regnum_field, doc);
 
         checkfield("Дата регистрации", Document.Viewform.Outgoingdocument.reg_data_label, Document.Viewform.Outgoingdocument.reg_data_field, doc);
@@ -571,8 +597,7 @@ class Base {
             driver.get(driver.getCurrentUrl());
         }
 
-        waitelement(Document.documenttitle);
-        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+        String title = docgettitle();
         checkfield("Номер", Document.Viewform.Nddocument.regnum_label, Document.Viewform.Nddocument.regnum_field, doc);
 
         checkfield("Дата регистрации", Document.Viewform.Nddocument.reg_data_label, Document.Viewform.Nddocument.reg_data_field, doc);
@@ -751,8 +776,7 @@ class Base {
             driver.get(driver.getCurrentUrl());
         }
 
-        waitelement(Document.documenttitle);
-        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+        String title = docgettitle();
 
         checkfield("Номер", Document.Viewform.Orddocument.regnum_label, Document.Viewform.Orddocument.regnum_field, doc);
 
@@ -909,8 +933,7 @@ class Base {
         }
 
 
-        waitelement(Document.documenttitle);
-        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+        String title = docgettitle();
         doc.put("Номер",new String[]{title.substring(2,title.indexOf(","))});
         doc.put("Срок исполнения", new String[]{title.substring(title.indexOf("срок:")+6,title.length())});
 
@@ -1051,8 +1074,7 @@ class Base {
             driver.get(driver.getCurrentUrl());
         }
 
-        waitelement(Document.documenttitle);
-        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+        String title = docgettitle();
         doc.put("Номер",new String[]{title.substring(2,title.indexOf("от")-1)});
 
         if (!status.contains("Черновик") && title.substring(2,title.indexOf("от")-1).equals("Не присвоено")) {
@@ -1218,9 +1240,7 @@ class Base {
         }
 
 
-
-        waitelement(Document.documenttitle);
-        String title = driver.findElement(By.xpath(Document.documenttitle)).getText();
+        String title = docgettitle();
         doc.put("Номер",new String[]{title.substring(title.indexOf("№ ")+2,title.indexOf(" от "))});
 
         checkfield("Заголовок", Document.Viewform.Protocoldocument.title_label, Document.Viewform.Protocoldocument.title_field, doc);
