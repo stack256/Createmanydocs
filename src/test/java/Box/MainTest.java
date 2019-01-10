@@ -20,7 +20,7 @@ import static Box.Users.*;
 import static Box.Objects.*;
 
 public class MainTest {
-
+/*
     @BeforeMethod
     public void setUp() {
         current_login = null;
@@ -66,19 +66,19 @@ public class MainTest {
         approval.clear();
         driver.quit();
     }
+*/
 
 
 
 
 
-/*
     @Title("Прочитать почту")
     @Test
     public void test1() {
-        ReadEmail("chsfmka@yandex.ru", "buhjrdgjrth1QW");
+        ReadEmail("itsarkova@lb.datateh.ru", "12345");
     }
-*/
 
+/*
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Features("Входящий")
@@ -563,7 +563,7 @@ public class MainTest {
     }
 */
 
-
+/*
 
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
@@ -836,5 +836,5 @@ public class MainTest {
         readhistory(doc.get("Запись в бж"),doc);
         //if (!stack.get(0).value)
         removedocs();
-    }
+    }*/
 }
