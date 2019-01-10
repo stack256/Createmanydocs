@@ -49,7 +49,7 @@ class About {
     {
         Properties properties = new Properties();
         properties.put("mail.debug"          , "false"  );
-        properties.put("mail.store.protocol" , "imap"  );
+        properties.put("mail.store.protocol" , "imaps"  );
         properties.put("mail.imap.ssl.enable", "true"   );
         properties.put("mail.imap.port"      , IMAP_Port);
       	// SSL Factory 
