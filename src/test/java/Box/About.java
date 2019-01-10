@@ -48,12 +48,12 @@ class About {
     static void ReadEmail(String IMAP_AUTH_EMAIL, String IMAP_AUTH_PWD)
     {
         Properties properties = new Properties();
-        properties.put("mail.debug"          , "false"  );
-        properties.put("mail.store.protocol" , "imaps"  );
+        //properties.put("mail.debug"          , "false"  );
+        properties.put("mail.store.protocol" , "imap"  );
         properties.put("mail.imap.ssl.enable", "true"   );
         properties.put("mail.imap.port"      , IMAP_Port);
       	// SSL Factory 
-      	properties.put("mail.imap.ssl.checkserveridentity", "false");
+      	//properties.put("mail.imap.ssl.checkserveridentity", "false");
 		properties.put("mail.imap.ssl.trust", "*");
 
         Authenticator auth = new EmailAuthenticator(IMAP_AUTH_EMAIL, IMAP_AUTH_PWD);
