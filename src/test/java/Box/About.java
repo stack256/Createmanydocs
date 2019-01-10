@@ -50,9 +50,10 @@ class About {
         Properties properties = new Properties();
         properties.put("mail.debug"          , "false"  );
         properties.put("mail.store.protocol" , "imaps"  );
-        properties.put("mail.imap.ssl.enable", "false"   );
+        properties.put("mail.imap.ssl.enable", "true"   );
         properties.put("mail.imap.port"      , IMAP_Port);
-      	properties.put("mail.imaps.ssl.trust", "*");
+      	// SSL Factory 
+        properties.put("mail.imap.socketFactory.class", "javax.net.ssl.SSLSocketFactory");   
 
         Authenticator auth = new EmailAuthenticator(IMAP_AUTH_EMAIL, IMAP_AUTH_PWD);
         Session session = Session.getDefaultInstance(properties, auth);
