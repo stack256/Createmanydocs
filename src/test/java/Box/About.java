@@ -52,7 +52,7 @@ class About {
         properties.put("mail.store.protocol" , "imaps"  );
         properties.put("mail.imap.ssl.enable", "false"   );
         properties.put("mail.imap.port"      , IMAP_Port);
-      	properties.put("mail.imap.ssl.trust", "*");
+      	properties.put("mail.imaps.ssl.trust", "*");
 
         Authenticator auth = new EmailAuthenticator(IMAP_AUTH_EMAIL, IMAP_AUTH_PWD);
         Session session = Session.getDefaultInstance(properties, auth);
