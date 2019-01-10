@@ -49,12 +49,12 @@ class About {
     {
         Properties properties = new Properties();
         properties.put("mail.debug"          , "false"  );
-        properties.put("mail.store.protocol" , "imaps"  );
-        properties.put("mail.imaps.ssl.enable", "true"   );
-        properties.put("mail.imaps.port"      , IMAP_Port);
+        properties.put("mail.store.protocol" , "imap"  );
+        properties.put("mail.imap.ssl.enable", "true"   );
+        properties.put("mail.imap.port"      , IMAP_Port);
       	// SSL Factory 
-      	properties.put("mail.imaps.ssl.checkserveridentity", "false");
-		properties.put("mail.imaps.ssl.trust", "*");
+      	properties.put("mail.imap.ssl.checkserveridentity", "false");
+		properties.put("mail.imap.ssl.trust", "*");
 
         Authenticator auth = new EmailAuthenticator(IMAP_AUTH_EMAIL, IMAP_AUTH_PWD);
         Session session = Session.getDefaultInstance(properties, auth);
