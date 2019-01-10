@@ -42,8 +42,8 @@ class About {
     }
 
 
-    static String   IMAP_Server     = "imap.mail.alf.datateh.ru";
-    static String   IMAP_Port       = "993";
+    static String   IMAP_Server     = "mail.alf.datateh.ru";
+    static String   IMAP_Port       = "143";
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     static void ReadEmail(String IMAP_AUTH_EMAIL, String IMAP_AUTH_PWD)
     {
