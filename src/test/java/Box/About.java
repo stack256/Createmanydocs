@@ -4,8 +4,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LogEntries;
-import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -13,20 +14,66 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.annotations.Attachment;
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.allure.events.*;
 import ru.yandex.qatools.allure.experimental.LifecycleListener;
 
-import javax.mail.*;
-import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
+import static Box.Base.*;
 import static Box.Users.*;
 
 class About {
+
+    @BeforeMethod
+    public void setUp() {
+        current_login = null;
+        doc = new HashMap<String, String[]>();
+        items = new HashMap<String, HashMap<String, String[]>>();
+        item = new HashMap<String, String[]>();
+        errands = new HashMap<String, HashMap<String, String[]>>();
+        errand = new HashMap<String, String[]>();
+        usersinitial();
+        timeoutlnseconds = 10;
+        Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
+        stack = new ArrayList<About.Stack>();
+        removedoc = new ArrayList<>();
+        stack.add(new About.Stack());
+
+        if (System.getProperty("remote.grid") != null) {
+            try {
+                driver = new RemoteWebDriver(new URL(System.getProperty("remote.grid")), new ChromeOptions());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            driver = new ChromeDriver();
+        }
+        driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
+        String baseUrl = System.getProperty("stend.url");
+        driver.get(baseUrl);
+    }
+
+    @AfterMethod
+    public void tiredDown() {
+        doc.clear();
+        items.clear();
+        item.clear();
+        errands.clear();
+        errand.clear();
+        stack.clear();
+        removedoc.clear();
+        users.clear();
+        driver.quit();
+    }
 
     public class Retry implements IRetryAnalyzer {
 
@@ -51,25 +98,26 @@ class About {
 
     }
 
-    public static class EmailAuthenticator extends javax.mail.Authenticator
-    {
-        private String login   ;
-        private String password;
-        EmailAuthenticator(final String login, final String password)
-        {
-            this.login    = login;
-            this.password = password;
+
+
+    static void ReadEmail(String email, String pass, String message){
+        String currenturl = driver.getCurrentUrl();
+        driver.get("http://mail.alf.datateh.ru/#/mailbox/INBOX");
+        boolean t = false;
+        int i = 1;
+
+        settext("Почта","//input[@name='RainLoopEmail']",email);
+        settext("Пароль","//input[@name='RainLoopPassword']",pass);
+        click("Войти","//button[@type='submit' and contains(@class,'submit')]");
+        driver.get("http://mail.alf.datateh.ru/#/mailbox/INBOX");
+        while (!t && i <= 20){
+            click("Письмо" + i,"//div[contains(@class,'messageListItem')][" + i + "]");
+            t = waitelement("//div[contains(@id,'mgs')]//div[contains(.,'" + message + "')]", false) || waitelement("//td[contains(.,'" + message + "')]", false);
+            i++;
         }
-        public PasswordAuthentication getPasswordAuthentication()
-        {
-            return new PasswordAuthentication(login, password);
-        }
-    }
-
-
-    static void ReadEmail(String email, String pass, String login)
-    {
-
+        saveAllureText(message);
+        softassertfail(t,"Письмо не найдено");
+        driver.get(currenturl);
     }
 
 

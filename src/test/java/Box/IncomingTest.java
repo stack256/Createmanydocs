@@ -53,6 +53,7 @@ public class IncomingTest extends About {
     }
 
 
+
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Features("Входящий")
@@ -272,5 +273,4 @@ public class IncomingTest extends About {
         //if (!stack.get(0).value)
         removedocs();
     }
-
 }
