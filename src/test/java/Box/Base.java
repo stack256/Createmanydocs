@@ -2299,7 +2299,7 @@ class Base {
         waitForLoad();
     }
 
-    private static Boolean waitelement(String xpath, boolean... flag) {
+    static Boolean waitelement(String xpath, boolean... flag) {
         waitForLoad();
         try {
             (new WebDriverWait(driver, timeoutlnseconds))
@@ -2316,7 +2316,7 @@ class Base {
     }
 
     @Step("Заполнить атрибут <{0}> значением <{2}>")
-    private static void settext(String attrname, String xpath, String text) {
+    static void settext(String attrname, String xpath, String text) {
         waitForLoad();
         try {
             (new WebDriverWait(driver, timeoutlnseconds))

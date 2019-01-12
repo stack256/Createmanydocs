@@ -4,6 +4,8 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
@@ -11,6 +13,10 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.IRetryAnalyzer;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.annotations.Attachment;
 import ru.yandex.qatools.allure.annotations.Step;
@@ -19,12 +25,87 @@ import ru.yandex.qatools.allure.experimental.LifecycleListener;
 
 import javax.mail.*;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
+import static Box.Base.*;
 import static Box.Users.*;
 
 class About {
+
+
+    @BeforeMethod
+    public void setUp() {
+        current_login = null;
+        doc = new HashMap<String, String[]>();
+        approval = new HashMap<String, HashMap<String, String[]>>();
+        approvalitem = new HashMap<String, String[]>();
+        items = new HashMap<String, HashMap<String, String[]>>();
+        item = new HashMap<String, String[]>();
+        errands = new HashMap<String, HashMap<String, String[]>>();
+        errand = new HashMap<String, String[]>();
+        usersinitial();
+        timeoutlnseconds = 10;
+        Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
+        stack = new ArrayList<About.Stack>();
+        removedoc = new ArrayList<>();
+        stack.add(new About.Stack());
+
+        if (System.getProperty("remote.grid") != null) {
+            try {
+                driver = new RemoteWebDriver(new URL(System.getProperty("remote.grid")), new ChromeOptions());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            driver = new ChromeDriver();
+        }
+        driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
+        String baseUrl = System.getProperty("stend.url");
+        driver.get(baseUrl);
+    }
+
+    @AfterMethod
+    public void tiredDown() {
+        doc.clear();
+        items.clear();
+        item.clear();
+        errands.clear();
+        errand.clear();
+        stack.clear();
+        removedoc.clear();
+        users.clear();
+        approvalitem.clear();
+        approval.clear();
+        driver.quit();
+    }
+
+    public class Retry implements IRetryAnalyzer {
+
+        private int count = 0;
+        private int maxTry = 3;
+
+        @Override
+        public boolean retry(ITestResult iTestResult) {
+            if (!iTestResult.isSuccess()) {                      //Check if test not succeed
+                if (count < maxTry) {                            //Check if maxtry count is reached
+                    count++;                                     //Increase the maxTry count by 1
+                    iTestResult.setStatus(ITestResult.FAILURE);  //Mark test as failed
+                    return true;                                 //Tells TestNG to re-run the test
+                } else {
+                    iTestResult.setStatus(ITestResult.FAILURE);  //If maxCount reached,test marked as failed
+                }
+            } else {
+                iTestResult.setStatus(ITestResult.SUCCESS);      //If test passes, TestNG marks it as passed
+            }
+            return false;
+        }
+
+    }
+
 
     public static class EmailAuthenticator extends javax.mail.Authenticator
     {
@@ -41,49 +122,32 @@ class About {
         }
     }
 
-
-    static String   IMAP_Server     = "imap.yandex.ru";
-    static String   IMAP_Port       = "993";
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    static void ReadEmail(String IMAP_AUTH_EMAIL, String IMAP_AUTH_PWD)
+    @Step("Поиск сообщения на электронной почте")
+    static void ReadEmail(String email, String pass, String message)
     {
-        Properties properties = new Properties();
-        properties.put("mail.debug"          , "false"  );
-        properties.put("mail.store.protocol" , "imaps"  );
-        properties.put("mail.imap.ssl.enable", "true"   );
-        properties.put("mail.imap.port"      , IMAP_Port);
-
-        Authenticator auth = new EmailAuthenticator(IMAP_AUTH_EMAIL, IMAP_AUTH_PWD);
-        Session session = Session.getDefaultInstance(properties, auth);
-        session.setDebug(false);
+        String currenturl = driver.getCurrentUrl();
+        driver.get("http://mail.alf.datateh.ru/#/mailbox/INBOX");
+        settext("Почта","//input[@name='RainLoopEmail']",email);
+        settext("Пароль","//input[@name='RainLoopPassword']",pass);
+        click("Войти","//button[contains(@class,'submit')]");
         try {
-            Store store = session.getStore();
-
-            // Подключение к почтовому серверу
-            store.connect(IMAP_Server, IMAP_AUTH_EMAIL, IMAP_AUTH_PWD);
-
-            // Папка входящих сообщений
-            Folder inbox = store.getFolder("INBOX");
-
-            // Открываем папку в режиме только для чтения
-            inbox.open(Folder.READ_ONLY);
-
-            System.out.println("Количество сообщений : " +
-                    String.valueOf(inbox.getMessageCount()));
-            if (inbox.getMessageCount() == 0)
-                return;
-            // Последнее сообщение; первое сообщение под номером 1
-            Message message = inbox.getMessage(inbox.getMessageCount());
-            Multipart mp = (Multipart) message.getContent();
-            // Вывод содержимого в консоль
-            for (int i = 0; i < mp.getCount(); i++){
-                BodyPart  bp = mp.getBodyPart(i);
-                if (bp.getContentType().contains("text/plain"))
-                    System.out.println(i + ". сообщение : '" + bp.getContent() + "'");
-            }
-        } catch (MessagingException | IOException e) {
-            System.err.println(e.getMessage());
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        driver.get("http://mail.alf.datateh.ru/#/mailbox/INBOX");
+        boolean t = false;
+        int i = 1;
+        timeoutlnseconds = 3;
+        while (!t && i <= 5){
+            click("Письмо " + Integer.toString(i),"//div[contains(@class,'messageListItem')][" + Integer.toString(i) + "]");
+            t = waitelement("//td[contains(.,'" + message + "')]",false) || waitelement("//div[contains(@id,'mgs')]//div[contains(.,'" + message + "')]",false);
+            i++;
+        }
+        softassertfail(t,"Не найдено необходимое письмо");
+        saveAllureText(message);
+        timeoutlnseconds = 10;
+        driver.get(currenturl);
     }
 
 
