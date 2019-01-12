@@ -4,8 +4,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
@@ -15,8 +13,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.annotations.Attachment;
 import ru.yandex.qatools.allure.annotations.Step;
@@ -25,63 +21,12 @@ import ru.yandex.qatools.allure.experimental.LifecycleListener;
 
 import javax.mail.*;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
-import static Box.Base.*;
 import static Box.Users.*;
 
 class About {
-
-
-    @BeforeMethod
-    public void setUp() {
-        current_login = null;
-        doc = new HashMap<String, String[]>();
-        approval = new HashMap<String, HashMap<String, String[]>>();
-        approvalitem = new HashMap<String, String[]>();
-        items = new HashMap<String, HashMap<String, String[]>>();
-        item = new HashMap<String, String[]>();
-        errands = new HashMap<String, HashMap<String, String[]>>();
-        errand = new HashMap<String, String[]>();
-        usersinitial();
-        timeoutlnseconds = 10;
-        Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
-        stack = new ArrayList<About.Stack>();
-        removedoc = new ArrayList<>();
-        stack.add(new About.Stack());
-
-        if (System.getProperty("remote.grid") != null) {
-            try {
-                driver = new RemoteWebDriver(new URL(System.getProperty("remote.grid")), new ChromeOptions());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-        } else {
-            driver = new ChromeDriver();
-        }
-        driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
-        String baseUrl = System.getProperty("stend.url");
-        driver.get(baseUrl);
-    }
-
-    @AfterMethod
-    public void tiredDown() {
-        doc.clear();
-        items.clear();
-        item.clear();
-        errands.clear();
-        errand.clear();
-        stack.clear();
-        removedoc.clear();
-        users.clear();
-        approvalitem.clear();
-        approval.clear();
-        driver.quit();
-    }
 
     public class Retry implements IRetryAnalyzer {
 
@@ -106,7 +51,6 @@ class About {
 
     }
 
-
     public static class EmailAuthenticator extends javax.mail.Authenticator
     {
         private String login   ;
@@ -122,32 +66,10 @@ class About {
         }
     }
 
-    @Step("Поиск сообщения на электронной почте")
-    static void ReadEmail(String email, String pass, String message)
+
+    static void ReadEmail(String email, String pass, String login)
     {
-        String currenturl = driver.getCurrentUrl();
-        driver.get("http://mail.alf.datateh.ru/#/mailbox/INBOX");
-        settext("Почта","//input[@name='RainLoopEmail']",email);
-        settext("Пароль","//input[@name='RainLoopPassword']",pass);
-        click("Войти","//button[contains(@class,'submit')]");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        driver.get("http://mail.alf.datateh.ru/#/mailbox/INBOX");
-        boolean t = false;
-        int i = 1;
-        timeoutlnseconds = 3;
-        while (!t && i <= 5){
-            click("Письмо " + Integer.toString(i),"//div[contains(@class,'messageListItem')][" + Integer.toString(i) + "]");
-            t = waitelement("//td[contains(.,'" + message + "')]",false) || waitelement("//div[contains(@id,'mgs')]//div[contains(.,'" + message + "')]",false);
-            i++;
-        }
-        softassertfail(t,"Не найдено необходимое письмо");
-        saveAllureText(message);
-        timeoutlnseconds = 10;
-        driver.get(currenturl);
+
     }
 
 
