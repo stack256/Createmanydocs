@@ -14,8 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.*;
 import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.annotations.Attachment;
 import ru.yandex.qatools.allure.annotations.Step;
@@ -45,9 +44,8 @@ class About {
         timeoutlnseconds = 10;
         Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
         stack = new ArrayList<About.Stack>();
-        removedoc = new ArrayList<>();
         stack.add(new About.Stack());
-
+        removedoc = new ArrayList<>();
         if (System.getProperty("remote.grid") != null) {
             try {
                 driver = new RemoteWebDriver(new URL(System.getProperty("remote.grid")), new ChromeOptions());
@@ -121,7 +119,8 @@ class About {
     }
 
 
-    static RemoteWebDriver driver;
+
+    static RemoteWebDriver driver = null;
     static Integer timeoutlnseconds;
     static HashMap<String, String[]> doc;
     static HashMap<String, HashMap<String, String[]>> approval;
@@ -175,6 +174,7 @@ class About {
                 Allure.LIFECYCLE.fire(new TestCaseFailureEvent().withThrowable(new RuntimeException("Есть неблокирующие ошибки")));
             }
             stack.remove(stack.size()-1);
+            //stack1.clear();
         }
     }
 
@@ -208,6 +208,7 @@ class About {
             softassertfail(report);
     }
 
+
     static void softassertfail(String expectation, String reality) {
         if (!expectation.equals(reality))
             softassertfail("Ожидаемое значение: " + expectation + ". Фактический результат: " + reality);
@@ -216,11 +217,13 @@ class About {
     @Step("{0}")
     static void softassertfail(String report) {
         System.out.println("Есть неблокирующая ошибка");
-        Allure.LIFECYCLE.fire(new StepFailureEvent());
+        /*Allure.LIFECYCLE.fire(new StepFailureEvent());
         Allure.LIFECYCLE.fire(new TestCaseFailureEvent().withThrowable(new RuntimeException("Есть неблокирующие ошибки")));
-        Stack buf = stack.get(stack.size() - 1);
+        ArrayList<Stack> stack1 = reportmap.get(Thread.currentThread().getId());
+        Stack buf = stack1.get(stack1.size() - 1);
         buf.value = false;
-        stack.set(stack.size() - 1, buf);
+        stack1.set(stack1.size() - 1, buf);
+        reportmap.put(Thread.currentThread().getId(),stack1);*/
         report(report);
     }
 

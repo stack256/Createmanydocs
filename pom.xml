@@ -32,12 +32,6 @@
             <version>${testng.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-testng</artifactId>
-            <version>${allure-testng.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>ru.yandex.qatools.allure</groupId>
             <artifactId>allure-testng-adaptor</artifactId>
             <version>${allure.version}</version>
@@ -58,11 +52,6 @@
             <version>3.11.0</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4</version>
-        </dependency>
 
     </dependencies>
 
@@ -81,8 +70,6 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>TestNG.xml</suiteXmlFile>
                     </suiteXmlFiles>
-                    <parallel>methods</parallel>
-                    <threadCount>1</threadCount>
                 </configuration>
                 <dependencies>
                     <dependency>
