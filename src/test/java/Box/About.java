@@ -104,7 +104,7 @@ class About {
         driver.get("http://mail.alf.datateh.ru/#/mailbox/INBOX");
         boolean t = false;
         int i = 1;
-
+        timeoutlnseconds = 5;
         settext("Почта","//input[@name='RainLoopEmail']",email);
         settext("Пароль","//input[@name='RainLoopPassword']",pass);
         click("Войти","//button[@type='submit' and contains(@class,'submit')]");
@@ -122,6 +122,7 @@ class About {
         saveAllureText(message);
         softassertfail(t,"Письмо не найдено");
         driver.get(currenturl);
+        timeoutlnseconds = 10;
     }
 
 

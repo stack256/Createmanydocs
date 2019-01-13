@@ -259,11 +259,11 @@ class Base {
             click("Создать", ARMSED.createButton);
             click("Внутренний документ", ARMSED.Createmenu.internaldocument);
             fillcreateinternal(doc);
+            doc.put("Исполнитель", new String[]{getuserbylogin(current_login).full});
         }
         String currenturl = driver.getCurrentUrl();
         click("Создать",Document.Createform.create_button,Document.Viewform.Internaldocument.status_field);
         doc.put("Составитель", new String[]{getuserbylogin(current_login).full});
-        doc.put("Исполнитель", new String[]{getuserbylogin(current_login).full});
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
     }
