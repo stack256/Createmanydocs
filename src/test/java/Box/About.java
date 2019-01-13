@@ -98,6 +98,7 @@ class About {
 
 
 
+    @Step("Поиск письма на почте {0}")
     static void ReadEmail(String email, String pass, String message){
         String currenturl = driver.getCurrentUrl();
         driver.get("http://mail.alf.datateh.ru/#/mailbox/INBOX");
