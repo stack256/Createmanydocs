@@ -108,7 +108,12 @@ class About {
         settext("Пароль","//input[@name='RainLoopPassword']",pass);
         click("Войти","//button[@type='submit' and contains(@class,'submit')]");
         driver.get("http://mail.alf.datateh.ru/#/mailbox/INBOX");
-        while (!t && i <= 20){
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        while (!t && i <= 10){
             click("Письмо" + i,"//div[contains(@class,'messageListItem')][" + i + "]");
             t = waitelement("//div[contains(@id,'mgs')]//div[contains(.,'" + message + "')]", false) || waitelement("//td[contains(.,'" + message + "')]", false);
             i++;
@@ -217,13 +222,11 @@ class About {
     @Step("{0}")
     static void softassertfail(String report) {
         System.out.println("Есть неблокирующая ошибка");
-        /*Allure.LIFECYCLE.fire(new StepFailureEvent());
+        Allure.LIFECYCLE.fire(new StepFailureEvent());
         Allure.LIFECYCLE.fire(new TestCaseFailureEvent().withThrowable(new RuntimeException("Есть неблокирующие ошибки")));
-        ArrayList<Stack> stack1 = reportmap.get(Thread.currentThread().getId());
-        Stack buf = stack1.get(stack1.size() - 1);
+        Stack buf = stack.get(stack.size() - 1);
         buf.value = false;
-        stack1.set(stack1.size() - 1, buf);
-        reportmap.put(Thread.currentThread().getId(),stack1);*/
+        stack.set(stack.size() - 1, buf);
         report(report);
     }
 
