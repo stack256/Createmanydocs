@@ -24,7 +24,7 @@ class Base {
         if (current_login != null && current_login != login)
             logout();
         settext("Имя пользователя", AuthPage.username, login);
-        softassertfail(false,"эт самое");
+       // softassertfail(false,"эт самое");
         settext("Пароль", AuthPage.password, pass);
         String currenturl = driver.getCurrentUrl();
         int count = 100;
