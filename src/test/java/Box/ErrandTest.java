@@ -13,9 +13,9 @@ public class ErrandTest extends About {
     @Description("Какое то описание")
     @Severity(SeverityLevel.CRITICAL)
     @Features("Поручение")
-    @Stories("Жизненный цикл")
+    @Stories(value = "Жизненный цикл")
     @Title("Создать поручение")
-    @Test(retryAnalyzer = About.Retry.class)
+    @Test(testName = "Создать поручение", retryAnalyzer = About.Retry.class)
     public void test6() {
         Users.User user = getuserbyroles("Поручения. Инициатор");
 

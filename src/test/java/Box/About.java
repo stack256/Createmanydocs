@@ -21,6 +21,7 @@ import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.allure.events.*;
 import ru.yandex.qatools.allure.experimental.LifecycleListener;
 
+import javax.management.RuntimeErrorException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -177,8 +178,8 @@ class About {
                 Stack buf = stack.get(stack.size()-2);
                 buf.value = false;
                 stack.set(stack.size()-2,buf);
-                Allure.LIFECYCLE.fire(new StepFailureEvent());
-                Allure.LIFECYCLE.fire(new TestCaseFailureEvent().withThrowable(new RuntimeException("Есть неблокирующие ошибки")));
+                Allure.LIFECYCLE.fire(new StepFailureEvent().withThrowable(new AssertionError()));
+                Allure.LIFECYCLE.fire(new TestCaseFailureEvent().withThrowable(new AssertionError("Есть неблокирующие ошибки")));
             }
             stack.remove(stack.size()-1);
             //stack1.clear();
@@ -203,8 +204,8 @@ class About {
     static void report(String report) {
         saveAllureScreenshot();
         saveAllureText(report);
-        LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
-        saveAllureText(logEntries);
+        //LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
+        //saveAllureText(logEntries);
         //for (LogEntry entry : logEntries)
         //    System.out.println(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage());
     }
@@ -224,8 +225,8 @@ class About {
     @Step("{0}")
     static void softassertfail(String report) {
         System.out.println("Есть неблокирующая ошибка");
-        Allure.LIFECYCLE.fire(new StepFailureEvent());
-        Allure.LIFECYCLE.fire(new TestCaseFailureEvent().withThrowable(new RuntimeException("Есть неблокирующие ошибки")));
+        Allure.LIFECYCLE.fire(new StepFailureEvent().withThrowable(new AssertionError()));
+        Allure.LIFECYCLE.fire(new TestCaseFailureEvent().withThrowable(new AssertionError("Есть неблокирующие ошибки")));
         Stack buf = stack.get(stack.size() - 1);
         buf.value = false;
         stack.set(stack.size() - 1, buf);

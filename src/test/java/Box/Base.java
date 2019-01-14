@@ -6,16 +6,14 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import ru.yandex.qatools.allure.annotations.*;
+import ru.yandex.qatools.allure.annotations.Step;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static Box.About.*;
-import static Box.About.doc;
 import static Box.Objects.*;
 import static Box.Users.*;
 
@@ -26,6 +24,7 @@ class Base {
         if (current_login != null && current_login != login)
             logout();
         settext("Имя пользователя", AuthPage.username, login);
+        softassertfail(false,"эт самое");
         settext("Пароль", AuthPage.password, pass);
         String currenturl = driver.getCurrentUrl();
         int count = 100;
