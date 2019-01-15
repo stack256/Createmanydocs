@@ -155,12 +155,19 @@ class Objects {
                 static String delivery_method_field = "//div[@class='document-metadata']//*[contains(text(),'Способ доставки:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
                 static String delivery_method_button = "//div[@class='document-metadata']//*[contains(text(),'Способ доставки:')]//ancestor::div[contains(@class,'control')]//button";
                 static String attachments_label = "//div[@class='document-metadata']//*[contains(text(),'Вложения:')]";
+                static String attachments_uploadbutton = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='Выберите файлы']";
+                static String attachments_common_plus = "//legend[text()='Входящий']//ancestor::fieldset//img";
+                static String attachments_another_plus = "//legend[text()='Прочее']//ancestor::fieldset//img";
+                static String attachments_input = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//input[@type='file']";
                 static String addressee_label = "//div[@class='document-metadata']//*[contains(text(),'Представитель корреспондента:')]";
                 static String addressee_field = "//div[@class='document-metadata']//*[contains(text(),'Представитель корреспондента:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
                 static String addressee_button = "//div[@class='document-metadata']//*[contains(text(),'Представитель корреспондента:')]//ancestor::div[contains(@class,'control')]//button";
             }
             static class Internaldocument {
                 static String attachments_label = "//div[@class='document-metadata']//*[contains(text(),'Вложения:')]";
+                static String attachments_common_plus = "//legend[text()='Внутренний']//ancestor::fieldset//img";
+                static String attachments_another_plus = "//legend[text()='Прочее']//ancestor::fieldset//img";
+                static String attachments_input = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//input[@type='file']";
                 /*
                 утт типа пути до нопок и полей составителя и исполнителя
                 но ограничусь только названиями атрибутов, потому что пока что не хочу их заполнять
@@ -203,6 +210,9 @@ class Objects {
             }
             static class Outgoingdocument {
                 static String attachments_label = "//div[@class='document-metadata']//*[contains(text(),'Вложения:')]";
+                static String attachments_common_plus = "//legend[text()='Исходящий']//ancestor::fieldset//img";
+                static String attachments_another_plus = "//legend[text()='Прочее']//ancestor::fieldset//img";
+                static String attachments_input = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//input[@type='file']";
                 /*
                 утт типа пути до нопок и полей составителя и исполнителя
                 но ограничусь только названиями атрибутов, потому что пока что не хочу их заполнять
@@ -251,6 +261,9 @@ class Objects {
             }
             static class Nddocument {
                 static String attachments_label = "//div[@class='document-metadata']//*[contains(text(),'Вложения:')]";
+                static String attachments_common_plus = "//legend[text()='Документ']//ancestor::fieldset//img";
+                static String attachments_another_plus = "//legend[text()='Прочее']//ancestor::fieldset//img";
+                static String attachments_input = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//input[@type='file']";
                 /*
                 утт типа пути до нопок и полей составителя и исполнителя
                 но ограничусь только названиями атрибутов, потому что пока что не хочу их заполнять
@@ -293,6 +306,9 @@ class Objects {
             }
             static class Orddocument {
                 static String attachments_label = "//div[@class='document-metadata']//*[contains(text(),'Вложения:')]";
+                static String attachments_common_plus = "//legend[text()='Документ']//ancestor::fieldset//img";
+                static String attachments_another_plus = "//legend[text()='Прочее']//ancestor::fieldset//img";
+                static String attachments_input = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//input[@type='file']";
                 /*
                 утт типа пути до нопок и полей составителя и исполнителя
                 но ограничусь только названиями атрибутов, потому что пока что не хочу их заполнять
@@ -587,6 +603,8 @@ class Objects {
             static String vernut_label = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Причина:')]";
             static String vernut_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//textarea";
             static String copydoc_button = "//div[contains(@class,'document-header')]//button[@title='Копировать документ']";
+            static String attachments_showinlist = "//a[@title='Показать в виде списка']";
+            static String attachments_showpreview = "//a[@title='Режим предварительного просмотра']";
             static String status_field = "//div[contains(@id,'status')]//*[contains(@class,'value')]";
             static class Rightblock{
                 static String history_open = "//div[contains(@class,'widget')]//h2[contains(.,'История')]//*[contains(@title,'Развернуть')]";

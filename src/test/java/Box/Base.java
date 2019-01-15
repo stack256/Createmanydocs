@@ -24,7 +24,6 @@ class Base {
         if (current_login != null && current_login != login)
             logout();
         settext("Имя пользователя", AuthPage.username, login);
-        softassertfail(false,"эт самое");
         settext("Пароль", AuthPage.password, pass);
         String currenturl = driver.getCurrentUrl();
         int count = 100;
@@ -66,7 +65,7 @@ class Base {
 
     @Step("Удалить документ")
     static void admindelete() {
-        click("Ад ф-ии",Document.admin_function);
+        click("Административные функции",Document.admin_function);
         click("Удалить",Document.admin_delete);
         executeactionapprove("Да");
         waitelement(Document.delete_check);
@@ -96,11 +95,13 @@ class Base {
     }
 
     @Step("Создать входящий документ")
-    static void createincoming(Map<String, String[]> doc) {
-        gotoarmsed();
-        click("Создать",ARMSED.createButton);
-        click("Входящий документ", ARMSED.Createmenu.incomingdocument);
-        fillcreateincoming(doc);
+    static void createincoming(Map<String, String[]> doc, boolean... flag) {
+        if (flag.length == 0) {
+            gotoarmsed();
+            click("Создать",ARMSED.createButton);
+            click("Входящий документ", ARMSED.Createmenu.incomingdocument);
+            fillcreateincoming(doc);
+        }
         String currenturl = driver.getCurrentUrl();
         click("Создать",Document.Createform.create_button,Document.Viewform.Incomingdocument.status_field);
         doc.put("Статус",new String[]{"Черновик"});
@@ -110,6 +111,8 @@ class Base {
     @Step("Заполнить атрибуты")
     private static void fillcreateincoming(Map<String, String[]> doc) {
         verifyattr("Вложения", Document.Createform.Incomingdocument.attachments_label);
+        fillfield("Вложения Входящий",Document.Createform.Incomingdocument.attachments_common_plus, doc.get("Вложения Входящий"), doc);
+        fillfield("Вложения Прочее",Document.Createform.Incomingdocument.attachments_another_plus, doc.get("Вложения Прочее"), doc);
 
         verifyattr("Заголовок", Document.Createform.Incomingdocument.title_label);
         fillfield("Заголовок",Document.Createform.Incomingdocument.title_field, doc.get("Заголовок"), doc);
@@ -1692,6 +1695,20 @@ class Base {
                                 if (value.equals("Да") != driver.findElement(By.xpath(xpath)).isSelected())
                                     click(attrname, xpath);
                             break;
+                        case "Вложения Входящий":
+                        case "Вложения Прочее":
+                            for (String value : values){
+                                click("Добавить",xpath, Document.Createform.Incomingdocument.attachments_uploadbutton);
+                                waitForLoad();
+                                driver.findElement(By.xpath(Document.Createform.Incomingdocument.attachments_input)).sendKeys(value);
+                                try {
+                                    Thread.sleep(2000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                waitForLoad();
+                            }
+                            break;
                         default:
                             softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
                             break;
@@ -2333,6 +2350,8 @@ class Base {
     @Step("Нажать кнопку <{0}>")
     static void click(String report, String xpath) {
         waitForLoad();
+        if (xpath.contains("Копировать документ"))
+            driver.executeScript("scroll(10, 10);");
         try {
             (new WebDriverWait(driver, timeoutlnseconds))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
