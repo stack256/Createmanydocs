@@ -2,21 +2,16 @@ package Box;
 
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
-import ru.yandex.qatools.allure.model.SeverityLevel;
 
 import java.util.HashMap;
 
 import static Box.Base.*;
 import static Box.Users.*;
 
-@Title("Входящий документ")
+@Features("Входящий")
 @Test(retryAnalyzer = About.Retry.class)
 public class IncomingTest extends About {
 
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Входящий")
-    @Stories("Жизненный цикл")
     @Title("Создать входящий документ в статусе Черновик")
     public void test1() {
         User user = getuserbyroles("СЭД. Регистраторы");
@@ -54,12 +49,6 @@ public class IncomingTest extends About {
         removedocs();
     }
 
-
-
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Входящий")
-    @Stories("Жизненный цикл")
     @Title("Направить на регистрацию черновик")
     public void test11() {
         User user = getuserbyroles("СЭД. Регистраторы");
@@ -106,11 +95,6 @@ public class IncomingTest extends About {
         removedocs();
     }
 
-
-
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Входящий")
     @Stories("Зарегистрировать черновик")
     @Title("Проверка отправки уведомлений корреспонденту, если не заполнены данные по исходящему документу")
     public void test12() {
@@ -161,11 +145,6 @@ public class IncomingTest extends About {
         removedocs();
     }
 
-
-
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Входящий")
     @Stories("Зарегистрировать черновик")
     @Title("Проверка отправки уведомлений корреспонденту, если заполнены данные по исходящему документу")
     public void test13() {
@@ -216,11 +195,6 @@ public class IncomingTest extends About {
         removedocs();
     }
 
-
-
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Входящий")
     @Stories("Зарегистрировать черновик")
     @Title("Проверка отображения записи БЖ при отсутствии е мэйла у корреспондента")
     public void test14() {
@@ -272,11 +246,7 @@ public class IncomingTest extends About {
         removedocs();
     }
 
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Входящий")
-    @Stories("Жизненный цикл")
-    @Title("Создать входящий документ")
+    @Title("Создание документа копированием")
     public void test15() {
         Users.User user = getuserbyroles("СЭД. Регистраторы");
 

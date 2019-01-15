@@ -2,7 +2,6 @@ package Box;
 
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
-import ru.yandex.qatools.allure.model.SeverityLevel;
 
 import java.util.HashMap;
 
@@ -10,14 +9,11 @@ import static Box.Base.*;
 import static Box.Users.getuserbylogin;
 import static Box.Users.getuserbyroles;
 
+@Features("Организационно-распорядительный документ")
+@Test
 public class OrdTest extends About {
 
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Организационно-распорядительный документ")
-    @Stories("Жизненный цикл")
     @Title("Создать организационно-распорядительный документ")
-    @Test(retryAnalyzer = About.Retry.class)
     public void test5() {
         Users.User user = getuserbyroles("ОРД. Создатели");
 

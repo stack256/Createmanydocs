@@ -2,7 +2,6 @@ package Box;
 
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
-import ru.yandex.qatools.allure.model.SeverityLevel;
 
 import java.util.HashMap;
 
@@ -11,13 +10,11 @@ import static Box.Base.removedocs;
 import static Box.Users.getuserbylogin;
 import static Box.Users.getuserbyroles;
 
+@Features("Внутренний")
+@Test
 public class InternalTest extends About {
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Внутренний")
-    @Stories("Жизненный цикл")
+
     @Title("Создать внутренний документ")
-    @Test(retryAnalyzer = About.Retry.class)
     public void test2() {
         Users.User user = getuserbyroles("Внутренние. Создатели");
 
@@ -50,14 +47,7 @@ public class InternalTest extends About {
         removedocs();
     }
 
-
-
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Внутренний")
-    @Stories("Жизненный цикл")
     @Title("Создание документа копированием")
-    @Test(retryAnalyzer = About.Retry.class)
     public void test21() {
         Users.User user = getuserbyroles("Внутренние. Создатели");
 
@@ -108,14 +98,7 @@ public class InternalTest extends About {
         removedocs();
     }
 
-
-
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Внутренний")
-    @Stories("Жизненный цикл")
     @Title("Зарегистрировать проект")
-    @Test(retryAnalyzer = About.Retry.class)
     public void test22() {
         Users.User user = getuserbyroles("Внутренние. Создатели");
 

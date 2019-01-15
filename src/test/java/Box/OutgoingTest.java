@@ -2,19 +2,15 @@ package Box;
 
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
-import ru.yandex.qatools.allure.model.SeverityLevel;
 
 import static Box.Base.*;
 import static Box.Users.*;
 
+@Features("Исходящий")
+@Test
 public class OutgoingTest extends About {
 
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Исходящий")
-    @Stories("Жизненный цикл")
     @Title("Создать исходящий документ")
-    @Test(retryAnalyzer = About.Retry.class)
     public void test3() {
         Users.User user = getuserbyroles("Исходящие. Создатели");
 

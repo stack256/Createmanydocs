@@ -2,20 +2,16 @@ package Box;
 
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
-import ru.yandex.qatools.allure.model.SeverityLevel;
 
 import static Box.Base.*;
 import static Box.Users.getuserbylogin;
 import static Box.Users.getuserbyroles;
 
+@Features("Поручение")
+@Test
 public class ErrandTest extends About {
 
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Поручение")
-    @Stories(value = "Жизненный цикл")
     @Title("Создать поручение")
-    @Test(testName = "Создать поручение", retryAnalyzer = About.Retry.class)
     public void test6() {
         Users.User user = getuserbyroles("Поручения. Инициатор");
 

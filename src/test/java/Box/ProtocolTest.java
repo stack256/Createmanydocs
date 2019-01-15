@@ -2,7 +2,6 @@ package Box;
 
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
-import ru.yandex.qatools.allure.model.SeverityLevel;
 
 import java.util.HashMap;
 
@@ -10,13 +9,11 @@ import static Box.Base.*;
 import static Box.Users.getuserbylogin;
 import static Box.Users.getuserbyroles;
 
+@Features("Протокол")
+@Test
 public class ProtocolTest extends About {
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Протокол")
-    @Stories("Жизненный цикл")
+
     @Title("Создать протокол")
-    @Test(retryAnalyzer = About.Retry.class)
     public void test8() {
         Users.User user = getuserbyroles("Совещания.Создатели");
 

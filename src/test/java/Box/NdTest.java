@@ -2,21 +2,16 @@ package Box;
 
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
-import ru.yandex.qatools.allure.model.SeverityLevel;
 
 import static Box.Base.*;
 import static Box.Users.getuserbylogin;
 import static Box.Users.getuserbyroles;
 
+@Features("Нормативные документы")
+@Test
 public class NdTest extends About {
 
-
-    @Description("Какое то описание")
-    @Severity(SeverityLevel.CRITICAL)
-    @Features("Нормативные документы")
-    @Stories("Жизненный цикл")
     @Title("Создать нормативный документ")
-    @Test(retryAnalyzer = About.Retry.class)
     public void test4() {
         Users.User user = getuserbyroles("НД. Создатели");
 
