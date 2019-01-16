@@ -1639,6 +1639,21 @@ class Base {
         }
     }
 
+    @Step("Загрузить вложение в категорию {0}")
+    private static void fillattachment(String attrname, String xpath, String... values) {
+        for (String value : values){
+            click("Добавить",xpath, Document.Createform.attachments_uploadbutton);
+            waitForLoad();
+            driver.findElement(By.xpath(Document.Createform.attachments_input)).sendKeys(value);
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            waitForLoad();
+        }
+    }
+
     private static void fillfield(String attrname, String xpath, String[] values, Map<String, String[]> doc) {
         String docum = null;
         for (String value : doc.get("document"))
@@ -1697,17 +1712,7 @@ class Base {
                             break;
                         case "Вложения Входящий":
                         case "Вложения Прочее":
-                            for (String value : values){
-                                click("Добавить",xpath, Document.Createform.Incomingdocument.attachments_uploadbutton);
-                                waitForLoad();
-                                driver.findElement(By.xpath(Document.Createform.Incomingdocument.attachments_input)).sendKeys(value);
-                                try {
-                                    Thread.sleep(2000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                waitForLoad();
-                            }
+                            fillattachment(attrname,xpath,values);
                             break;
                         default:
                             softassertfail(attrname + " - Тест не знает такого атрибута, надо дописать");
@@ -2368,7 +2373,7 @@ class Base {
         waitForLoad();
     }
 
-    private static void click(String report, String xpath, String waitdialog) {
+    static void click(String report, String xpath, String waitdialog) {
         click(report, xpath);
         int i = 10;
         while (!waitelement(waitdialog,false) && i > 0) {
@@ -2440,6 +2445,13 @@ class Base {
     @Step("Выполнить действие {0}")
     static void righactionexecute(String action, String approve, String status, HashMap<String, String[]> doc){
         clickaction(action, righaction(action));
+        if (action.equals("Направить адресатам")) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         clickactionapprove(approve,approveaction(approve));
         boolean t = false;
         waitForLoad();
@@ -2587,5 +2599,37 @@ class Base {
             fillfield("Согласующие", Document.Createform.Approval.approvals_button, approvalitem.get("Согласующие"), approvalitem);
 
         click("Сохранить",Document.Createform.Approval.saverouteitem_button);
+    }
+
+
+    @Step("Проверить наличие уведомлений у получателей")
+    static void recipientnotifications(HashMap<String, String[]> doc) {
+        for (String val:doc.get("СЭД. Получатель"))
+            readnotification(val,"Вам направлен новый документ " + doc.get("Заголовок")[0]);
+    }
+
+    @Step("Проверить налаичие уведомления у пользователя {0}")
+    static void readnotification(String val, String notification) {
+        User user = getuserbyfull(val);
+        auth(user.famio,user.login,user.pass);
+        click("Уведомления", Objects.MenuBar.notifications, Objects.MenuBar.notifications_check_opened);
+        waitnotification(notification);
+    }
+
+    @Step("{0}")
+    static void waitnotification(String notification) {
+        waitForLoad();
+        String dynamicXPath = "//td[contains(.,'%s')]";
+        String xpath = String.format(dynamicXPath, notification);
+        try {
+            (new WebDriverWait(driver, timeoutlnseconds))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+            (new WebDriverWait(driver, timeoutlnseconds))
+                    .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
+        } catch (Exception e) {
+            softassertfail("Уведомление не найдено");
+            e.printStackTrace();
+        }
+        waitForLoad();
     }
 }

@@ -2,8 +2,8 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="Тесты">
     <test name="Тесты" parallel="classes" thread-count="1">
-        <classes>
-            <class name="Box.MainTest" />
-        </classes>
+        <packages>
+            <package name="Box" />
+        </packages>
     </test>
 </suite>

@@ -113,6 +113,8 @@ class Objects {
         }
         static class Createform{
             static String create_button = "//div[@class='document-metadata']//button[text()='Создать']";
+            static String attachments_uploadbutton = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='Выберите файлы']";
+            static String attachments_input = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//input[@type='file']";
             static class Incomingdocument {
                 static String type_label = "//div[@class='document-metadata']//*[contains(text(),'Вид документа:')]";
                 static String type_field = "//div[@class='document-metadata']//*[contains(text(),'Вид документа:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
@@ -155,10 +157,8 @@ class Objects {
                 static String delivery_method_field = "//div[@class='document-metadata']//*[contains(text(),'Способ доставки:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
                 static String delivery_method_button = "//div[@class='document-metadata']//*[contains(text(),'Способ доставки:')]//ancestor::div[contains(@class,'control')]//button";
                 static String attachments_label = "//div[@class='document-metadata']//*[contains(text(),'Вложения:')]";
-                static String attachments_uploadbutton = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='Выберите файлы']";
                 static String attachments_common_plus = "//legend[text()='Входящий']//ancestor::fieldset//img";
                 static String attachments_another_plus = "//legend[text()='Прочее']//ancestor::fieldset//img";
-                static String attachments_input = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//input[@type='file']";
                 static String addressee_label = "//div[@class='document-metadata']//*[contains(text(),'Представитель корреспондента:')]";
                 static String addressee_field = "//div[@class='document-metadata']//*[contains(text(),'Представитель корреспондента:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
                 static String addressee_button = "//div[@class='document-metadata']//*[contains(text(),'Представитель корреспондента:')]//ancestor::div[contains(@class,'control')]//button";

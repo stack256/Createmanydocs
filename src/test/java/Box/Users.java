@@ -23,6 +23,18 @@ class Users {
 
 
 
+    static User getanotheruser(User user){
+        ArrayList<User> values = new ArrayList<>();
+        User uservalue = null;
+        for (User val:users)
+            if (val != user)
+                values.add(val);
+        //Random rnd = new Random(System.currentTimeMillis());
+        uservalue = values.get((int) (Math.random() * values.size()));
+        values.clear();
+        return uservalue;
+    }
+
     static User getuserbyroles(String... roles){
         ArrayList<User> values = new ArrayList<>();
         User user = null;
@@ -40,6 +52,13 @@ class Users {
     static User getuserbylogin(String login){
         for (User val:users)
             if (val.login.equals(login))
+                return val;
+        return null;
+    }
+
+    static User getuserbyfull(String full){
+        for (User val:users)
+            if (val.full.equals(full))
                 return val;
         return null;
     }
@@ -207,6 +226,15 @@ class Users {
         newuser.famio = "Маслова А.Г.";
         newuser.fio = "Маслова Алевтина Глебовна";
         newuser.full = "Маслова Алевтина Глебовна Тестировщик AT_Subdivision2";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "gpetuhov";
+        newuser.pass = "Par@ol1";
+        newuser.famio = "Петухов Г.К.";
+        newuser.fio = "Петухов Геннадий Кимович";
+        newuser.full = "Петухов Геннадий Кимович Руководитель AT_Subdivision1";
         users.add(newuser);
 
 

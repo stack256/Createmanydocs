@@ -313,4 +313,54 @@ public class IncomingTest extends About {
         //if (!stack.get(0).value)
         removedocs();
     }
+
+
+    @Stories("Направить адресатам черновик")
+    @Title("Направление адресатам входящего документа в статусе “Черновик”. Нерегистрируемый = Да")
+    public void test16() {
+        Users.User user = getuserbyroles("СЭД. Регистраторы");
+
+        doc.put("document", new String[]{"incoming"});
+        doc.put("Заголовок", new String[]{"Заголовок"});
+        doc.put("Вид документа", new String[]{"Запрос"});
+        doc.put("Способ доставки", new String[]{"Личный прием"});
+        doc.put("Корреспондент", new String[]{"AT_Organization"});
+        doc.put("Корреспондент Тип", new String[]{"Внутренний контрагент"});
+        doc.put("Корреспондент Наименование", new String[]{"AT_Organization"});
+        doc.put("Представитель корреспондента", new String[]{getuserbylogin("denisov").full});
+        doc.put("Получатель", new String[]{"Сотрудник",getanotheruser(user).full,"Организация","AT_Subdivision1"});
+        //doc.put("В ответ на", new String[]{"Исходящий документ: А1 ЭП только Прочее, № ИСХ-01035/17 от 24.10.2017"});
+        //doc.put("В ответ на Номер", new String[]{"1035"});
+        doc.put("Исходящий номер", new String[]{"Outgoing-number"});
+        doc.put("Исходящий от", new String[]{"21.12.2019"});
+        doc.put("Содержание", new String[]{"21.12.2019"});
+        doc.put("Количество листов", new String[]{"21"});
+        doc.put("Тематика", new String[]{"Доставка воды"});
+        //doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
+        doc.put("Примечание", new String[]{"21"});
+        doc.put("Срок исполнения", new String[]{"21.12.2019"});
+        doc.put("На контроле", new String[]{"Да"});
+        doc.put("Нерегистрируемый", new String[]{"Да"});
+
+        //авторизоваться
+        auth(user.famio,user.login,user.pass);
+        //создать входящий документ
+        createincoming(doc);
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие записи в бж
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+        readhistory(doc.get("Запись в бж"),doc);
+        //выполнить действие Направить на регистрацию
+        righactionexecute("Направить адресатам","ОК","Направлен",doc);
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие уведомлений у получателей
+        doc.put("СЭД. Получатель", new String[]{doc.get("Получатель")[1],getuserbylogin("gpetuhov").full});
+        recipientnotifications(doc);
+
+
+        //if (!stack.get(0).value)
+        removedocs();
+    }
 }
