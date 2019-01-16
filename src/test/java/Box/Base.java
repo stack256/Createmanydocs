@@ -2439,8 +2439,8 @@ class Base {
 
     @Step("Выполнить действие {0}")
     static void righactionexecute(String action, String approve, String status, HashMap<String, String[]> doc){
-        click(action, righaction(action));
-        click(approve,approveaction(approve));
+        clickaction(action, righaction(action));
+        clickactionapprove(approve,approveaction(approve));
         boolean t = false;
         waitForLoad();
         waitelement(Document.Viewform.status_field);
@@ -2457,6 +2457,44 @@ class Base {
             i--;
         }
         doc.put("Статус", new String[]{status});
+    }
+
+    @Step("Выполнить действие <{0}>")
+    static void clickaction(String report, String xpath) {
+        waitForLoad();
+        try {
+            (new WebDriverWait(driver, timeoutlnseconds))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+        } catch (Exception e) {
+            hardassertfail("Не найден элемент " + xpath);
+        }
+        try {
+            (new WebDriverWait(driver, timeoutlnseconds))
+                    .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
+        } catch (Exception e) {
+            hardassertfail("Не кликабелен элемент " + xpath);
+        }
+        driver.findElement(By.xpath(xpath)).click();
+        waitForLoad();
+    }
+
+    @Step("Нажать кнопку <{0}> на форме выполнения действия")
+    static void clickactionapprove(String report, String xpath) {
+        waitForLoad();
+        try {
+            (new WebDriverWait(driver, timeoutlnseconds))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+        } catch (Exception e) {
+            hardassertfail("Не найден элемент " + xpath);
+        }
+        try {
+            (new WebDriverWait(driver, timeoutlnseconds))
+                    .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
+        } catch (Exception e) {
+            hardassertfail("Не кликабелен элемент " + xpath);
+        }
+        driver.findElement(By.xpath(xpath)).click();
+        waitForLoad();
     }
 
     @Step("Перейти на вкладку {0}")
