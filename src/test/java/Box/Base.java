@@ -2616,7 +2616,7 @@ class Base {
         waitnotification(notification);
     }
 
-    @Step("{0}")
+    @Step("Уведомление <{0}>")
     static void waitnotification(String notification) {
         waitForLoad();
         String dynamicXPath = "//td[contains(.,'%s')]";
