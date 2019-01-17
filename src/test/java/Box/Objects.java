@@ -112,6 +112,7 @@ class Objects {
             static String executor_field = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[contains(@id,'executor')]//div[contains(@class,'cropped-item')]//div[contains(@class,'value')]";
         }
         static class Createform{
+            static String summarycontent_iframe = "//iframe[contains(@id,'summaryContent')]";
             static String create_button = "//div[@class='document-metadata']//button[text()='Создать']";
             static String attachments_uploadbutton = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='Выберите файлы']";
             static String attachments_input = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//input[@type='file']";

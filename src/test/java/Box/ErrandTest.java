@@ -4,6 +4,7 @@ import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
 
 import static Box.Base.*;
+import static Box.ErrandStep.*;
 import static Box.Users.getuserbylogin;
 import static Box.Users.getuserbyroles;
 

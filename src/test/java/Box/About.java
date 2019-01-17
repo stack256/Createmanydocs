@@ -97,32 +97,7 @@ class About {
 
 
 
-    @Step("Поиск письма на почте {0}")
-    static void ReadEmail(String email, String pass, String message){
-        String currenturl = driver.getCurrentUrl();
-        driver.get("http://mail.alf.datateh.ru/#/mailbox/INBOX");
-        boolean t = false;
-        int i = 1;
-        timeoutlnseconds = 5;
-        settext("Почта","//input[@name='RainLoopEmail']",email);
-        settext("Пароль","//input[@name='RainLoopPassword']",pass);
-        click("Войти","//button[@type='submit' and contains(@class,'submit')]");
-        driver.get("http://mail.alf.datateh.ru/#/mailbox/INBOX");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        while (!t && i <= 10){
-            click("Письмо" + i,"//div[contains(@class,'messageListItem')][" + i + "]");
-            t = waitelement("//div[contains(@id,'mgs')]//div[contains(.,'" + message + "')]", false) || waitelement("//td[contains(.,'" + message + "')]", false);
-            i++;
-        }
-        saveAllureText(message);
-        softassertfail(t,"Письмо не найдено");
-        driver.get(currenturl);
-        timeoutlnseconds = 10;
-    }
+
 
 
 
@@ -191,7 +166,7 @@ class About {
     }
 
     @Attachment(value = "Вложение", type = "text/application")
-    private static String saveAllureText(String report) {
+    static String saveAllureText(String report) {
         return report;
     }
 

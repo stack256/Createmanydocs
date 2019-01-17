@@ -6,6 +6,7 @@ import ru.yandex.qatools.allure.annotations.*;
 import java.util.HashMap;
 
 import static Box.Base.*;
+import static Box.OrdStep.*;
 import static Box.Users.getuserbylogin;
 import static Box.Users.getuserbyroles;
 

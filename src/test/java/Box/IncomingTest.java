@@ -6,6 +6,7 @@ import ru.yandex.qatools.allure.annotations.*;
 import java.util.HashMap;
 
 import static Box.Base.*;
+import static Box.IncomingStep.*;
 import static Box.Users.*;
 
 @Features("Входящий")
@@ -313,7 +314,6 @@ public class IncomingTest extends About {
         //if (!stack.get(0).value)
         removedocs();
     }
-
 
     @Stories("Направить адресатам черновик")
     @Title("Направление адресатам входящего документа в статусе “Черновик”. Нерегистрируемый = Да")

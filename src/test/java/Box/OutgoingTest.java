@@ -4,6 +4,7 @@ import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
 
 import static Box.Base.*;
+import static Box.OutgoingStep.*;
 import static Box.Users.*;
 
 @Features("Исходящий")
