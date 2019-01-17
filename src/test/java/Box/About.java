@@ -1,5 +1,6 @@
 package Box;
 
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -28,8 +29,18 @@ import java.util.concurrent.TimeUnit;
 
 import static Box.Base.*;
 import static Box.Users.*;
+import static com.github.automatedowl.tools.AllureEnvironmentWriter.allureEnvironmentWriter;
 
 class About {
+
+    @BeforeSuite
+    void setAllureEnvironment() {
+        allureEnvironmentWriter(
+                ImmutableMap.<String, String>builder()
+                        .put("Браузер", "Chrome")
+                        .put("Стенд", System.getProperty("stend.url"))
+                        .build());
+    }
 
     @BeforeMethod
     public void setUp() {

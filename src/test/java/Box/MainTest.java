@@ -21,7 +21,7 @@ public class MainTest extends About {
 
     @Title("Создание документа копированием")
     public void test15() {
-        Users.User user = getuserbyroles("СЭД. Регистраторы");
+        /*Users.User user = getuserbyroles("СЭД. Регистраторы");
 
         doc.put("document", new String[]{"incoming"});
         doc.put("Заголовок", new String[]{"Заголовок"});
@@ -84,7 +84,7 @@ public class MainTest extends About {
         doc1.put("Запись в бж",new String[]{historystandartcreate(doc1)});
         readhistory(doc1.get("Запись в бж"),doc1);
         //if (!stack.get(0).value)
-        removedocs();
+        removedocs();*/
     }
 
 
