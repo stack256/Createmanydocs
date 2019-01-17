@@ -223,7 +223,7 @@ class Base {
         waitelement(SelectDialog.Simple.dialog);
         click("Очистить", SelectDialog.clearall);
         for(String value:values){
-            settext("Поиск",SelectDialog.Simple.input,value);
+            settext("Строка поиска",SelectDialog.Simple.input,value);
             click("Поиск",SelectDialog.Simple.search_button);
             waitForLoad();
             click("Добавить",sd_simple_tableadd(value));
@@ -515,6 +515,10 @@ class Base {
                 if (doc.get("document")[0].equals("resolutions")) {
                     filllimitationdate_resolution(attrname,values);
                     break;
+                } else
+                if (doc.get("document")[0].equals("errand")) {
+                    filllimitationdate_errand(attrname,values);
+                    break;
                 }
             case "Наименование":
             case "ИНН":
@@ -629,7 +633,7 @@ class Base {
                 filllimitationdate_point(attrname, values);
                 break;
             case "Поручения Срок исполнения":
-                filllimitationdate_errand(attrname, values);
+                filllimitationdate_resolutionerrand(attrname, values);
                 break;
             case "Окончание повторений":
                 periodend(attrname,values);
@@ -727,7 +731,7 @@ class Base {
     }
 
     @Step("Заполнить атрибут {0} значением {1}")
-    private static void filllimitationdate_errand(String attrname, String[] values) {
+    private static void filllimitationdate_resolutionerrand(String attrname, String[] values) {
         for (String value : values)
             if (value.contains("рабочий день")) {
                 click("Радио",Document.Createform.Resolutionsdocument.Errands.limitationdate_radiodays);
@@ -752,6 +756,33 @@ class Base {
                 settext("Дата", Document.Createform.Resolutionsdocument.Errands.limitationdate_radiodate_field, value);
             }
 
+    }
+
+    @Step("Заполнить атрибут {0} значением {1}")
+    private static void filllimitationdate_errand(String attrname, String[] values) {
+        for (String value : values)
+            if (value.contains("рабочий день")) {
+                click("Радио",Document.Createform.Erranddocument.limitationdate_radiodays);
+                settext("Срок", Document.Createform.Erranddocument.limitationdate_radiodays_field, value.substring(0,value.indexOf("рабочий день")-1));
+                WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Erranddocument.limitationdate_radiodays_select));
+                Select select = new Select(selectElem);
+                select.selectByVisibleText("рабочий день");
+                doc.put(attrname,new String[]{value.substring(0,value.indexOf("рабочий день")-1) + " р.д."});
+            } else
+            if (value.contains("календарный день")) {
+                click("Радио",Document.Createform.Erranddocument.limitationdate_radiodays);
+                settext("Срок", Document.Createform.Erranddocument.limitationdate_radiodays_field, value.substring(0,value.indexOf("календарный день")-1));
+                WebElement selectElem = driver.findElement(By.xpath(Document.Createform.Erranddocument.limitationdate_radiodays_select));
+                Select select = new Select(selectElem);
+                select.selectByVisibleText("календарный день");
+                doc.put(attrname,new String[]{value.substring(0,value.indexOf("календарный день")-1) + " к.д."});
+            } else
+            if (value.contains("Без срока")) {
+                click("Радио",Document.Createform.Erranddocument.limitationdate_radiolimitless);
+            } else {
+                click("Радио",Document.Createform.Erranddocument.limitationdate_radiodate);
+                settext("Дата", Document.Createform.Erranddocument.limitationdate_radiodate_field, value);
+            }
     }
 
     @Step("Заполнить атрибут {0} значением {1}")
