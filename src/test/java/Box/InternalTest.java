@@ -18,6 +18,7 @@ public class InternalTest extends About {
     public void test2() {
         Users.User user = getuserbyroles("Внутренние. Создатели");
 
+        HashMap<String, String[]> doc = new HashMap<String, String[]>();;
         doc.put("document", new String[]{"internal"});
         doc.put("Составитель", new String[]{user.full});
         doc.put("Исполнитель", new String[]{user.full});
@@ -51,6 +52,7 @@ public class InternalTest extends About {
     public void test21() {
         Users.User user = getuserbyroles("Внутренние. Создатели");
 
+        HashMap<String, String[]> doc = new HashMap<String, String[]>();;
         doc.put("document", new String[]{"internal"});
         doc.put("Заголовок", new String[]{"Заголовок"});
         doc.put("Вид документа", new String[]{"Аналитическая записка"});
@@ -102,6 +104,7 @@ public class InternalTest extends About {
     public void test22() {
         Users.User user = getuserbyroles("Внутренние. Создатели");
 
+        HashMap<String, String[]> doc = new HashMap<String, String[]>();;
         doc.put("document", new String[]{"internal"});
         doc.put("Заголовок", new String[]{"Заголовок"});
         doc.put("Вид документа", new String[]{"Аналитическая записка"});
@@ -136,7 +139,7 @@ public class InternalTest extends About {
         readinternal(doc);
         //проверить наличие записи в бж
         doc.put("Запись в бж",new String[]{
-                getuserbylogin(current_login).famio + " зарегистрировал(а) проект документа " + doc.get("Номер")[0] + " от " + doc.get("Дата")[0],
+                getuserbylogin(currentcurrent_login()).famio + " зарегистрировал(а) проект документа " + doc.get("Номер")[0] + " от " + doc.get("Дата")[0],
                 historystandartchangestatus(doc)});
         readhistory(doc.get("Запись в бж"),doc);
 
@@ -191,7 +194,9 @@ public class InternalTest extends About {
         doc.put("Согласование Завершать после первого отклонения согласующим", new String[]{"Да"});
         doc.put("Согласование Уведомлять о каждой рецензии", new String[]{"Да"});
         doc.put("Согласование По истечении срока", new String[]{"Вернуть на доработку"});
-        approvalitem = new HashMap<String, String[]>();
+
+        HashMap<String, HashMap<String, String[]>> approval = new HashMap<String, HashMap<String, String[]>>();
+        HashMap<String, String[]> approvalitem = new HashMap<String, String[]>();
         approvalitem.put("document", new String[]{"approval"});
         approvalitem.put("Название этапа", new String[]{"Первый"});
         approvalitem.put("Тип этапа", new String[]{"Последовательно"});

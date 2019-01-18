@@ -3,6 +3,7 @@ package Box;
 import org.openqa.selenium.By;
 import ru.yandex.qatools.allure.annotations.Step;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public class IncomingStep {
             checkcreateincoming(doc);
             fillcreateincoming(doc);
         }
-        String currenturl = driver.getCurrentUrl();
+        String currenturl = currentdriver().getCurrentUrl();
         click("Создать", Objects.Document.Createform.create_button, Objects.Document.Viewform.Incomingdocument.status_field);
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
@@ -95,9 +96,10 @@ public class IncomingStep {
         for (String val:doc.get("Статус"))
             status = val;
         waitelement(Objects.Document.Viewform.Incomingdocument.status_field);
-        if (!driver.findElement(By.xpath(Objects.Document.Viewform.Incomingdocument.status_field)).getText().equals(status)){
-            driver.get(driver.getCurrentUrl());
+        if (!currentdriver().findElement(By.xpath(Objects.Document.Viewform.Incomingdocument.status_field)).getText().equals(status)){
+            currentdriver().get(currentdriver().getCurrentUrl());
         }
+        currentdriver().get(currentdriver().getCurrentUrl());
 
         //waitelement(Document.documenttitle);
         String title = docgettitle();
@@ -140,12 +142,16 @@ public class IncomingStep {
 
         checkfield("Нерегистрируемый", Objects.Document.Viewform.Incomingdocument.is_not_registered_label, Objects.Document.Viewform.Incomingdocument.is_not_registered_field, doc);
 
-        String currenturl = driver.getCurrentUrl();
+        String currenturl = currentdriver().getCurrentUrl();
         if (currenturl.contains("#")){
             currenturl = currenturl.substring(0,currenturl.indexOf('#'));
         }
-        if (!removedoc.contains(currenturl))
+        if (!currentremovedoc().contains(currenturl)){
+            ArrayList<String> removedoc = new ArrayList<String>();
+            removedoc = currentremovedoc();
             removedoc.add(currenturl);
+            removedocmap.put(Thread.currentThread().getId(),removedoc);
+        }
     }
 
     @Step("Проверить наличие уведомлений у получателей")

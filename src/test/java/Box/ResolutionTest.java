@@ -18,6 +18,7 @@ public class ResolutionTest extends About {
     public void test7() {
         Users.User user = getuserbyroles("Резолюции. Создатели");
 
+        HashMap<String, String[]> doc = new HashMap<String, String[]>();;
         doc.put("document", new String[]{"resolutions"});
         doc.put("Утверждено вне системы", new String[]{"Да"});
         doc.put("Тематика", new String[]{"Доставка воды"});
@@ -27,7 +28,8 @@ public class ResolutionTest extends About {
         doc.put("Контроль", new String[]{"Да"});
         doc.put("Срок исполнения", new String[]{"1 календарный день"});
 
-        errand = new HashMap<String, String[]>();
+        HashMap<String, HashMap<String, String[]>> errands = new HashMap<String, HashMap<String, String[]>>();
+        HashMap<String, String[]> errand = new HashMap<String, String[]>();
         errand.put("document", new String[]{"resolutions"});
         errand.put("Поручения Тип поручения", new String[]{"На исполнение (неконтрольное)"});
         errand.put("Поручения Заголовок", new String[]{"Ознакомить подчиненных"});
@@ -43,7 +45,7 @@ public class ResolutionTest extends About {
         //авторизоваться
         auth(user.famio,user.login,user.pass);
         //создать входящий документ
-        createresolutions(doc, "Направить");
+        createresolutions(doc, "Направить", errands);
         readresolutions(doc);
         doc.put("Запись в бж",new String[]{historystandartcreateresolutions(doc)});
         readhistory(doc.get("Запись в бж"),doc);

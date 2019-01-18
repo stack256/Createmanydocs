@@ -23,11 +23,12 @@ import ru.yandex.qatools.allure.experimental.LifecycleListener;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static Box.Base.*;
 import static Box.Users.*;
 import static com.github.automatedowl.tools.AllureEnvironmentWriter.allureEnvironmentWriter;
 
@@ -40,22 +41,27 @@ class About {
                         .put("Браузер", "Chrome")
                         .put("Стенд", System.getProperty("stend.url"))
                         .build());
+
+        Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
     }
 
     @BeforeMethod
     public void setUp() {
-        current_login = null;
-        doc = new HashMap<String, String[]>();
-        items = new HashMap<String, HashMap<String, String[]>>();
-        item = new HashMap<String, String[]>();
-        errands = new HashMap<String, HashMap<String, String[]>>();
-        errand = new HashMap<String, String[]>();
+        String current_login = null;
+        current_loginmap.put(Thread.currentThread().getId(),current_login);
+
         usersinitial();
-        timeoutlnseconds = 10;
-        Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
-        stack = new ArrayList<About.Stack>();
-        stack.add(new About.Stack());
-        removedoc = new ArrayList<>();
+
+        timeoutlnsecondsmap.put(Thread.currentThread().getId(),timeoutlnsecond);
+
+        ArrayList<Stack> stack = new ArrayList<Stack>();
+        stack.add(new Stack());
+        stackmap.put(Thread.currentThread().getId(),stack);
+
+        ArrayList<String> removedoc = new ArrayList<>();
+        removedocmap.put(Thread.currentThread().getId(),removedoc);
+
+        RemoteWebDriver driver = null;
         if (System.getProperty("remote.grid") != null) {
             try {
                 driver = new RemoteWebDriver(new URL(System.getProperty("remote.grid")), new ChromeOptions());
@@ -68,19 +74,44 @@ class About {
         driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
         String baseUrl = System.getProperty("stend.url");
         driver.get(baseUrl);
+        drivermap.put(Thread.currentThread().getId(),driver);
     }
 
     @AfterMethod
     public void tiredDown() {
-        doc.clear();
-        items.clear();
-        item.clear();
-        errands.clear();
-        errand.clear();
-        stack.clear();
-        removedoc.clear();
-        users.clear();
-        driver.quit();
+        //doc.clear();
+        //items.clear();
+        //item.clear();
+        //errands.clear();
+        //errand.clear();
+        currentstack().clear();
+        currentremovedoc().clear();
+        //users.clear();
+        currentdriver().quit();
+    }
+
+    static RemoteWebDriver currentdriver() {
+        return drivermap.get(Thread.currentThread().getId());
+    }
+
+    static ArrayList<String> currentremovedoc() {
+        return removedocmap.get(Thread.currentThread().getId());
+    }
+
+    private static ArrayList<Stack> currentstack() {
+        return stackmap.get(Thread.currentThread().getId());
+    }
+
+    static String currentcurrent_user() {
+        return current_usermap.get(Thread.currentThread().getId());
+    }
+
+    static String currentcurrent_login() {
+        return current_loginmap.get(Thread.currentThread().getId());
+    }
+
+    static Integer currenttimeoutlnseconds() {
+        return timeoutlnsecondsmap.get(Thread.currentThread().getId());
     }
 
     public class Retry implements IRetryAnalyzer {
@@ -106,23 +137,13 @@ class About {
 
     }
 
-
-
-
-
-
-
-    static RemoteWebDriver driver = null;
-    static Integer timeoutlnseconds;
-    static HashMap<String, String[]> doc;
-    static HashMap<String, HashMap<String, String[]>> approval;
-    static HashMap<String, String[]> approvalitem;
-    static HashMap<String, HashMap<String, String[]>> items;
-    static HashMap<String, String[]> item;
-    static HashMap<String, HashMap<String, String[]>> errands;
-    static HashMap<String, String[]> errand;
-    static String current_user, current_login;
-    static ArrayList<String> removedoc;
+    private static HashMap<Long, RemoteWebDriver> drivermap = new HashMap<Long, RemoteWebDriver>();
+    static HashMap<Long, ArrayList<String>> removedocmap = new HashMap<Long, ArrayList<String>>();
+    private static HashMap<Long, ArrayList<Stack>> stackmap = new HashMap<Long, ArrayList<Stack>>();
+    static HashMap<Long, String> current_usermap = new HashMap<Long, String>();
+    static HashMap<Long, String> current_loginmap = new HashMap<Long, String>();
+    static HashMap<Long, Integer> timeoutlnsecondsmap = new HashMap<Long, Integer>();
+    static Integer timeoutlnsecond = 60;
 
     static class Stack {
         Integer number;
@@ -133,7 +154,6 @@ class About {
             value = true;
         }
     }
-    static ArrayList<Stack> stack;
 
     //лисенер для мягких ошибок
     public static class AllureStepListener extends LifecycleListener {
@@ -147,10 +167,13 @@ class About {
 
         @Override
         public void fire(StepStartedEvent event) {
+            ArrayList<Stack> stackbuf = new ArrayList<>();
+            stackbuf = currentstack();
             Stack buf;
             buf = new Stack();
-            buf.number = stack.size();
-            stack.add(buf);
+            buf.number = stackbuf.size();
+            stackbuf.add(buf);
+            stackmap.put(Thread.currentThread().getId(),stackbuf);
             //если понадобится логгирование прям в консоль дженкинса
             //то разблокировать строку ниже
             //System.out.println(event.getTitle());
@@ -158,14 +181,19 @@ class About {
 
         @Override
         public void fire(StepFinishedEvent event) {
-            if (!stack.get(stack.size()-1).value){
-                Stack buf = stack.get(stack.size()-2);
+            ArrayList<Stack> stackbuf = new ArrayList<>();
+            if (!currentstack().get(currentstack().size()-1).value){
+                stackbuf = currentstack();
+                Stack buf = stackbuf.get(stackbuf.size()-2);
                 buf.value = false;
-                stack.set(stack.size()-2,buf);
+                stackbuf.set(stackbuf.size()-2,buf);
+                stackmap.put(Thread.currentThread().getId(),stackbuf);
                 Allure.LIFECYCLE.fire(new StepFailureEvent().withThrowable(new AssertionError()));
                 Allure.LIFECYCLE.fire(new TestCaseFailureEvent().withThrowable(new AssertionError("Есть неблокирующие ошибки")));
             }
-            stack.remove(stack.size()-1);
+            stackbuf = currentstack();
+            stackbuf.remove(stackbuf.size()-1);
+            stackmap.put(Thread.currentThread().getId(),stackbuf);
             //stack1.clear();
         }
 
@@ -173,7 +201,7 @@ class About {
 
     @Attachment(value = "Page screenshot", type = "image/png")
     private static byte[] saveAllureScreenshot() {
-        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+        return ((TakesScreenshot) currentdriver()).getScreenshotAs(OutputType.BYTES);
     }
 
     @Attachment(value = "Вложение", type = "text/application")
@@ -212,9 +240,12 @@ class About {
         System.out.println("Есть неблокирующая ошибка");
         Allure.LIFECYCLE.fire(new StepFailureEvent().withThrowable(new AssertionError()));
         Allure.LIFECYCLE.fire(new TestCaseFailureEvent().withThrowable(new AssertionError("Есть неблокирующие ошибки")));
-        Stack buf = stack.get(stack.size() - 1);
+        ArrayList<Stack> stackbuf = new ArrayList<>();
+        stackbuf = currentstack();
+        Stack buf = stackbuf.get(stackbuf.size() - 1);
         buf.value = false;
-        stack.set(stack.size() - 1, buf);
+        stackbuf.set(stackbuf.size() - 1, buf);
+        stackmap.put(Thread.currentThread().getId(),stackbuf);
         report(report);
     }
 
@@ -252,7 +283,7 @@ class About {
             e.printStackTrace();
         }
         WebDriver jsWaitDriver;
-        jsWaitDriver = driver;
+        jsWaitDriver = currentdriver();
         WebDriverWait wait = new WebDriverWait(jsWaitDriver,15);
         JavascriptExecutor jsExec = (JavascriptExecutor) jsWaitDriver;
 
@@ -361,14 +392,14 @@ class About {
     }
 
     static String historystandartcreate(Map<String, String[]> doc){
-        return current_user + " создал(а) новый документ \"" + incoming_header(doc.get("Вид документа"), doc.get("Номер")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
+        return currentcurrent_user() + " создал(а) новый документ \"" + incoming_header(doc.get("Вид документа"), doc.get("Номер")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
     }
 
     static String historystandartchangestatus(Map<String, String[]> doc){
         if (doc.get("Статус")[0].equals("Проект"))
-            return current_user + " перевел(а) документ \"" + incoming_header(doc.get("Вид документа"), new String[]{"Не присвоено"}) + "\" в статус \"" + doc.get("Статус")[0] + "\"";
+            return currentcurrent_user() + " перевел(а) документ \"" + incoming_header(doc.get("Вид документа"), new String[]{"Не присвоено"}) + "\" в статус \"" + doc.get("Статус")[0] + "\"";
         else
-            return current_user + " перевел(а) документ \"" + incoming_header(doc.get("Вид документа"), doc.get("Номер")) + "\" в статус \"" + doc.get("Статус")[0] + "\"";
+            return currentcurrent_user() + " перевел(а) документ \"" + incoming_header(doc.get("Вид документа"), doc.get("Номер")) + "\" в статус \"" + doc.get("Статус")[0] + "\"";
     }
 
     private static String errand_header(String[] title, String[] regnum, String[] executor, String[] limitdate) {
@@ -379,7 +410,7 @@ class About {
     }
 
     static String historystandartcreateerrand(Map<String, String[]> doc){
-        return current_user + " создал(а) новый документ \"" + errand_header(doc.get("Заголовок"), doc.get("Номер"), doc.get("Исполнитель"), doc.get("Срок исполнения")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
+        return currentcurrent_user() + " создал(а) новый документ \"" + errand_header(doc.get("Заголовок"), doc.get("Номер"), doc.get("Исполнитель"), doc.get("Срок исполнения")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
     }
 
     private static String resolutions_header(String[] regnum, String[] date, String[] limitdate) {
@@ -391,9 +422,9 @@ class About {
 
     static String historystandartcreateresolutions(Map<String, String[]> doc){
         if (doc.get("Статус")[0].contains("Черновик"))
-            return current_user + " создал(а) новый документ \"" + resolutions_header(doc.get("Номер"), doc.get("Дата"), doc.get("Срок исполнения")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
+            return currentcurrent_user() + " создал(а) новый документ \"" + resolutions_header(doc.get("Номер"), doc.get("Дата"), doc.get("Срок исполнения")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
         else
-            return current_user + " создал(а) новый документ \"" + resolutions_header(doc.get("Номер_old"), doc.get("Дата"), doc.get("Срок исполнения_old")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
+            return currentcurrent_user() + " создал(а) новый документ \"" + resolutions_header(doc.get("Номер_old"), doc.get("Дата"), doc.get("Срок исполнения_old")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
     }
 
     private static String protocol_header(String[] type, String[] regnum, String[] date) {
@@ -402,6 +433,16 @@ class About {
     }
 
     static String historystandartcreateprotocol(Map<String, String[]> doc){
-        return current_user + " создал(а) новый документ \"" + protocol_header(doc.get("Вид документа"), doc.get("Номер"), doc.get("Дата")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
+        return currentcurrent_user() + " создал(а) новый документ \"" + protocol_header(doc.get("Вид документа"), doc.get("Номер"), doc.get("Дата")) + "\" в статусе \"" + doc.get("Статус")[0] + "\"";
+    }
+
+    String randomstring(int length) {
+        String ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
+        SecureRandom RANDOM = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; ++i) {
+            sb.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+        }
+        return sb.toString();
     }
 }

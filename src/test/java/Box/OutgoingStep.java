@@ -3,6 +3,7 @@ package Box;
 import org.openqa.selenium.By;
 import ru.yandex.qatools.allure.annotations.Step;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static Box.About.*;
@@ -16,7 +17,7 @@ public class OutgoingStep {
         click("Создать", Objects.ARMSED.createButton);
         click("Исходящий документ", Objects.ARMSED.Createmenu.outgoingdocument);
         fillcreateoutgoing(doc);
-        String currenturl = driver.getCurrentUrl();
+        String currenturl = currentdriver().getCurrentUrl();
         click("Создать", Objects.Document.Createform.create_button, Objects.Document.Viewform.Outgoingdocument.status_field);
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
@@ -88,9 +89,10 @@ public class OutgoingStep {
         for (String val:doc.get("Статус"))
             status = val;
         waitelement(Objects.Document.Viewform.Outgoingdocument.status_field);
-        if (!driver.findElement(By.xpath(Objects.Document.Viewform.Outgoingdocument.status_field)).getText().equals(status)){
-            driver.get(driver.getCurrentUrl());
+        if (!currentdriver().findElement(By.xpath(Objects.Document.Viewform.Outgoingdocument.status_field)).getText().equals(status)){
+            currentdriver().get(currentdriver().getCurrentUrl());
         }
+        currentdriver().get(currentdriver().getCurrentUrl());
 
         String title = docgettitle();
         checkfield("Номер", Objects.Document.Viewform.Outgoingdocument.regnum_label, Objects.Document.Viewform.Outgoingdocument.regnum_field, doc);
@@ -137,11 +139,15 @@ public class OutgoingStep {
 
         checkfield("Завершающий", Objects.Document.Viewform.Outgoingdocument.finishing_label, Objects.Document.Viewform.Outgoingdocument.finishing_field, doc);
 
-        String currenturl = driver.getCurrentUrl();
+        String currenturl = currentdriver().getCurrentUrl();
         if (currenturl.contains("#")){
             currenturl = currenturl.substring(0,currenturl.indexOf('#'));
         }
-        if (!removedoc.contains(currenturl))
+        if (!currentremovedoc().contains(currenturl)){
+            ArrayList<String> removedoc = new ArrayList<String>();
+            removedoc = currentremovedoc();
             removedoc.add(currenturl);
+            removedocmap.put(Thread.currentThread().getId(),removedoc);
+        }
     }
 }

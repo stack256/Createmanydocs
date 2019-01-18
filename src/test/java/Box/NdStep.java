@@ -3,6 +3,7 @@ package Box;
 import org.openqa.selenium.By;
 import ru.yandex.qatools.allure.annotations.Step;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static Box.About.*;
@@ -16,7 +17,7 @@ public class NdStep {
         click("Создать", Objects.ARMSED.createButton);
         click("НД", Objects.ARMSED.Createmenu.nddocument);
         fillcreatend(doc);
-        String currenturl = driver.getCurrentUrl();
+        String currenturl = currentdriver().getCurrentUrl();
         click("Создать", Objects.Document.Createform.create_button, Objects.Document.Viewform.Nddocument.status_field);
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
@@ -82,9 +83,10 @@ public class NdStep {
         for (String val:doc.get("Статус"))
             status = val;
         waitelement(Objects.Document.Viewform.Nddocument.status_field);
-        if (!driver.findElement(By.xpath(Objects.Document.Viewform.Nddocument.status_field)).getText().equals(status)){
-            driver.get(driver.getCurrentUrl());
+        if (!currentdriver().findElement(By.xpath(Objects.Document.Viewform.Nddocument.status_field)).getText().equals(status)){
+            currentdriver().get(currentdriver().getCurrentUrl());
         }
+        currentdriver().get(currentdriver().getCurrentUrl());
 
         String title = docgettitle();
         checkfield("Номер", Objects.Document.Viewform.Nddocument.regnum_label, Objects.Document.Viewform.Nddocument.regnum_field, doc);
@@ -132,11 +134,15 @@ public class NdStep {
         checkfield("Регистратор", Objects.Document.Viewform.Nddocument.registrator_label, Objects.Document.Viewform.Nddocument.registrator_field, doc);
 
 
-        String currenturl = driver.getCurrentUrl();
+        String currenturl = currentdriver().getCurrentUrl();
         if (currenturl.contains("#")){
             currenturl = currenturl.substring(0,currenturl.indexOf('#'));
         }
-        if (!removedoc.contains(currenturl))
+        if (!currentremovedoc().contains(currenturl)){
+            ArrayList<String> removedoc = new ArrayList<String>();
+            removedoc = currentremovedoc();
             removedoc.add(currenturl);
+            removedocmap.put(Thread.currentThread().getId(),removedoc);
+        }
     }
 }

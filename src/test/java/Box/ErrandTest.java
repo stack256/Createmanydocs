@@ -3,6 +3,8 @@ package Box;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
 
+import java.util.HashMap;
+
 import static Box.Base.*;
 import static Box.ErrandStep.*;
 import static Box.Users.getuserbylogin;
@@ -16,6 +18,7 @@ public class ErrandTest extends About {
     public void test6() {
         Users.User user = getuserbyroles("Поручения. Инициатор");
 
+        HashMap<String, String[]> doc = new HashMap<String, String[]>();
         doc.put("document", new String[]{"errand"});
         doc.put("Тип поручения", new String[]{"На исполнение (неконтрольное)"});
         doc.put("Заголовок", new String[]{"Ознакомить подчиненных"});

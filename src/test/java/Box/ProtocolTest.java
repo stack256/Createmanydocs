@@ -18,6 +18,7 @@ public class ProtocolTest extends About {
     public void test8() {
         Users.User user = getuserbyroles("Совещания.Создатели");
 
+        HashMap<String, String[]> doc = new HashMap<String, String[]>();;
         doc.put("document", new String[]{"protocol"});
         doc.put("Заголовок", new String[]{"Заголовок"});
         doc.put("Вид документа", new String[]{"Протокол совещания"});
@@ -34,6 +35,8 @@ public class ProtocolTest extends About {
         doc.put("Номер дела", new String[]{"2018","Управление","Рабочее подразделение","ALL-Дело для всех типов документов"});
         doc.put("Автосоздание поручений", new String[]{"Да"});
 
+        HashMap<String, HashMap<String, String[]>> items = new HashMap<String, HashMap<String, String[]>>();
+        HashMap<String, String[]> item = new HashMap<String, String[]>();
         item = new HashMap<String, String[]>();
         item.put("document", new String[]{"protocol"});
         item.put("Пункт Формулировка", new String[]{"Формулировка"});
@@ -51,7 +54,7 @@ public class ProtocolTest extends About {
         //авторизоваться
         auth(user.famio,user.login,user.pass);
         //создать входящий документ
-        createprotocol(doc);
+        createprotocol(doc, items);
         readprotocol(doc);
         doc.put("Запись в бж",new String[]{historystandartcreateprotocol(doc)});
         readhistory(doc.get("Запись в бж"),doc);

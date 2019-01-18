@@ -18,6 +18,7 @@ public class OrdTest extends About {
     public void test5() {
         Users.User user = getuserbyroles("ОРД. Создатели");
 
+        HashMap<String, String[]> doc = new HashMap<String, String[]>();;
         doc.put("document", new String[]{"ord"});
         doc.put("Составитель", new String[]{user.full});
         doc.put("Исполнитель", new String[]{user.full});
@@ -39,7 +40,8 @@ public class OrdTest extends About {
         //doc.put("Принимаемые документы", new String[]{"Внутренний документ: 1234567890, № NA-00094 от 28.09.2019"});
         //doc.put("Принимаемые документы Номер", new String[]{"00094"});
 
-        item = new HashMap<String, String[]>();
+        HashMap<String, HashMap<String, String[]>> items = new HashMap<String, HashMap<String, String[]>>();
+        HashMap<String, String[]> item = new HashMap<String, String[]>();
         item.put("document", new String[]{"ord"});
         item.put("Пункты Заголовок", new String[]{"Заголовок"});
         item.put("Пункты Автор", new String[]{user.full});

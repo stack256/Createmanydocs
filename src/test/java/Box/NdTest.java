@@ -3,6 +3,8 @@ package Box;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
 
+import java.util.HashMap;
+
 import static Box.Base.*;
 import static Box.NdStep.*;
 import static Box.Users.getuserbylogin;
@@ -16,6 +18,7 @@ public class NdTest extends About {
     public void test4() {
         Users.User user = getuserbyroles("НД. Создатели");
 
+        HashMap<String, String[]> doc = new HashMap<String, String[]>();;
         doc.put("document", new String[]{"nd"});
         doc.put("Составитель", new String[]{user.full});
         doc.put("Исполнитель", new String[]{user.full});

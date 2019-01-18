@@ -3,6 +3,7 @@ package Box;
 import org.openqa.selenium.By;
 import ru.yandex.qatools.allure.annotations.Step;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static Box.About.*;
@@ -17,7 +18,7 @@ public class ErrandStep {
         click("Создать", Objects.ARMSED.createButton);
         click("Поручение", Objects.ARMSED.Createmenu.erranddocument);
         fillcreateerrand(doc);
-        String currenturl = driver.getCurrentUrl();
+        String currenturl = currentdriver().getCurrentUrl();
         if (button.equals("Сохранить черновик")) {
             click("Сохранить черновик", Objects.Document.Createform.Erranddocument.save_button, Objects.Document.Viewform.Erranddocument.status_field);
             doc.put("Статус", new String[]{"Черновик"});
@@ -30,9 +31,9 @@ public class ErrandStep {
         else hardassertfail(button + " - Нет такой кнопки на форме создания поручения");
 
         if (doc.get("Автор") == null)
-            doc.put("Автор", new String[]{getuserbylogin(current_login).full});
+            doc.put("Автор", new String[]{getuserbylogin(currentcurrent_login()).full});
         if (doc.get("Создатель") == null)
-            doc.put("Создатель", new String[]{getuserbylogin(current_login).full});
+            doc.put("Создатель", new String[]{getuserbylogin(currentcurrent_login()).full});
     }
 
     @Step("Заполнить атрибуты")
@@ -108,9 +109,10 @@ public class ErrandStep {
         for (String val:doc.get("Статус"))
             status = val;
         waitelement(Objects.Document.Viewform.Erranddocument.status_field);
-        if (!driver.findElement(By.xpath(Objects.Document.Viewform.Erranddocument.status_field)).getText().equals(status)){
-            driver.get(driver.getCurrentUrl());
+        if (!currentdriver().findElement(By.xpath(Objects.Document.Viewform.Erranddocument.status_field)).getText().equals(status)){
+            currentdriver().get(currentdriver().getCurrentUrl());
         }
+        currentdriver().get(currentdriver().getCurrentUrl());
 
 
         String title = docgettitle();
@@ -149,12 +151,15 @@ public class ErrandStep {
 
         checkfield("Тематика", Objects.Document.Viewform.Erranddocument.subject_label, Objects.Document.Viewform.Erranddocument.subject_field, doc);
 
-
-        String currenturl = driver.getCurrentUrl();
+        String currenturl = currentdriver().getCurrentUrl();
         if (currenturl.contains("#")){
             currenturl = currenturl.substring(0,currenturl.indexOf('#'));
         }
-        if (!removedoc.contains(currenturl))
+        if (!currentremovedoc().contains(currenturl)){
+            ArrayList<String> removedoc = new ArrayList<String>();
+            removedoc = currentremovedoc();
             removedoc.add(currenturl);
+            removedocmap.put(Thread.currentThread().getId(),removedoc);
+        }
     }
 }

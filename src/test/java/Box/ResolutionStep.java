@@ -3,6 +3,8 @@ package Box;
 import org.openqa.selenium.By;
 import ru.yandex.qatools.allure.annotations.Step;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import static Box.About.*;
@@ -12,12 +14,12 @@ import static Box.Users.getuserbylogin;
 public class ResolutionStep {
 
     @Step("Создать резолюцию")
-    static void createresolutions(Map<String, String[]> doc, String button) {
+    static void createresolutions(Map<String, String[]> doc, String button, HashMap<String, HashMap<String, String[]>> errands) {
         gotoarmsed();
         click("Создать", Objects.ARMSED.createButton);
         click("Рехолюция", Objects.ARMSED.Createmenu.resolutionsdocument);
-        fillcreateresolutions(doc);
-        String currenturl = driver.getCurrentUrl();
+        fillcreateresolutions(doc, errands);
+        String currenturl = currentdriver().getCurrentUrl();
         if (button.equals("Сохранить черновик")) {
             click("Сохранить черновик", Objects.Document.Createform.Resolutionsdocument.save_button, Objects.Document.Viewform.Resolutionsdocument.status_field);
             doc.put("Статус", new String[]{"Черновик"});
@@ -30,11 +32,11 @@ public class ResolutionStep {
         else hardassertfail(button + " - Нет такой кнопки на форме создания поручения");
 
         if (doc.get("Создатель") == null)
-            doc.put("Создатель", new String[]{getuserbylogin(current_login).full});
+            doc.put("Создатель", new String[]{getuserbylogin(currentcurrent_login()).full});
     }
 
     @Step("Заполнить атрибуты")
-    private static void fillcreateresolutions(Map<String, String[]> doc) {
+    private static void fillcreateresolutions(Map<String, String[]> doc, HashMap<String, HashMap<String, String[]>> errands) {
         verifyattr("Утверждено вне системы", Objects.Document.Createform.Resolutionsdocument.approvedoutsidesystem_label);
         fillfield("Утверждено вне системы", Objects.Document.Createform.Resolutionsdocument.approvedoutsidesystem_checkbox, doc.get("Утверждено вне системы"), doc);
 
@@ -63,6 +65,7 @@ public class ResolutionStep {
             click("Добавить", Objects.Document.Createform.Resolutionsdocument.adderrand_button);
 
             for (int i=0; i<k; i++) {
+                HashMap<String, String[]> errand = new HashMap<String, String[]>();
                 errand = errands.get(Integer.toString(i+1));
                 verifyattr("Поручения Тип поручения", "(" + Objects.Document.Createform.Resolutionsdocument.Errands.type_label + ")[" + Integer.toString(i+1) + "]");
                 fillfield("Поручения Тип поручения", "(" + Objects.Document.Createform.Resolutionsdocument.Errands.type_button + ")[" + Integer.toString(i+1) + "]", errand.get("Поручения Тип поручения"), errand);
@@ -103,9 +106,10 @@ public class ResolutionStep {
         for (String val:doc.get("Статус"))
             status = val;
         waitelement(Objects.Document.Viewform.Resolutionsdocument.status_field);
-        if (!driver.findElement(By.xpath(Objects.Document.Viewform.Resolutionsdocument.status_field)).getText().equals(status)){
-            driver.get(driver.getCurrentUrl());
+        if (!currentdriver().findElement(By.xpath(Objects.Document.Viewform.Resolutionsdocument.status_field)).getText().equals(status)){
+            currentdriver().get(currentdriver().getCurrentUrl());
         }
+        currentdriver().get(currentdriver().getCurrentUrl());
 
         String title = docgettitle();
         doc.put("Номер",new String[]{title.substring(2,title.indexOf("от")-1)});
@@ -113,10 +117,10 @@ public class ResolutionStep {
         if (!status.contains("Черновик") && title.substring(2,title.indexOf("от")-1).equals("Не присвоено")) {
             doc.put("Номер_old",new String[]{title.substring(2,title.indexOf("от")-1)});
             doc.put("Срок исполнения_old", doc.get("Срок исполнения"));
-            driver.get(driver.getCurrentUrl());
+            currentdriver().get(currentdriver().getCurrentUrl());
         }
 
-        title = driver.findElement(By.xpath(Objects.Document.documenttitle)).getText();
+        title = currentdriver().findElement(By.xpath(Objects.Document.documenttitle)).getText();
         doc.put("Номер",new String[]{title.substring(2,title.indexOf("от")-1)});
         doc.put("Срок исполнения", new String[]{title.substring(title.indexOf("срок:")+6,title.length())});
 
@@ -143,12 +147,15 @@ public class ResolutionStep {
                 Objects.Document.Viewform.Resolutionsdocument.limitationdate_limitless_radio, Objects.Document.Viewform.Resolutionsdocument.limitationdate_limitless_field, doc);
 
 
-
-        String currenturl = driver.getCurrentUrl();
+        String currenturl = currentdriver().getCurrentUrl();
         if (currenturl.contains("#")){
             currenturl = currenturl.substring(0,currenturl.indexOf('#'));
         }
-        if (!removedoc.contains(currenturl))
+        if (!currentremovedoc().contains(currenturl)){
+            ArrayList<String> removedoc = new ArrayList<String>();
+            removedoc = currentremovedoc();
             removedoc.add(currenturl);
+            removedocmap.put(Thread.currentThread().getId(),removedoc);
+        }
     }
 }

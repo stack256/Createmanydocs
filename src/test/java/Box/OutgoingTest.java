@@ -3,6 +3,8 @@ package Box;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
 
+import java.util.HashMap;
+
 import static Box.Base.*;
 import static Box.OutgoingStep.*;
 import static Box.Users.*;
@@ -15,6 +17,7 @@ public class OutgoingTest extends About {
     public void test3() {
         Users.User user = getuserbyroles("Исходящие. Создатели");
 
+        HashMap<String, String[]> doc = new HashMap<String, String[]>();;
         doc.put("document", new String[]{"outgoing"});
         doc.put("Составитель", new String[]{user.full});
         doc.put("Исполнитель", new String[]{user.full});

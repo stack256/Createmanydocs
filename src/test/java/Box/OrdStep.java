@@ -3,6 +3,7 @@ package Box;
 import org.openqa.selenium.By;
 import ru.yandex.qatools.allure.annotations.Step;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class OrdStep {
         click("Создать", Objects.ARMSED.createButton);
         click("ОРД", Objects.ARMSED.Createmenu.orddocument);
         fillcreateord(doc, items);
-        String currenturl = driver.getCurrentUrl();
+        String currenturl = currentdriver().getCurrentUrl();
         click("Создать", Objects.Document.Createform.create_button, Objects.Document.Viewform.Orddocument.status_field);
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
@@ -89,6 +90,7 @@ public class OrdStep {
             click("Создание", Objects.Document.Createform.Orddocument.items_button);
 
             for (int i=0; i<k; i++) {
+                HashMap<String, String[]> item = new HashMap<String, String[]>();
                 item = items.get(Integer.toString(i+1));
                 verifyattr("Пункты Заголовок", Objects.Document.Createform.Orddocument.Items.title_label);
                 fillfield("Пункты Заголовок", Objects.Document.Createform.Orddocument.Items.title_field, item.get("Пункты Заголовок"), item);
@@ -132,9 +134,10 @@ public class OrdStep {
         for (String val:doc.get("Статус"))
             status = val;
         waitelement(Objects.Document.Viewform.Orddocument.status_field);
-        if (!driver.findElement(By.xpath(Objects.Document.Viewform.Orddocument.status_field)).getText().equals(status)){
-            driver.get(driver.getCurrentUrl());
+        if (!currentdriver().findElement(By.xpath(Objects.Document.Viewform.Orddocument.status_field)).getText().equals(status)){
+            currentdriver().get(currentdriver().getCurrentUrl());
         }
+        currentdriver().get(currentdriver().getCurrentUrl());
 
         String title = docgettitle();
 
@@ -183,11 +186,15 @@ public class OrdStep {
         checkfield("Регистратор", Objects.Document.Viewform.Orddocument.registrator_label, Objects.Document.Viewform.Orddocument.registrator_field, doc);
 
 
-        String currenturl = driver.getCurrentUrl();
+        String currenturl = currentdriver().getCurrentUrl();
         if (currenturl.contains("#")){
             currenturl = currenturl.substring(0,currenturl.indexOf('#'));
         }
-        if (!removedoc.contains(currenturl))
+        if (!currentremovedoc().contains(currenturl)){
+            ArrayList<String> removedoc = new ArrayList<String>();
+            removedoc = currentremovedoc();
             removedoc.add(currenturl);
+            removedocmap.put(Thread.currentThread().getId(),removedoc);
+        }
     }
 }
