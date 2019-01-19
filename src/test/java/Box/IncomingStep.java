@@ -1,10 +1,14 @@
 package Box;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.allure.annotations.Step;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static Box.About.*;
@@ -18,75 +22,318 @@ public class IncomingStep {
             click("Создать", Objects.ARMSED.createButton);
             click("Входящий документ", Objects.ARMSED.Createmenu.incomingdocument);
             checkcreateincoming(doc);
+            checkcreateincoming_value();
             fillcreateincoming(doc);
-        }
-        String currenturl = currentdriver().getCurrentUrl();
+        } else
+            checkcreateincoming(doc);
+
+        checkcreateincoming_value(doc);
+
         click("Создать", Objects.Document.Createform.create_button, Objects.Document.Viewform.Incomingdocument.status_field);
         doc.put("Статус",new String[]{"Черновик"});
         doc.put("Номер",new String[]{"Не присвоено"});
     }
 
-    @Step("Проверить наличие атрибутов и их значения на форме создания")
+    @Step("Проверить значения атрибутов на форме создания")
+    private static void checkcreateincoming_value(Map<String, String[]> doc) {
+        checkattrcreateincoming_value("Входящий", doc);
+        checkattrcreateincoming_value("Прочее", doc);
+        checkattrcreateincoming_value("Заголовок", doc);
+        checkattrcreateincoming_value("Вид документа", doc);
+        checkattrcreateincoming_value("Способ доставки", doc);
+        checkattrcreateincoming_value("Корреспондент", doc);
+        checkattrcreateincoming_value("Представитель корреспондента", doc);
+        checkattrcreateincoming_value("Получатель", doc);
+        checkattrcreateincoming_value("В ответ на", doc);
+        checkattrcreateincoming_value("Исходящий номер", doc);
+        checkattrcreateincoming_value("Исходящий от", doc);
+        checkattrcreateincoming_value("Содержание", doc);
+        checkattrcreateincoming_value("Количество листов", doc);
+        checkattrcreateincoming_value("Тематика", doc);
+        checkattrcreateincoming_value("Номер дела", doc);
+        checkattrcreateincoming_value("Примечание", doc);
+        checkattrcreateincoming_value("Срок исполнения", doc);
+        checkattrcreateincoming_value("На контроле", doc);
+        checkattrcreateincoming_value("Нерегистрируемый", doc);
+    }
+
+    @Step("Проверить значения атрибутов на форме создания")
+    private static void checkcreateincoming_value() {
+        checkattrcreateincoming_value("Входящий");
+        checkattrcreateincoming_value("Прочее");
+        checkattrcreateincoming_value("Заголовок");
+        checkattrcreateincoming_value("Вид документа");
+        checkattrcreateincoming_value("Способ доставки");
+        checkattrcreateincoming_value("Корреспондент");
+        checkattrcreateincoming_value("Представитель корреспондента");
+        checkattrcreateincoming_value("Получатель");
+        checkattrcreateincoming_value("В ответ на");
+        checkattrcreateincoming_value("Исходящий номер");
+        checkattrcreateincoming_value("Исходящий от");
+        checkattrcreateincoming_value("Содержание");
+        checkattrcreateincoming_value("Количество листов");
+        checkattrcreateincoming_value("Тематика");
+        checkattrcreateincoming_value("Номер дела");
+        checkattrcreateincoming_value("Примечание");
+        checkattrcreateincoming_value("Срок исполнения");
+        checkattrcreateincoming_value("На контроле");
+        checkattrcreateincoming_value("Нерегистрируемый");
+    }
+
+    private static void checkattrcreateincoming_value(String AttrLabel, Map<String, String[]> doc) {
+        if (AttrLabel.equals("Входящий") || AttrLabel.equals("Прочее"))
+            checkattrcreateincomingchild_value(AttrLabel,doc.get("Вложения " + AttrLabel));
+        else
+            checkattrcreateincomingchild_value(AttrLabel,doc.get(AttrLabel));
+    }
+
+    private static void checkattrcreateincoming_value(String AttrLabel) {
+        checkattrcreateincomingchild_value(AttrLabel);
+    }
+
+    @Step("{0}: null")
+    private static void checkattrcreateincomingchild_value(String AttrLabel) {
+        waitForLoad();
+        String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]";
+        String XPath = String.format(dynamicXPath, AttrLabel);
+        try {
+            (new WebDriverWait(currentdriver(), currenttimeoutlnseconds()))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(XPath)));
+        } catch (Exception e) {
+            hardassertfail("Не найден элемент " + XPath);
+        }
+
+        switch (AttrLabel) {
+            case "Заголовок":
+            case "Исходящий номер":
+            case "Количество листов":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'value')]//input[@type='text']";
+                break;
+            case "Исходящий от":
+            case "Срок исполнения":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'value')]//input[@type='hidden']";
+                break;
+            case "Примечание":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'value')]//textarea";
+                break;
+            case "Корреспондент":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'control')]//div[contains(@class,'cropped-item')]";
+                break;
+            case "Получатель":
+            case "Тематика":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'control')]//div[contains(@class,'cropped-item')]";
+                break;
+            case "Входящий":
+            case "Прочее":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'uploader-block')]//div[contains(@class,'cropped-item')]";
+                break;
+            case "На контроле":
+            case "Нерегистрируемый":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//input[@type='checkbox']";
+                break;
+            case "Содержание":
+                dynamicXPath = "//body[@id='tinymce']";
+                currentdriver().switchTo().frame(currentdriver().findElement(By.xpath(Objects.Document.Createform.summarycontent_iframe)));
+                break;
+            default:
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'cropped-item')]";
+                break;
+        }
+
+        XPath = String.format(dynamicXPath, AttrLabel);
+
+        int i = timeoutlnsecond;
+        while (i > 0 && currentdriver().findElements(By.xpath(XPath)).isEmpty()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            i--;
+        }
+
+        if (AttrLabel.equals("На контроле") || AttrLabel.equals("Нерегистрируемый")){
+            boolean t = false;
+            if (currentdriver().findElement(By.xpath(XPath)).isSelected() != t)
+                softassertfail("Атрибут не содержит значение " + t);
+        } else {
+
+
+            List<WebElement> elements = currentdriver().findElements(By.xpath(XPath));
+
+            if (elements.size() > 0) {
+                ArrayList<String> elementstext = new ArrayList<>();
+                for (WebElement element : elements) {
+                    if (element.getText().length() > 0)
+                        elementstext.add(element.getText());
+                }
+                if (elementstext.size() > 0)
+                    softassertfail("Лишние элементы в атрибуте " + elementstext);
+            }
+        }
+        if (AttrLabel.equals("Содержание"))
+            currentdriver().switchTo().defaultContent();
+    }
+
+    @Step("{0}: {1}")
+    private static void checkattrcreateincomingchild_value(String AttrLabel, String[] values) {
+        if (values != null)
+            if (values[0].equals("Нет") || values[0].equals("(Нет)"))
+                values = null;
+        waitForLoad();
+        String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]";
+        String XPath = String.format(dynamicXPath, AttrLabel);
+        try {
+            (new WebDriverWait(currentdriver(), currenttimeoutlnseconds()))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(XPath)));
+        } catch (Exception e) {
+            hardassertfail("Не найден элемент " + XPath);
+        }
+
+        switch (AttrLabel) {
+            case "Заголовок":
+            case "Исходящий номер":
+            case "Количество листов":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'value')]//input[@type='text']";
+                break;
+            case "Исходящий от":
+            case "Срок исполнения":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'value')]//input[@type='hidden']";
+                break;
+            case "Примечание":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'value')]//textarea";
+                break;
+            case "Корреспондент":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'control')]//div[contains(@class,'cropped-item')]";
+                break;
+            case "Получатель":
+            case "Тематика":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'control')]//div[contains(@class,'cropped-item')]";
+                break;
+            case "На контроле":
+            case "Нерегистрируемый":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//input[@type='checkbox']";
+                break;
+            case "Входящий":
+            case "Прочее":
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'uploader-block')]//div[contains(@class,'cropped-item')]";
+                break;
+            case "Содержание":
+                dynamicXPath = "//body[@id='tinymce']";
+                currentdriver().switchTo().frame(currentdriver().findElement(By.xpath(Objects.Document.Createform.summarycontent_iframe)));
+                break;
+            default:
+                dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'cropped-item')]";
+                break;
+        }
+
+        XPath = String.format(dynamicXPath, AttrLabel);
+
+        int i = timeoutlnsecond;
+        while (i > 0 && currentdriver().findElements(By.xpath(XPath)).isEmpty()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            i--;
+        }
+
+
+        if (AttrLabel.equals("На контроле") || AttrLabel.equals("Нерегистрируемый")){
+            boolean t = false;
+            if (values != null)
+                t = values[0].equals("Да");
+            if (currentdriver().findElement(By.xpath(XPath)).isSelected() != t)
+                softassertfail("Атрибут не содержит значение " + values[0].equals("Да"));
+        } else {
+
+
+
+            List<WebElement> elements = currentdriver().findElements(By.xpath(XPath));
+
+            if (values != null) {
+                for (String value : values) {
+                    if (dynamicXPath.contains("uploader-block"))
+                        value = value.substring(System.getProperty("user.dir").length()+1);
+                    boolean t = false;
+                    for (WebElement element : elements) {
+                        String elementtext = element.getText();
+                        if (dynamicXPath.contains("//input[@type='text']") || dynamicXPath.contains("//textarea"))
+                            elementtext = element.getAttribute("value");
+                        if (dynamicXPath.contains("//input[@type='hidden']")) {
+                            elementtext = element.getAttribute("value");
+                            elementtext = elementtext.substring(8,10) + "." + elementtext.substring(5,7) + "." + elementtext.substring(0,4);
+                        }
+                        if (elementtext.contains(value)) {
+                            t = true;
+                            elements.remove(element);
+                            break;
+                        }
+                    }
+                    if (AttrLabel.equals("Получатель") && (value.equals("Сотрудник") || value.equals("Организация")))
+                        t = true;
+                    softassertfail(t, "Атрибут не содержит значение " + value + " в поле " + XPath);
+                }
+            }
+
+            if (elements.size() > 0) {
+                ArrayList<String> elementstext = new ArrayList<>();
+                for (WebElement element : elements) {
+                    if (element.getText().length() > 0)
+                        elementstext.add(element.getText());
+                }
+                if (elementstext.size() > 0)
+                    softassertfail("Лишние элементы в атрибуте " + elementstext);
+            }
+        }
+        if (AttrLabel.equals("Содержание"))
+            currentdriver().switchTo().defaultContent();
+    }
+
+    @Step("Проверить наличие атрибутов на форме создания")
     private static void checkcreateincoming(Map<String, String[]> doc) {
-        //checkfield("Вложения Входящий", Objects.Document.Createform.Incomingdocument.attachments_label, Objects.Document.Createform.Incomingdocument.attachments_common_plus,doc);
+        checkattrcreateincoming("Вложения");
+        checkattrcreateincoming("Заголовок");
+        checkattrcreateincoming("Вид документа");
+        checkattrcreateincoming("Способ доставки");
+        checkattrcreateincoming("Корреспондент");
+        checkattrcreateincoming("Представитель корреспондента");
+        checkattrcreateincoming("Получатель");
+        checkattrcreateincoming("В ответ на");
+        checkattrcreateincoming("Исходящий номер");
+        checkattrcreateincoming("Исходящий от");
+        checkattrcreateincoming("Содержание");
+        checkattrcreateincoming("Количество листов");
+        checkattrcreateincoming("Тематика");
+        checkattrcreateincoming("Номер дела");
+        checkattrcreateincoming("Примечание");
+        checkattrcreateincoming("Срок исполнения");
+        checkattrcreateincoming("На контроле");
+        checkattrcreateincoming("Нерегистрируемый");
     }
 
     @Step("Заполнить атрибуты")
     private static void fillcreateincoming(Map<String, String[]> doc) {
-        verifyattr("Вложения", Objects.Document.Createform.Incomingdocument.attachments_label);
-        fillfield("Вложения Входящий", Objects.Document.Createform.Incomingdocument.attachments_common_plus, doc.get("Вложения Входящий"), doc);
-        fillfield("Вложения Прочее", Objects.Document.Createform.Incomingdocument.attachments_another_plus, doc.get("Вложения Прочее"), doc);
-
-        verifyattr("Заголовок", Objects.Document.Createform.Incomingdocument.title_label);
-        fillfield("Заголовок", Objects.Document.Createform.Incomingdocument.title_field, doc.get("Заголовок"), doc);
-
-        verifyattr("Вид документа", Objects.Document.Createform.Incomingdocument.type_label);
-        fillfield("Вид документа", Objects.Document.Createform.Incomingdocument.type_button, doc.get("Вид документа"), doc);
-
-        verifyattr("Способ доставки", Objects.Document.Createform.Incomingdocument.delivery_method_label);
-        fillfield("Способ доставки", Objects.Document.Createform.Incomingdocument.delivery_method_button, doc.get("Способ доставки"), doc);
-
-        verifyattr("Корреспондент", Objects.Document.Createform.Incomingdocument.sender_label);
-        fillfield("Корреспондент", Objects.Document.Createform.Incomingdocument.sender_button, doc.get("Корреспондент"), doc);
-
-        verifyattr("Представитель корреспондента", Objects.Document.Createform.Incomingdocument.addressee_label);
-        fillfield("Представитель корреспондента", Objects.Document.Createform.Incomingdocument.addressee_button, doc.get("Представитель корреспондента"), doc);
-
-        verifyattr("Получатель", Objects.Document.Createform.Incomingdocument.recipient_label);
-        fillfield("Получатель", Objects.Document.Createform.Incomingdocument.recipient_button, doc.get("Получатель"), doc);
-
-        verifyattr("В ответ на", Objects.Document.Createform.Incomingdocument.response_to_label);
-        fillfield("В ответ на", Objects.Document.Createform.Incomingdocument.response_to_button, doc.get("В ответ на"), doc);
-
-        verifyattr("Исходящий номер", Objects.Document.Createform.Incomingdocument.outgoing_number_label);
-        fillfield("Исходящий номер", Objects.Document.Createform.Incomingdocument.outgoing_number_field, doc.get("Исходящий номер"), doc);
-
-        verifyattr("Исходящий от", Objects.Document.Createform.Incomingdocument.outgoing_date_label);
-        fillfield("Исходящий от", Objects.Document.Createform.Incomingdocument.outgoing_date_field, doc.get("Исходящий от"), doc);
-
-        verifyattr("Содержание", Objects.Document.Createform.Incomingdocument.summarycontent_label);
-        fillfield("Содержание", Objects.Document.Createform.Incomingdocument.summarycontent_field, doc.get("Содержание"), doc);
-
-        verifyattr("Количество листов", Objects.Document.Createform.Incomingdocument.sheets_number_label);
-        fillfield("Количество листов", Objects.Document.Createform.Incomingdocument.sheets_number_field, doc.get("Количество листов"), doc);
-
-        verifyattr("Тематика", Objects.Document.Createform.Incomingdocument.subject_label);
-        fillfield("Тематика", Objects.Document.Createform.Incomingdocument.subject_button, doc.get("Тематика"), doc);
-
-        verifyattr("Номер дела", Objects.Document.Createform.Incomingdocument.file_register_label);
-        fillfield("Номер дела", Objects.Document.Createform.Incomingdocument.file_register_button, doc.get("Номер дела"), doc);
-
-        verifyattr("Примечание", Objects.Document.Createform.Incomingdocument.note_label);
-        fillfield("Примечание", Objects.Document.Createform.Incomingdocument.note_field, doc.get("Примечание"), doc);
-
-        verifyattr("Срок исполнения", Objects.Document.Createform.Incomingdocument.execution_date_label);
-        fillfield("Срок исполнения", Objects.Document.Createform.Incomingdocument.execution_date_field, doc.get("Срок исполнения"), doc);
-
-        verifyattr("На контроле", Objects.Document.Createform.Incomingdocument.is_on_control_label);
-        fillfield("На контроле", Objects.Document.Createform.Incomingdocument.is_on_control_checkbox, doc.get("На контроле"), doc);
-
-        verifyattr("Нерегистрируемый", Objects.Document.Createform.Incomingdocument.is_not_registered_label);
-        fillfield("Нерегистрируемый", Objects.Document.Createform.Incomingdocument.is_not_registered_checkbox, doc.get("Нерегистрируемый"), doc);
+        fillattrcreateincoming_attach("Входящий", doc);
+        fillattrcreateincoming_attach("Прочее", doc);
+        fillattrcreateincoming_input("Заголовок",doc);
+        fillattrcreateincoming_dsimple("Вид документа",doc);
+        fillattrcreateincoming_dsimple("Способ доставки",doc);
+        fillattrcreateincoming_dsender("Корреспондент",doc);
+        fillattrcreateincoming_dsimple("Представитель корреспондента",doc);
+        fillattrcreateincoming_drecipient("Получатель",doc);
+        fillattrcreateincoming_dresponseto("В ответ на",doc);
+        fillattrcreateincoming_input("Исходящий номер",doc);
+        fillattrcreateincoming_date("Исходящий от",doc);
+        fillattrcreateincoming_summary("Содержание",doc);
+        fillattrcreateincoming_input("Количество листов",doc);
+        fillattrcreateincoming_dsimple("Тематика",doc);
+        fillattrcreateincoming_dfileregister("Номер дела",doc);
+        fillattrcreateincoming_textarea("Примечание",doc);
+        fillattrcreateincoming_date("Срок исполнения",doc);
+        fillattrcreateincoming_checkbox("На контроле",doc);
+        fillattrcreateincoming_checkbox("Нерегистрируемый",doc);
     }
 
     @Step("Проверить наличие атрибутов и их значения на форме просмотра")
@@ -101,46 +348,29 @@ public class IncomingStep {
         }
         currentdriver().get(currentdriver().getCurrentUrl());
 
-        //waitelement(Document.documenttitle);
         String title = docgettitle();
         doc.put("Номер",new String[]{title.substring(title.indexOf(" № ")+3,title.indexOf(" от "))});
         doc.put("Дата",new String[]{title.substring(title.indexOf(" от ")+4,title.length())});
 
-        checkfield("Номер", Objects.Document.Viewform.Incomingdocument.regnum_label, Objects.Document.Viewform.Incomingdocument.regnum_field, doc);
-
-        checkfield("Дата регистрации", Objects.Document.Viewform.Incomingdocument.reg_data_label, Objects.Document.Viewform.Incomingdocument.reg_data_field, doc);
-
-        checkfield("Заголовок", Objects.Document.Viewform.Incomingdocument.title_label, Objects.Document.Viewform.Incomingdocument.title_field, doc);
-
-        checkfield("Вид документа", Objects.Document.Viewform.Incomingdocument.type_label, Objects.Document.Viewform.Incomingdocument.type_field, doc);
-
-        checkfield("Способ доставки", Objects.Document.Viewform.Incomingdocument.delivery_method_label, Objects.Document.Viewform.Incomingdocument.delivery_method_field, doc);
-
-        checkfield("Корреспондент", Objects.Document.Viewform.Incomingdocument.sender_label, Objects.Document.Viewform.Incomingdocument.sender_field, doc);
-
-        checkfield("Представитель корреспондента", Objects.Document.Viewform.Incomingdocument.addressee_label, Objects.Document.Viewform.Incomingdocument.addressee_field, doc);
-
-        checkfield("Исходящий номер", Objects.Document.Viewform.Incomingdocument.outgoing_number_label, Objects.Document.Viewform.Incomingdocument.outgoing_number_field, doc);
-
-        checkfield("Исходящий от", Objects.Document.Viewform.Incomingdocument.outgoing_date_label, Objects.Document.Viewform.Incomingdocument.outgoing_date_field, doc);
-
-        checkfield("Содержание", Objects.Document.Viewform.Incomingdocument.summary_label, Objects.Document.Viewform.Incomingdocument.summary_field, doc);
-
-        checkfield("Получатель", Objects.Document.Viewform.Incomingdocument.recipient_label, Objects.Document.Viewform.Incomingdocument.recipient_field, doc);
-
-        checkfield("Срок исполнения", Objects.Document.Viewform.Incomingdocument.execution_date_label, Objects.Document.Viewform.Incomingdocument.execution_date_field, doc);
-
-        checkfield("На контроле", Objects.Document.Viewform.Incomingdocument.is_on_control_label, Objects.Document.Viewform.Incomingdocument.is_on_control_field, doc);
-
-        checkfield("Номер дела", Objects.Document.Viewform.Incomingdocument.file_register_label, Objects.Document.Viewform.Incomingdocument.file_register_field, doc);
-
-        checkfield("Количество листов", Objects.Document.Viewform.Incomingdocument.sheets_number_label, Objects.Document.Viewform.Incomingdocument.sheets_number_field, doc);
-
-        checkfield("Тематика", Objects.Document.Viewform.Incomingdocument.subject_label, Objects.Document.Viewform.Incomingdocument.subject_field, doc);
-
-        checkfield("Примечание", Objects.Document.Viewform.Incomingdocument.note_label, Objects.Document.Viewform.Incomingdocument.note_field, doc);
-
-        checkfield("Нерегистрируемый", Objects.Document.Viewform.Incomingdocument.is_not_registered_label, Objects.Document.Viewform.Incomingdocument.is_not_registered_field, doc);
+        checkattrviewincoming("Номер", doc);
+        checkattrviewincoming("Дата регистрации", doc);
+        checkattrviewincoming("Заголовок", doc);
+        checkattrviewincoming("Вид документа", doc);
+        checkattrviewincoming("Способ доставки", doc);
+        checkattrviewincoming("Корреспондент", doc);
+        checkattrviewincoming("Представитель корреспондента", doc);
+        checkattrviewincoming("Исходящий номер", doc);
+        checkattrviewincoming("Исходящий от", doc);
+        checkattrviewincoming("Содержание", doc);
+        checkattrviewincoming("Получатель", doc);
+        checkattrviewincoming("Срок исполнения", doc);
+        checkattrviewincoming("На контроле", doc);
+        checkattrviewincoming("Номер дела", doc);
+        checkattrviewincoming("Количество листов", doc);
+        checkattrviewincoming("Тематика", doc);
+        checkattrviewincoming("Примечание", doc);
+        checkattrviewincoming("Нерегистрируемый", doc);
+        checkattrviewincoming("Номер", doc);
 
         String currenturl = currentdriver().getCurrentUrl();
         if (currenturl.contains("#")){
@@ -154,9 +384,75 @@ public class IncomingStep {
         }
     }
 
+    private static void checkattrviewincoming(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get(AttrLabel) == null)
+            if (AttrLabel.equals("Нерегистрируемый") || AttrLabel.equals("На контроле"))
+                doc.put(AttrLabel, new String[]{"Нет"});
+            else
+                doc.put(AttrLabel, new String[]{"(Нет)"});
+        checkattrviewincomingchild(AttrLabel,doc.get(AttrLabel));
+    }
+
+    @Step("{0}: {1}")
+    private static void checkattrviewincomingchild(String AttrLabel, String[] values) {
+        waitForLoad();
+        String dynamicXPath = "//div[contains(@class,'tab-common')]//*[contains(text(),'%s:')]";
+        String XPath = String.format(dynamicXPath, AttrLabel);
+        try {
+            (new WebDriverWait(currentdriver(), currenttimeoutlnseconds()))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(XPath)));
+        } catch (Exception e) {
+            hardassertfail("Не найден элемент " + XPath);
+        }
+
+        dynamicXPath = "//div[contains(@class,'tab-common')]//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'viewmode')]//div[contains(@class,'cropped-item')]";
+        XPath = String.format(dynamicXPath, AttrLabel);
+        if (currentdriver().findElements(By.xpath(XPath)).isEmpty()) {
+            dynamicXPath = "//div[contains(@class,'tab-common')]//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'viewmode')]//div[contains(@class,'value')]";
+            XPath = String.format(dynamicXPath, AttrLabel);
+        }
+
+        int i = timeoutlnsecond;
+        while (i > 0 && currentdriver().findElements(By.xpath(XPath)).isEmpty()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            i--;
+        }
+
+        List<WebElement> elements = null;
+        elements = currentdriver().findElements(By.xpath(XPath));
+
+        for(String value:values) {
+            boolean t = false;
+            for (WebElement element : elements) {
+                if (element.getText().contains(value)) {
+                    t = true;
+                    elements.remove(element);
+                    break;
+                }
+            }
+            if (AttrLabel.equals("Получатель") && (value.equals("Сотрудник") || value.equals("Организация")))
+                t = true;
+            softassertfail(t, "Атрибут не содержит значение " + value);
+        }
+
+        if (elements.size() > 0) {
+            ArrayList<String> elementstext = new ArrayList<>();
+            for (WebElement element : elements) {
+                elementstext.add(element.getText());
+            }
+            softassertfail("Лишние элементы в атрибуте " + elementstext);
+        }
+    }
+
     @Step("Проверить наличие уведомлений у получателей")
     static void recipientnotifications(HashMap<String, String[]> doc) {
         for (String val:doc.get("СЭД. Получатель"))
             readnotification(val,"Вам направлен новый документ " + doc.get("Заголовок")[0]);
     }
+
+
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="Тесты">
-    <test name="Тесты" parallel="methods" thread-count="2">
-        <packages>
-            <package name="Box" />
-        </packages>
+    <test name="Тесты" parallel="methods" thread-count="1">
+        <classes>
+            <class name="Box.IncomingTest" />
+        </classes>
     </test>
 </suite>

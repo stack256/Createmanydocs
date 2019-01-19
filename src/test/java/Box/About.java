@@ -23,7 +23,6 @@ import ru.yandex.qatools.allure.experimental.LifecycleListener;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -143,7 +142,7 @@ class About {
     static HashMap<Long, String> current_usermap = new HashMap<Long, String>();
     static HashMap<Long, String> current_loginmap = new HashMap<Long, String>();
     static HashMap<Long, Integer> timeoutlnsecondsmap = new HashMap<Long, Integer>();
-    static Integer timeoutlnsecond = 60;
+    static Integer timeoutlnsecond = 10;
 
     static class Stack {
         Integer number;

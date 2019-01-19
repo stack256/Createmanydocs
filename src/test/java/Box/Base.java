@@ -102,29 +102,18 @@ class Base {
 
     static String docgettitle() {
         String title = null;
-        try {
-            title = currentdriver().findElement(By.xpath(Document.documenttitle)).getText();
-        } catch (Exception e) {
+        int i = timeoutlnsecond;
+        while (i > 0 && currentdriver().findElements(By.xpath(Document.documenttitle)).isEmpty()) {
             try {
                 Thread.sleep(1000);
-                waitForLoad();
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            title = currentdriver().findElement(By.xpath(Document.documenttitle)).getText();
+            i--;
         }
-        if (title == null || title.length()==0){
-            try {
-                Thread.sleep(1000);
-                waitForLoad();
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            }
-            title = currentdriver().findElement(By.xpath(Document.documenttitle)).getText();
-        }
-        if (title == null || title.length()==0){
+        title = currentdriver().findElement(By.xpath(Document.documenttitle)).getText();
+        if (title == null || title.length()==0)
             hardassertfail("Не получилось прочитать заголовок документа");
-        }
         return title;
     }
 
@@ -225,7 +214,7 @@ class Base {
     }
 
     @Step("Заполнить атрибут <{0}> значением <{2}>")
-    private static void fillselectdialogsimple(String attrname, Map<String, String[]> doc, String... values) {
+    static void fillselectdialogsimple(String attrname, Map<String, String[]> doc, String... values) {
         waitelement(SelectDialog.Simple.dialog);
         click("Очистить", SelectDialog.clearall);
         for(String value:values){
@@ -266,7 +255,7 @@ class Base {
     }
 
     @Step("Заполнить атрибут <{0}> значением <{2}>")
-    private static void fillselectdialogrecipient(String attrname, Map<String, String[]> doc, String... values) {
+    static void fillselectdialogrecipient(String attrname, Map<String, String[]> doc, String... values) {
         waitelement(SelectDialog.Recipient.dialog);
         click("Очистить", SelectDialog.clearall);
         for (String val:values)
@@ -277,7 +266,7 @@ class Base {
                     break;
                 case "Организация":
                     click("Развернуть выпадающий список",SelectDialog.Recipient.select_type);
-                    click("Сотрудник",SelectDialog.Recipient.select_type_organization);
+                    click("Организация",SelectDialog.Recipient.select_type_organization);
                     break;
                 default:
                     settext("Строка поиска",SelectDialog.Recipient.search_field,val);
@@ -301,7 +290,7 @@ class Base {
     }
 
     @Step("Заполнить атрибут <{0}> значением <{2}>")
-    private static void fillselectdialogresponseto(String attrname, Map<String, String[]> doc, String... values) {
+    static void fillselectdialogresponseto(String attrname, Map<String, String[]> doc, String... values) {
         waitelement(SelectDialog.Responseto.dialog);
         click("Очистить", SelectDialog.clearall);
         click("Показать дополнительные параметры поиска",SelectDialog.Responseto.show_parametrs);
@@ -332,7 +321,7 @@ class Base {
     }
 
     @Step("Заполнить атрибут <{0}> значением <{2}>")
-    private static void fillselectdialogfileregister(String attrname, Map<String, String[]> doc, String... values) {
+    static void fillselectdialogfileregister(String attrname, Map<String, String[]> doc, String... values) {
         waitelement(SelectDialog.Fileregister.dialog);
         click("Очистить", SelectDialog.clearall);
         int k = values.length;
@@ -364,7 +353,7 @@ class Base {
     }
 
     @Step("Заполнить атрибут <{0}> значением <{1}>")
-    private static void fillselectdialogsender(String attrname, String[] values, Map<String, String[]> doc) {
+    static void fillselectdialogsender(String attrname, String[] values, Map<String, String[]> doc) {
         String type = null, value = null;
         if (doc.get("Корреспондент") != null)
             for (String val:doc.get("Корреспондент Тип"))
@@ -489,7 +478,7 @@ class Base {
     }
 
     @Step("Загрузить вложение в категорию {0}")
-    private static void fillattachment(String attrname, String xpath, String... values) {
+    static void fillattachment(String attrname, String xpath, String... values) {
         for (String value : values){
             click("Добавить",xpath, Document.Createform.attachments_uploadbutton);
             waitForLoad();
@@ -633,7 +622,7 @@ class Base {
                 break;
             case "Вложения Входящий":
             case "Вложения Прочее":
-                fillattachment(attrname,xpath,values);
+                fillattachment(attrname,xpath,doc.get(attrname));
                 break;
             case "Пункты Срок исполнения":
                 filllimitationdate_point(attrname, values);
@@ -729,7 +718,7 @@ class Base {
     }
 
     @Step("Заполнить атрибут {0} значением {2}")
-    private static void fillsummary(String attrname, String xpath, String[] values) {
+    static void fillsummary(String attrname, String xpath, String[] values) {
         currentdriver().switchTo().frame(currentdriver().findElement(By.xpath(Document.Createform.summarycontent_iframe)));
         for (String value : values)
             settext(attrname, xpath, value);
@@ -872,6 +861,22 @@ class Base {
         return true;
     }
 
+
+    static Boolean waitdialogtext(String xpath) {
+        waitForLoad();
+        try {
+            (new WebDriverWait(currentdriver(), currenttimeoutlnseconds()))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+            (new WebDriverWait(currentdriver(), currenttimeoutlnseconds()))
+                    .until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
+        } catch (Exception e) {
+                softassertfail("Не найдено");
+            return false;
+        }
+        waitForLoad();
+        return true;
+    }
+
     @Step("Заполнить атрибут <{0}> значением <{2}>")
     static void settext(String attrname, String xpath, String text) {
         waitForLoad();
@@ -969,6 +974,7 @@ class Base {
     @Step("Выполнить действие {0}")
     static void righactionexecute(String action, String approve){
         click(action, righaction(action));
+        checkdialogtext("Подтвердите выполнение для этого документа действия \"" + action + "\".");
         click(approve,approveaction(approve));
         try {
             Thread.sleep(3000);
@@ -976,6 +982,26 @@ class Base {
             e.printStackTrace();
         }
         waitForLoad();
+    }
+
+    @Step("Выполнить действие {0}")
+    static void righactionexecute(String action, String dialogtext, String approve){
+        click(action, righaction(action));
+        checkdialogtext(dialogtext);
+        click(approve,approveaction(approve));
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        waitForLoad();
+    }
+
+    @Step("Проверить наличие в диалоге текста {0}")
+    private static void checkdialogtext(String dialogtext) {
+        String dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s')]";
+        String XPath = String.format(dynamicXPath, dialogtext);
+        waitdialogtext(XPath);
     }
 
     @Step("Выполнить действие {0}")
@@ -988,6 +1014,7 @@ class Base {
                 e.printStackTrace();
             }
         }
+        //checkdialogtext("Подтвердите выполнение для этого документа действия \"" + action + "\".");
         clickactionapprove(approve,approveaction(approve));
         boolean t = false;
         waitForLoad();
@@ -1187,5 +1214,218 @@ class Base {
         softassertfail(t,"Письмо не найдено");
         timeoutlnsecondsmap.put(Thread.currentThread().getId(),timeoutlnsecond);
         currentdriver().get(currenturl);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Step("{0}")
+    static void checkattrcreateincoming(String AttrLabel) {
+        waitForLoad();
+        String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]";
+        String XPath =  String.format(dynamicXPath, AttrLabel);
+        try {
+            (new WebDriverWait(currentdriver(), currenttimeoutlnseconds()))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(XPath)));
+        } catch (Exception e) {
+            softassertfail("Не найден элемент " + XPath);
+        }
+        waitForLoad();
+    }
+
+    static void fillattrcreateincoming_checkbox(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get(AttrLabel) != null) {
+            String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//input[@type='checkbox']";
+            String XPath = String.format(dynamicXPath, AttrLabel);
+            for (String value : doc.get(AttrLabel))
+                if (value.equals("Да") != currentdriver().findElement(By.xpath(XPath)).isSelected())
+                    click(AttrLabel, XPath);
+        }
+    }
+
+    static void fillattrcreateincoming_textarea(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get(AttrLabel) != null) {
+            String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//textarea";
+            String XPath = String.format(dynamicXPath, AttrLabel);
+            for (String value : doc.get(AttrLabel))
+                settext(AttrLabel, XPath, value);
+        }
+    }
+
+    @Step("Заполнить атрибут <{0}>")
+    static void fillattrcreateincoming_dfileregister(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get(AttrLabel) != null) {
+            String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//button";
+            String XPath = String.format(dynamicXPath, AttrLabel);
+            click("...", XPath, Objects.SelectDialog.Fileregister.dialog);
+            fillselectdialogfileregister(AttrLabel, doc, doc.get(AttrLabel));
+        }
+    }
+
+    static void fillattrcreateincoming_summary(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get(AttrLabel) != null) {
+            String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//input[@type='text']";
+            String XPath = String.format(dynamicXPath, AttrLabel);
+            fillsummary(AttrLabel, "//body[@id='tinymce']", doc.get(AttrLabel));
+        }
+    }
+
+    static void fillattrcreateincoming_date(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get(AttrLabel) != null) {
+            String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//input[@type='text']";
+            String XPath = String.format(dynamicXPath, AttrLabel);
+            for (String value : doc.get(AttrLabel))
+                settext(AttrLabel, XPath, value);
+        }
+    }
+
+    @Step("Заполнить атрибут <{0}>")
+    static void fillattrcreateincoming_dresponseto(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get(AttrLabel) != null) {
+            String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//button";
+            String XPath = String.format(dynamicXPath, AttrLabel);
+            click("...", XPath, Objects.SelectDialog.Responseto.dialog);
+            fillselectdialogresponseto(AttrLabel, doc, doc.get(AttrLabel));
+        }
+    }
+
+    @Step("Заполнить атрибут <{0}>")
+    static void fillattrcreateincoming_drecipient(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get(AttrLabel) != null) {
+            String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//button";
+            String XPath = String.format(dynamicXPath, AttrLabel);
+            click("...", XPath, Objects.SelectDialog.Recipient.dialog);
+            fillselectdialogrecipient(AttrLabel, doc, doc.get(AttrLabel));
+        }
+    }
+
+    @Step("Заполнить атрибут <{0}>")
+    static void fillattrcreateincoming_dsender(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get(AttrLabel) != null) {
+            String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//button";
+            String XPath = String.format(dynamicXPath, AttrLabel);
+            click("...", XPath, Objects.SelectDialog.Sender.dialog);
+            fillselectdialogsender(AttrLabel, doc.get(AttrLabel), doc);
+        }
+    }
+
+    @Step("Заполнить атрибут <{0}>")
+    static void fillattrcreateincoming_dsimple(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get(AttrLabel) != null) {
+            String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//button";
+            String XPath = String.format(dynamicXPath, AttrLabel);
+            click("...", XPath, Objects.SelectDialog.Simple.dialog);
+            fillselectdialogsimple(AttrLabel, doc, doc.get(AttrLabel));
+        }
+    }
+
+    static void fillattrcreateincoming_input(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get(AttrLabel) != null) {
+            String dynamicXPath = "//div[@class='document-metadata']//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//input";
+            String XPath = String.format(dynamicXPath, AttrLabel);
+            for (String value : doc.get(AttrLabel))
+                settext(AttrLabel, XPath, value);
+        }
+    }
+
+    static void fillattrcreateincoming_attach(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get("Вложения " + AttrLabel) != null) {
+            String dynamicXPath = "//legend[text()='%s']//ancestor::fieldset//img[contains(@class,'uploader')]";
+            String XPath = String.format(dynamicXPath, AttrLabel);
+            fillattachment(AttrLabel, XPath, doc.get("Вложения " + AttrLabel));
+        }
+    }
+
+    @Step("Проверить отсутствие вложений")
+    static void checkattachnope(HashMap<String, String[]> doc, String... category) {
+        openrightblock("Вложения");
+        for (String cat:category)
+            checkattachnope(cat,doc);
+    }
+
+    @Step("Категория {0}")
+    static void checkattachnope(String category, HashMap<String, String[]> doc) {
+        if (waitelement(Objects.Document.Viewform.attachments_showinlist, false))
+            click("Показать в виде списка", Objects.Document.Viewform.attachments_showinlist);
+        for (String value:doc.get("Вложения " + category))
+            checkattachnope_value(category,value.substring(System.getProperty("user.dir").length()+1));
+    }
+
+    @Step("Проверить отсутстие вложения {1}")
+    static void checkattachnope_value(String category, String attach) {
+        softassertfail(!waitelement("//td[contains(@class,'category-name') and contains(text(),'" + category + "')]//ancestor::div[contains(@class,'attachment-list')]//td[contains(.,'" + attach + "')]",false),"Найдено вложение в категории Входящий");
+    }
+
+    @Step("Проверить наличие вложений")
+    static void checkattachyep(HashMap<String, String[]> doc, String... category) {
+        openrightblock("Вложения");
+        for (String cat:category)
+            checkattachyep(cat,doc);
+    }
+
+    @Step("Категория {0}")
+    static void checkattachyep(String category, HashMap<String, String[]> doc) {
+        if (waitelement(Objects.Document.Viewform.attachments_showinlist, false))
+            click("Показать в виде списка", Objects.Document.Viewform.attachments_showinlist);
+        for (String value:doc.get("Вложения " + category))
+            checkattachyep_value(category,value.substring(System.getProperty("user.dir").length()+1));
+    }
+
+    @Step("Проверить наличие вложения {1}")
+    static void checkattachyep_value(String category, String attach) {
+        softassertfail(waitelement("//td[contains(@class,'category-name') and contains(text(),'" + category + "')]//ancestor::div[contains(@class,'attachment-list')]//td[contains(.,'" + attach + "')]",false),"Не найдено вложение в категории Входящий");
     }
 }

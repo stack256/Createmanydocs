@@ -49,6 +49,30 @@ class Users {
         return user;
     }
 
+    static User getuserbyrolewithoutrole(String roleyep, String rolenope){
+        ArrayList<User> values = new ArrayList<>();
+        User user = null;
+        for (User val:users)
+            if (val.roles.contains(roleyep))
+                if (!values.contains(val))
+                    values.add(val);
+
+        int i = 0;
+        while (i < values.size()) {
+            for (User val : values)
+                if (val.roles.contains(rolenope)) {
+                    values.remove(val);
+                    i = -1;
+                    break;
+                }
+            i++;
+        }
+        //Random rnd = new Random(System.currentTimeMillis());
+        user = values.get((int) (Math.random() * values.size()));
+        values.clear();
+        return user;
+    }
+
     static User getuserbylogin(String login){
         for (User val:users)
             if (val.login.equals(login))
