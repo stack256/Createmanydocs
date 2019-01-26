@@ -6,13 +6,14 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.allure.annotations.Step;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static Box.About.*;
+import static Box.About.currenttimeoutlnseconds;
 import static Box.Base.*;
+import static Box.ErrandStep.readerrand1;
+import static Box.Users.getuserbyfull;
+import static Box.Users.getuserbylogin;
 
 public class IncomingStep {
     @Step("Создать входящий документ")
@@ -315,6 +316,7 @@ public class IncomingStep {
 
     @Step("Заполнить атрибуты")
     private static void fillcreateincoming(Map<String, String[]> doc) {
+        timeoutlnsecondsmap.put(Thread.currentThread().getId(),60);
         fillattrcreateincoming_attach("Входящий", doc);
         fillattrcreateincoming_attach("Прочее", doc);
         fillattrcreateincoming_input("Заголовок",doc);
@@ -334,6 +336,7 @@ public class IncomingStep {
         fillattrcreateincoming_date("Срок исполнения",doc);
         fillattrcreateincoming_checkbox("На контроле",doc);
         fillattrcreateincoming_checkbox("Нерегистрируемый",doc);
+        timeoutlnsecondsmap.put(Thread.currentThread().getId(),timeoutlnsecond);
     }
 
     @Step("Проверить наличие атрибутов и их значения на форме просмотра")
@@ -455,4 +458,121 @@ public class IncomingStep {
     }
 
 
+    @Step("Проверить наличие поручений")
+    static void checkincomingerrands(HashMap<String, String[]> doc, HashMap<String, HashMap<String, String[]>> errands) {
+        int i = 1;
+        openrightblock("Поручения");
+        while (errands.get(Integer.toString(i)) != null) {
+            i++;
+        }
+        i--;
+
+        int j = timeoutlnsecond;
+        while (j > 0 && currentdriver().findElements(By.xpath("//div[@class='workflow-task-item']//a[contains(@href,'document')]")).isEmpty()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            j--;
+        }
+        j = currentdriver().findElements(By.xpath("//div[@class='workflow-task-item']//a[contains(@href,'document')]")).size();
+        hardassertfail(i == j,"Создано " + j + " поручений, а ожидалось " + i);
+        i = 1;
+        while (errands.get(Integer.toString(i)) != null) {
+            openrightblock("Поручения");
+            checkincomingerrands_value(i, errands.get(Integer.toString(i)));
+
+            waitForLoad();
+            String status = null;
+            for (String val:doc.get("Статус"))
+                status = val;
+            waitelement(Objects.Document.Viewform.Incomingdocument.status_field);
+            if (!currentdriver().findElement(By.xpath(Objects.Document.Viewform.Incomingdocument.status_field)).getText().equals(status)){
+                currentdriver().get(currentdriver().getCurrentUrl());
+            }
+
+            int k = timeoutlnsecond;
+            while (k > 0 && currentdriver().findElements(By.xpath(Objects.Document.documenttitle)).isEmpty()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                k--;
+            }
+            i++;
+        }
+    }
+
+    @Step("Поручение {0}")
+    private static void checkincomingerrands_value(int i, HashMap<String, String[]> errand) {
+        checkincomingerrands_valuechild("Срок",errand.get("Срок исполнения"), i);
+        checkincomingerrands_valuechild("Статус", new String[]{"Ожидает исполнения"}, i);
+        checkincomingerrands_valuechild("Исполнитель", new String[]{getuserbyfull(errand.get("Получатель")[0]).famio}, i);
+        checkincomingerrands_valuechild("Инициатор", new String[]{getuserbylogin(currentcurrent_login()).famio}, i);
+
+        String buf = null;
+        if (errand.get("Срок исполнения")[1] != null) {
+            if (errand.get("Срок исполнения")[1].equals("рабочий день"))
+                buf = errand.get("Срок исполнения")[0] + " р.д.";
+            else
+                buf = errand.get("Срок исполнения")[0] + " к.д.";
+            errand.put("Срок исполнения",new String[]{buf});
+        }
+
+        String currenturl = currentdriver().getCurrentUrl();
+        openlink("Перейти в поручение",currentdriver().findElement(By.xpath("(//div[@class='workflow-task-item'])[" + i + "]//a[contains(@href,'document')]")).getAttribute("href"));
+        readerrand1(errand);
+        openlink("Вернуться в документ", currenturl);
+
+
+    }
+
+    @Step("{0}")
+    private static void openlink(String report, String link) {
+        waitForLoad();
+        currentdriver().get(link);
+        waitForLoad();
+    }
+
+    @Step("{0}: {1}")
+    private static void checkincomingerrands_valuechild(String Attr, String[] values, int i) {
+
+        String dynamicXPath;
+        String XPath;
+
+        switch (Attr){
+            case "Срок исполнения":
+                dynamicXPath = "(((//div[@class='workflow-task-item'])[" + i + "]//*[contains(text(),'Срок:')]/..)[contains(text(),'%s')])[" + i + "]";
+                if (values[1] != null) {
+                    if (values[1].equals("рабочий день"))
+                        XPath = String.format(dynamicXPath,values[0] + " р.д.");
+                    else
+                        XPath = String.format(dynamicXPath, values[0] + " к.д.");
+                } else
+                    XPath = String.format(dynamicXPath, values[0]);
+                softassertfail(waitelement(XPath, false), "Срок не равен " + Arrays.toString(values));
+                break;
+            case "Статус":
+                dynamicXPath = "((//div[@class='workflow-task-item'])[" + i + "]//*[contains(text(),'Статус:')]/..)[contains(text(),'%s')]";
+                XPath = String.format(dynamicXPath, values[0]);
+                softassertfail(waitelement(XPath,false),"Статус не равен Ожидает исполнения");
+                break;
+            case "Получатель":
+                dynamicXPath = "(//div[@class='workflow-task-item'])[" + i + "]//*[contains(text(),'Исполнитель:')]/../*[contains(text(),'%s')]";
+                XPath = String.format(dynamicXPath, values[0]);
+                softassertfail(waitelement(XPath,false),"Получатель не равен " + values[0]);
+                break;
+            case "Инициатор":
+                dynamicXPath = "(//div[@class='workflow-task-item'])[" + i + "]//*[contains(text(),'Инициатор:')]/../*[contains(text(),'%s')]";
+                XPath = String.format(dynamicXPath, values[0]);
+                softassertfail(waitelement(XPath,false),"Инициатор не равен " + values[0]);
+                break;
+            default:
+                break;
+
+        }
+
+    }
 }

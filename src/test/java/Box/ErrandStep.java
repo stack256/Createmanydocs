@@ -1,9 +1,13 @@
 package Box;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.allure.annotations.Step;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static Box.About.*;
@@ -162,4 +166,136 @@ public class ErrandStep {
             removedocmap.put(Thread.currentThread().getId(),removedoc);
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Step("Проверить наличие атрибутов и их значения на форме просмотра")
+    static void readerrand1(Map<String, String[]> doc) {
+        waitForLoad();
+        String status = null;
+        for (String val:doc.get("Статус"))
+            status = val;
+        waitelement(Objects.Document.Viewform.Incomingdocument.status_field);
+        if (!currentdriver().findElement(By.xpath(Objects.Document.Viewform.Incomingdocument.status_field)).getText().equals(status)){
+            currentdriver().get(currentdriver().getCurrentUrl());
+        }
+        currentdriver().get(currentdriver().getCurrentUrl());
+
+        String title = docgettitle();
+        doc.put("Номер",new String[]{title.substring(2,title.indexOf(","))});
+        doc.put("Срок исполнения", new String[]{title.substring(title.indexOf("срок:")+6,title.length())});
+
+        checkattrviewerrand1("Документ-основание", doc);
+        checkattrviewerrand1("Основание", doc);
+        checkattrviewerrand1("Автор", doc);
+        checkattrviewerrand1("Создатель", doc);
+        checkattrviewerrand1("Тип поручения", doc);
+        checkattrviewerrand1("Заголовок", doc);
+        checkattrviewerrand1("Текст поручения", doc);
+        checkattrviewerrand1("Исполнитель", doc);
+        checkattrviewerrand1("Соисполнители", doc);
+        checkattrviewerrand1("Срок исполнения", doc);
+        checkattrviewerrand1("Закрывает вышестоящее поручение", doc);
+        checkattrviewerrand1("Направлять периодически", doc);
+        checkattrviewerrand1("Контролер", doc);
+        checkattrviewerrand1("Требуется отчет", doc);
+        checkattrviewerrand1("Получатель отчета", doc);
+        checkattrviewerrand1("Тематика", doc);
+
+        String currenturl = currentdriver().getCurrentUrl();
+        if (currenturl.contains("#")){
+            currenturl = currenturl.substring(0,currenturl.indexOf('#'));
+        }
+        if (!currentremovedoc().contains(currenturl)){
+            ArrayList<String> removedoc = new ArrayList<String>();
+            removedoc = currentremovedoc();
+            removedoc.add(currenturl);
+            removedocmap.put(Thread.currentThread().getId(),removedoc);
+        }
+    }
+
+    private static void checkattrviewerrand1(String AttrLabel, Map<String, String[]> doc) {
+        if (doc.get(AttrLabel) == null)
+            if (AttrLabel.equals("Закрывает вышестоящее поручение") || AttrLabel.equals("Направлять периодически") || AttrLabel.equals("Требуется отчет"))
+                doc.put(AttrLabel, new String[]{"Нет"});
+            else
+                doc.put(AttrLabel, new String[]{"(Нет)"});
+        checkattrviewerrandchild1(AttrLabel,doc.get(AttrLabel));
+    }
+
+    @Step("{0}: {1}")
+    private static void checkattrviewerrandchild1(String AttrLabel, String[] values) {
+        waitForLoad();
+        String dynamicXPath = "//div[contains(@class,'tab-common')]//*[contains(text(),'%s:')]";
+        String XPath = String.format(dynamicXPath, AttrLabel);
+        try {
+            (new WebDriverWait(currentdriver(), currenttimeoutlnseconds()))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(XPath)));
+        } catch (Exception e) {
+            hardassertfail("Не найден элемент " + XPath);
+        }
+
+        dynamicXPath = "//div[contains(@class,'tab-common')]//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'viewmode')]//div[contains(@class,'cropped-item')]";
+        XPath = String.format(dynamicXPath, AttrLabel);
+        if (currentdriver().findElements(By.xpath(XPath)).isEmpty()) {
+            dynamicXPath = "//div[contains(@class,'tab-common')]//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'viewmode')]//div[contains(@class,'value')]";
+            XPath = String.format(dynamicXPath, AttrLabel);
+        }
+
+        int i = timeoutlnsecond;
+        while (i > 0 && currentdriver().findElements(By.xpath(XPath)).isEmpty()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            i--;
+        }
+
+        List<WebElement> elements = null;
+        elements = currentdriver().findElements(By.xpath(XPath));
+
+        for(String value:values) {
+            boolean t = false;
+            for (WebElement element : elements) {
+                if (element.getText().contains(value)) {
+                    t = true;
+                    elements.remove(element);
+                    break;
+                }
+            }
+            //if (AttrLabel.equals("Получатель") && (value.equals("Сотрудник") || value.equals("Организация")))
+              //  t = true;
+            softassertfail(t, "Атрибут не содержит значение " + value);
+        }
+
+        if (elements.size() > 0) {
+            ArrayList<String> elementstext = new ArrayList<>();
+            for (WebElement element : elements) {
+                elementstext.add(element.getText());
+            }
+            softassertfail("Лишние элементы в атрибуте " + elementstext);
+        }
+    }
+
 }

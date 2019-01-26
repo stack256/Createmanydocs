@@ -951,9 +951,11 @@ class Base {
 
     @Step("Развернуть блок {0}")
     static void openrightblock(String value){
+        waitForLoad();
         Actions actions = new Actions(currentdriver());
         actions.moveToElement(currentdriver().findElement(By.xpath(righblocktitle(value)))).build().perform();
         click("Развернуть", righblockopen(value));
+        waitForLoad();
     }
 
     @Step("Проверить наличие записей в бж")
@@ -969,19 +971,6 @@ class Base {
     @Step("Запись: {0}")
     static void readhistoryitem(String report, String historyitem){
         waitelement(historyitem);
-    }
-
-    @Step("Выполнить действие {0}")
-    static void righactionexecute(String action, String approve){
-        click(action, righaction(action));
-        checkdialogtext("Подтвердите выполнение для этого документа действия \"" + action + "\".");
-        click(approve,approveaction(approve));
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        waitForLoad();
     }
 
     @Step("Выполнить действие {0}")
@@ -1005,16 +994,206 @@ class Base {
     }
 
     @Step("Выполнить действие {0}")
+    static void righactionexecute(String action, String approve, String status, HashMap<String, HashMap<String, String[]>> errands, HashMap<String, String[]> doc){
+        clickaction(action, righaction(action));
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        checknapravitadresatam(errands);
+
+
+
+        clickactionapprove(approve,approveaction(approve));
+        boolean t = false;
+        waitForLoad();
+        waitelement(Document.Viewform.status_field);
+        int i = 10;
+        while (i > 0 && !t){
+            try {
+                Thread.sleep(1000);
+                waitForLoad();
+                t = currentdriver().findElement(By.xpath(Document.Viewform.status_field)).getText().equals(status);
+            } catch (Exception e) {
+                //e.printStackTrace();
+            }
+            waitForLoad();
+            i--;
+        }
+        doc.put("Статус", new String[]{status});
+
+    }
+
+    @Step("Проверить значения атрибутов на форме выполнения действия \"Направить адресатам\"")
+    private static void checknapravitadresatam(HashMap<String, HashMap<String, String[]>> errands) {
+        int i = 1;
+        while (errands.get(Integer.toString(i)) != null) {
+            checknapravitadresatam_errand(i, errands.get(Integer.toString(i)));
+            i++;
+        }
+    }
+
+    @Step("Поручение {0}")
+    private static void checknapravitadresatam_errand(int i, HashMap<String, String[]> errand) {
+        checknapravitadresatam_errandvalue("Получатель", errand.get("Получатель"), i);
+        checknapravitadresatam_errandvalue("Тип поручения", errand.get("Тип поручения"), i);
+        checknapravitadresatam_errandvalue("Заголовок", errand.get("Заголовок"), i);
+        checknapravitadresatam_errandvalue("Срок исполнения", errand.get("Срок исполнения"), i);
+    }
+
+    @Step("{0}: {1}")
+    private static void checknapravitadresatam_errandvalue(String AttrLabel, String[] values, int key) {
+        if (values != null)
+            if (values[0].equals("Нет") || values[0].equals("(Нет)"))
+                values = null;
+        waitForLoad();
+        String dynamicXPath;
+        if (AttrLabel.equals("Срок исполнения"))
+            dynamicXPath = "(//div[contains(@class,'container') and contains (@style,'visibility: visible')]//div[contains(@class,'control selectone-radiobuttons editmode')]//*[contains(text(),'%s')])[" + key + "]";
+        else
+            dynamicXPath = "(//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s')])[" + key + "]";
+        String XPath = String.format(dynamicXPath, AttrLabel);
+        try {
+            (new WebDriverWait(currentdriver(), currenttimeoutlnseconds()))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(XPath)));
+        } catch (Exception e) {
+            hardassertfail("Не найден элемент " + XPath);
+        }
+/*
+        switch (AttrLabel) {
+            case "Заголовок":
+            case "Исходящий номер":
+            case "Количество листов":
+                dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'value')]//input[@type='text']";
+                break;
+            case "Исходящий от":
+            case "Срок исполнения":
+                dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'value')]//input[@type='hidden']";
+                break;
+            case "Примечание":
+                dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'value')]//textarea";
+                break;
+            case "Корреспондент":
+                dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'control')]//div[contains(@class,'cropped-item')]";
+                break;
+            case "Получатель":
+            case "Тематика":
+                dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'control')]//div[contains(@class,'cropped-item')]";
+                break;
+            case "На контроле":
+            case "Нерегистрируемый":
+                dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s')]//ancestor::div[contains(@class,'control')]//input[@type='checkbox']";
+                break;
+            case "Входящий":
+            case "Прочее":
+                dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s')]//ancestor::div[contains(@class,'uploader-block')]//div[contains(@class,'cropped-item')]";
+                break;
+            case "Содержание":
+                dynamicXPath = "//body[@id='tinymce']";
+                currentdriver().switchTo().frame(currentdriver().findElement(By.xpath(Objects.Document.Createform.summarycontent_iframe)));
+                break;
+            default:
+                dynamicXPath = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'cropped-item')]";
+                break;
+        }
+*/
+        if (!AttrLabel.equals("Срок исполнения")) {
+            if (AttrLabel.equals("Заголовок"))
+                dynamicXPath = "(//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'value')]//input)[" + key + "]";
+            else
+                dynamicXPath = "(//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'%s:')]//ancestor::div[contains(@class,'editmode')]//div[contains(@class,'cropped-item')])[" + key + "]";
+            XPath = String.format(dynamicXPath, AttrLabel);
+
+            int i = timeoutlnsecond;
+            while (i > 0 && currentdriver().findElements(By.xpath(XPath)).isEmpty()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                i--;
+            }
+
+
+            List<WebElement> elements = currentdriver().findElements(By.xpath(XPath));
+
+            if (values != null) {
+                for (String value : values) {
+                    boolean t = false;
+                    for (WebElement element : elements) {
+                        String elementtext = null;
+                        if (XPath.contains("'value')]//input"))
+                            elementtext = currentdriver().findElement(By.xpath(XPath)).getAttribute("value");
+                        else
+                            elementtext = element.getText();
+                        if (elementtext.contains(value)) {
+                            t = true;
+                            elements.remove(element);
+                            break;
+                        }
+                    }
+                    softassertfail(t, "Атрибут не содержит значение <" + value + "> в поле " + XPath);
+                }
+            }
+
+            if (elements.size() > 0) {
+                ArrayList<String> elementstext = new ArrayList<>();
+                for (WebElement element : elements) {
+                    if (element.getText().length() > 0)
+                        elementstext.add(element.getText());
+                }
+                if (elementstext.size() > 0)
+                    softassertfail("Лишние элементы в атрибуте " + elementstext);
+            }
+        } else {
+            String elementtext;
+            if (values[0].equals("Без срока")){
+                softassertfail(currentdriver().findElement(By.xpath("(//div[contains(@class,'container') and contains (@style,'visibility: visible')]//input[@type='radio' and @value='LIMITLESS'])[" + key + "]")).isSelected(),"Не выбрано значение \"Без срока\"");
+            } else
+            if (values[0].length() == 10) {
+                softassertfail(currentdriver().findElement(By.xpath("(//div[contains(@class,'container') and contains (@style,'visibility: visible')]//input[@type='radio' and @value='DATE'])[" + key + "]")).isSelected(),"Не выбрано значение <Дата>");
+
+                XPath = "(//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'date-set')]//div[contains(@class,'set-date')]//input[@type='text'])[" + key + "]";
+                elementtext = currentdriver().findElement(By.xpath(XPath)).getAttribute("value");
+                softassertfail(values[0].equals(elementtext),"Дата не равна " + values[0]);
+            } else {
+                softassertfail(currentdriver().findElement(By.xpath("(//div[contains(@class,'container') and contains (@style,'visibility: visible')]//input[@type='radio' and @value='DAYS'])[" + key + "]")).isSelected(),"Не выбрано значение <Количество дней>");
+
+                XPath = "(//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'date-set')]//div[contains(@class,'set-days')]//input[@type='text'])[" + key + "]";
+                elementtext = currentdriver().findElement(By.xpath(XPath)).getAttribute("value");
+                softassertfail(values[0].equals(elementtext),"Количество дней не равно " + values[0]);
+
+                XPath = "(//div[contains(@class,'container') and contains (@style,'visibility: visible')]//*[contains(text(),'Срок исполнения:')]//ancestor::div[contains(@class,'date-set')]//select)[" + key + "]";
+                elementtext = currentdriver().findElement(By.xpath(XPath)).getAttribute("value");
+                if (elementtext.equals("WORK"))
+                    elementtext = "рабочий день";
+                else
+                    elementtext = "календарный день";
+                softassertfail(values[1].equals(elementtext),"Значение выпадающего списка не " + values[1]);
+            }
+
+        }
+
+    }
+
+    @Step("Выполнить действие {0}")
     static void righactionexecute(String action, String approve, String status, HashMap<String, String[]> doc){
         clickaction(action, righaction(action));
-        if (action.equals("Направить адресатам")) {
+        if (action.equals("Направить адресатам") || action.equals("Зарегистрировать")) {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
-        //checkdialogtext("Подтвердите выполнение для этого документа действия \"" + action + "\".");
+
+
+
+
+
+        } else
+            checkdialogtext("Подтвердите выполнение для этого документа действия \"" + action + "\".");
         clickactionapprove(approve,approveaction(approve));
         boolean t = false;
         waitForLoad();

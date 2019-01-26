@@ -425,4 +425,119 @@ public class IncomingTest extends About {
         removedocs();
     }
 
+
+    @Stories("Направить адресатам черновик")
+    @Title("Направление входящего документа адресатам. Нерегистрируемый = Нет, регистратор с ролью создания поручений")
+    public void test18() {
+        Users.User user = getuserbyroles("СЭД. Регистраторы","Поручения. Инициатор");
+
+        user = getuserbylogin("fomin");
+
+        HashMap<String, String[]> doc = new HashMap<String, String[]>();;
+        doc.put("document", new String[]{"incoming"});
+        doc.put("Заголовок", new String[]{randomstring(10)});
+        doc.put("Вид документа", new String[]{"Запрос"});
+        doc.put("Способ доставки", new String[]{"Личный прием"});
+        doc.put("Корреспондент", new String[]{"AT_Organization"});
+        doc.put("Корреспондент Тип", new String[]{"Внутренний контрагент"});
+        doc.put("Корреспондент Наименование", new String[]{"AT_Organization"});
+        doc.put("Представитель корреспондента", new String[]{getuserbylogin("denisov").full});
+        doc.put("Получатель", new String[]{"Сотрудник",getanotheruser(user).full});//,"Организация","AT_Subdivision1"});
+        //doc.put("В ответ на", new String[]{"Исходящий документ: А1 ЭП только Прочее, № ИСХ-01035/17 от 24.10.2017"});
+        //doc.put("В ответ на Номер", new String[]{"1035"});
+        doc.put("Исходящий номер", new String[]{randomstring(7)});
+        doc.put("Исходящий от", new String[]{"21.12.2019"});
+        doc.put("Содержание", new String[]{"21.12.2019"});
+        doc.put("Количество листов", new String[]{"21"});
+        doc.put("Тематика", new String[]{"Доставка воды"});
+        //doc.put("Номер дела", new String[]{"2666","123","прпу-Это дело"});
+        doc.put("Примечание", new String[]{"21"});
+        doc.put("Срок исполнения", new String[]{"21.12.2019"});
+        doc.put("На контроле", new String[]{"Да"});
+        doc.put("Нерегистрируемый", new String[]{"Нет"});
+
+        //авторизоваться
+        auth(user.famio,user.login,user.pass);
+        //создать входящий документ
+        createincoming(doc);
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие записи в бж
+        doc.put("Запись в бж",new String[]{historystandartcreate(doc)});
+        readhistory(doc.get("Запись в бж"),doc);
+
+        //выполнить действие Зарегистрировать
+        righactionexecute("Зарегистрировать","ОК","Зарегистрирован",doc);
+        doc.put("Дата регистрации",doc.get("Дата"));
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие записи в бж
+        doc.put("Запись в бж",new String[]{currentcurrent_user() + " перевел(а) документ \"" + incoming_header(doc.get("Вид документа"), new String[]{"Не присвоено"}) + "\" в статус \"" + doc.get("Статус")[0] + "\""});
+        readhistory(doc.get("Запись в бж"),doc);
+
+
+
+
+        HashMap<String, HashMap<String, String[]>> errands = new HashMap<String, HashMap<String, String[]>>();
+        HashMap<String, String[]> errand = new HashMap<String, String[]>();
+        int i = 1;
+        boolean t = false;
+        for (String poluch:doc.get("Получатель")){
+            switch (poluch){
+                case "Сотрудник":
+                    t = true;
+                    break;
+                case "Организация":
+                    t = false;
+                    break;
+                default:
+                    if (t)
+                        errand.put("Получатель", new String[]{poluch});
+                    else
+                        errand.put("Получатель", new String[]{getrukbyorg(poluch).full});
+                    if (getuserbyfull(errand.get("Получатель")[0]).roles.contains("Руководитель высшего звена")){
+                        errand.put("Тип поручения", new String[]{"На рассмотрение"});
+                        errand.put("Заголовок", new String[]{"Рассмотреть документ"});
+                    } else {
+                        errand.put("Тип поручения", new String[]{"На исполнение (неконтрольное)"});
+                        errand.put("Заголовок", new String[]{"Исполнить документ"});
+                    }
+                    errand.put("Срок исполнения", new String[]{"1","рабочий день"});
+
+
+
+
+
+
+                    errand.put("Статус", new String[]{"Ожидает исполнения"});
+                    errand.put("Документ-основание",new String[]{"Входящий документ: " + docgettitle()});
+                    errand.put("Основание",new String[]{"Входящий документ: " + docgettitle()});
+                    errand.put("Автор",new String[]{getuserbylogin(currentcurrent_login()).full});
+                    errand.put("Создатель",new String[]{getuserbylogin(currentcurrent_login()).full});
+                    errand.put("Исполнитель", errand.get("Получатель"));
+
+
+                    errands.put(Integer.toString(i),errand);
+                    errand = new HashMap<String, String[]>();
+                    i++;
+                    break;
+            }
+        }
+
+
+
+        //выполнить действие Направить адресатам
+        righactionexecute("Направить адресатам", "ОК", "На исполнении", errands, doc);
+        //проверить атрибуты и их значения на форме просмотра
+        readincoming(doc);
+        //проверить наличие записи в бж
+        doc.put("Запись в бж",new String[]{currentcurrent_user() + " перевел(а) документ \"" + incoming_header(doc.get("Вид документа"), doc.get("Номер")) + "\" в статус \"" + doc.get("Статус")[0] + "\""});
+        readhistory(doc.get("Запись в бж"),doc);
+
+        //проверить наличие поручений
+        checkincomingerrands(doc, errands);
+
+        //if (!stack.get(0).value)
+        removedocs();
+    }
 }

@@ -38,11 +38,23 @@ class Users {
     static User getuserbyroles(String... roles){
         ArrayList<User> values = new ArrayList<>();
         User user = null;
-        for (String role:roles)
+
+        boolean t = true;
+        for (User val:users) {
+            t = true;
+            for (String role : roles)
+                if (!val.roles.contains(role))
+                    t = false;
+            if (t)
+                values.add(val);
+        }
+
+
+        /*for (String role:roles)
             for (User val:users)
                 if (val.roles.contains(role))
                     if (!values.contains(val))
-                        values.add(val);
+                        values.add(val);*/
         //Random rnd = new Random(System.currentTimeMillis());
         user = values.get((int) (Math.random() * values.size()));
         values.clear();
@@ -80,12 +92,24 @@ class Users {
         return null;
     }
 
+    static User getrukbyorg(String org){
+        switch (org){
+            case "AT_Subdivision1":
+                return getuserbylogin("gpetuhov");
+            case "AT_Subdivision2":
+                return getuserbylogin("ersov");
+            default:
+                return null;
+        }
+    }
+
     static User getuserbyfull(String full){
         for (User val:users)
             if (val.full.equals(full))
                 return val;
         return null;
     }
+
 
     static ArrayList<User> users = new ArrayList<>();
 
@@ -259,6 +283,15 @@ class Users {
         newuser.famio = "Петухов Г.К.";
         newuser.fio = "Петухов Геннадий Кимович";
         newuser.full = "Петухов Геннадий Кимович Руководитель AT_Subdivision1";
+        users.add(newuser);
+
+
+        newuser = new User();
+        newuser.login = "ersov";
+        newuser.pass = "Par@ol1";
+        newuser.famio = "Ершов К.А.";
+        newuser.fio = "Ершов Корнелий Андреевич";
+        newuser.full = "Ершов Корнелий Андреевич Руководитель AT_Subdivision1";
         users.add(newuser);
 
 
