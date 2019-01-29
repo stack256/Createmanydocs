@@ -42,7 +42,7 @@ class About {
     static ArrayList<User> usersintests = new ArrayList<>();
     static HashMap<Long, String> current_loginmap = new HashMap<Long, String>();
     static HashMap<Long, Integer> timeoutlnsecondsmap = new HashMap<Long, Integer>();
-    static Integer timeoutlnsecond = 10;
+    static Integer timeoutlnsecond = 30;
 
     @BeforeSuite
     void setAllureEnvironment() {
