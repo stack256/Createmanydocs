@@ -102,7 +102,7 @@ class About {
         //users.clear();
         currentdriver().quit();
         counttest--;
-        System.out.println("Осталось еще" + counttest);
+        System.out.println("Осталось тестов " + counttest);
     }
 
     static RemoteWebDriver currentdriver() {

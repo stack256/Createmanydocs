@@ -24,7 +24,15 @@ class Base {
 
     @Step("Авторизоваться пользователем {0}")
     static void auth(String report, String login, String pass) {
-        currentdriver().get(System.getProperty("stend.url"));
+
+        if (currentcurrent_login() == null) {
+            try {
+                Thread.sleep(10 * Thread.currentThread().getId());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            currentdriver().get(System.getProperty("stend.url"));
+        }
         while (!login.equals("admin") && usersintests.contains(getuserbylogin(login))) {
             try {
                 Thread.sleep(1000);
@@ -32,6 +40,8 @@ class Base {
                 e.printStackTrace();
             }
         }
+        if (login!="admin")
+            usersintests.add(getuserbylogin(login));
 
         if (currentcurrent_login() != null && currentcurrent_login().equals(login))
             currentdriver().get(currentdriver().getCurrentUrl());
@@ -57,8 +67,6 @@ class Base {
 
             current_loginmap.put(Thread.currentThread().getId(), login);
             current_usermap.put(Thread.currentThread().getId(), report);
-            if (login!="admin")
-                usersintests.add(getuserbylogin(login));
         }
         System.out.println("LogIn");
         System.out.println(usersintests);
