@@ -297,7 +297,7 @@ class Users {
         newuser.pass = "Par@ol1";
         newuser.famio = "Ершов К.А.";
         newuser.fio = "Ершов Корнелий Андреевич";
-        newuser.full = "Ершов Корнелий Андреевич Руководитель AT_Subdivision1";
+        newuser.full = "Ершов Корнелий Андреевич Руководитель AT_Subdivision2";
         users.add(newuser);
 
 
