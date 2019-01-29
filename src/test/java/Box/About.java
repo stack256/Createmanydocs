@@ -53,6 +53,8 @@ class About {
                         .build());
 
         Allure.LIFECYCLE.addListener(About.AllureStepListener.getInstance());
+
+        usersinitial();
     }
 
     @BeforeMethod
@@ -60,7 +62,6 @@ class About {
         String current_login = null;
         current_loginmap.put(Thread.currentThread().getId(),current_login);
 
-        usersinitial();
 
         timeoutlnsecondsmap.put(Thread.currentThread().getId(),timeoutlnsecond);
 
