@@ -25,14 +25,6 @@ class Base {
     @Step("Авторизоваться пользователем {0}")
     static void auth(String report, String login, String pass) {
 
-        if (currentcurrent_login() == null) {
-            try {
-                Thread.sleep(10 * Thread.currentThread().getId());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            currentdriver().get(System.getProperty("stend.url"));
-        }
         while (!login.equals("admin") && usersintests.contains(getuserbylogin(login))) {
             try {
                 Thread.sleep(1000);
@@ -40,8 +32,12 @@ class Base {
                 e.printStackTrace();
             }
         }
-        if (login!="admin")
+        if (login!="admin") {
             usersintests.add(getuserbylogin(login));
+
+            System.out.println("LogIn");
+            System.out.println(usersintests);
+        }
 
         if (currentcurrent_login() != null && currentcurrent_login().equals(login))
             currentdriver().get(currentdriver().getCurrentUrl());
@@ -68,8 +64,6 @@ class Base {
             current_loginmap.put(Thread.currentThread().getId(), login);
             current_usermap.put(Thread.currentThread().getId(), report);
         }
-        System.out.println("LogIn");
-        System.out.println(usersintests);
     }
 
     @Step("Выйти из системы")
@@ -92,10 +86,11 @@ class Base {
             }
             count--;
         }
-        if (currentcurrent_login()!="admin")
+        if (currentcurrent_login()!="admin") {
             usersintests.remove(getuserbylogin(currentcurrent_login()));
-        System.out.println("LogOut");
-        System.out.println(usersintests);
+            System.out.println("LogOut");
+            System.out.println(usersintests);
+        }
     }
 
     @Step("Удалить документ")

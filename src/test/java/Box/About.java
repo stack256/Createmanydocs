@@ -83,8 +83,12 @@ class About {
             driver = new ChromeDriver();
         }
         driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
-        //String baseUrl = System.getProperty("stend.url");
-        //driver.get(baseUrl);
+        try {
+            Thread.sleep(10 * Thread.currentThread().getId());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        currentdriver().get(System.getProperty("stend.url"));
         drivermap.put(Thread.currentThread().getId(),driver);
     }
 
