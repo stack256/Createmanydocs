@@ -115,6 +115,12 @@ class Users {
 
     static void usersinitial(){
         User newuser = new User();
+        newuser.login = "admin";
+        newuser.pass = System.getProperty("admin.pass");
+        users.add(newuser);
+
+
+        newuser = new User();
         newuser.login = "shestakov";
         newuser.pass = "Par@ol1";
         newuser.roles.add("Внутренние. Создатели");

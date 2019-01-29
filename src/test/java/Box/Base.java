@@ -57,7 +57,8 @@ class Base {
 
             current_loginmap.put(Thread.currentThread().getId(), login);
             current_usermap.put(Thread.currentThread().getId(), report);
-            usersintests.add(getuserbylogin(login));
+            if (login!="admin")
+                usersintests.add(getuserbylogin(login));
         }
         System.out.println("LogIn");
         System.out.println(usersintests);
@@ -83,7 +84,8 @@ class Base {
             }
             count--;
         }
-        usersintests.remove(getuserbylogin(currentcurrent_login()));
+        if (currentcurrent_login()!="admin")
+            usersintests.remove(getuserbylogin(currentcurrent_login()));
         System.out.println("LogOut");
         System.out.println(usersintests);
     }

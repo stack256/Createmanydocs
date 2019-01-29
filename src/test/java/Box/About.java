@@ -88,6 +88,8 @@ class About {
         drivermap.put(Thread.currentThread().getId(),driver);
     }
 
+    int counttest = 9;
+
     @AfterMethod
     public void tiredDown() {
         //doc.clear();
@@ -99,6 +101,8 @@ class About {
         currentremovedoc().clear();
         //users.clear();
         currentdriver().quit();
+        counttest--;
+        System.out.println("Осталось еще" + counttest);
     }
 
     static RemoteWebDriver currentdriver() {
@@ -267,7 +271,8 @@ class About {
     static void hardassertfail(String report) {
         System.out.println("Есть блокирующая ошибка");
         report(report);
-        usersintests.remove(getuserbylogin(currentcurrent_login()));
+        if (currentcurrent_login()!="admin")
+            usersintests.remove(getuserbylogin(currentcurrent_login()));
         Assert.fail(report);
     }
 
