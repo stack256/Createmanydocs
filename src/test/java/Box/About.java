@@ -88,7 +88,7 @@ class About {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        currentdriver().get(System.getProperty("stend.url"));
+        driver.get(System.getProperty("stend.url"));
         drivermap.put(Thread.currentThread().getId(),driver);
     }
 
