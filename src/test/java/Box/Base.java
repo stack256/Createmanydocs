@@ -24,6 +24,7 @@ class Base {
 
     @Step("Авторизоваться пользователем {0}")
     static void auth(String report, String login, String pass) {
+        currentdriver().get(System.getProperty("stend.url"));
         while (!login.equals("admin") && usersintests.contains(getuserbylogin(login))) {
             try {
                 Thread.sleep(1000);
@@ -58,6 +59,8 @@ class Base {
             current_usermap.put(Thread.currentThread().getId(), report);
             usersintests.add(getuserbylogin(login));
         }
+        System.out.println("LogIn");
+        System.out.println(usersintests);
     }
 
     @Step("Выйти из системы")
@@ -81,6 +84,8 @@ class Base {
             count--;
         }
         usersintests.remove(getuserbylogin(currentcurrent_login()));
+        System.out.println("LogOut");
+        System.out.println(usersintests);
     }
 
     @Step("Удалить документ")
