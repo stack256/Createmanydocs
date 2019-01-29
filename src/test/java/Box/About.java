@@ -266,6 +266,7 @@ class About {
     static void hardassertfail(String report) {
         System.out.println("Есть блокирующая ошибка");
         report(report);
+        usersintests.remove(getuserbylogin(currentcurrent_login()));
         Assert.fail(report);
     }
 
