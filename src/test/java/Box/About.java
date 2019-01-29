@@ -33,6 +33,17 @@ import static com.github.automatedowl.tools.AllureEnvironmentWriter.allureEnviro
 
 class About {
 
+
+
+    private static HashMap<Long, RemoteWebDriver> drivermap = new HashMap<Long, RemoteWebDriver>();
+    static HashMap<Long, ArrayList<String>> removedocmap = new HashMap<Long, ArrayList<String>>();
+    private static HashMap<Long, ArrayList<Stack>> stackmap = new HashMap<Long, ArrayList<Stack>>();
+    static HashMap<Long, String> current_usermap = new HashMap<Long, String>();
+    static ArrayList<User> usersintests = new ArrayList<>();
+    static HashMap<Long, String> current_loginmap = new HashMap<Long, String>();
+    static HashMap<Long, Integer> timeoutlnsecondsmap = new HashMap<Long, Integer>();
+    static Integer timeoutlnsecond = 10;
+
     @BeforeSuite
     void setAllureEnvironment() {
         allureEnvironmentWriter(
@@ -71,8 +82,8 @@ class About {
             driver = new ChromeDriver();
         }
         driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
-        String baseUrl = System.getProperty("stend.url");
-        driver.get(baseUrl);
+        //String baseUrl = System.getProperty("stend.url");
+        //driver.get(baseUrl);
         drivermap.put(Thread.currentThread().getId(),driver);
     }
 
@@ -135,14 +146,6 @@ class About {
         }
 
     }
-
-    private static HashMap<Long, RemoteWebDriver> drivermap = new HashMap<Long, RemoteWebDriver>();
-    static HashMap<Long, ArrayList<String>> removedocmap = new HashMap<Long, ArrayList<String>>();
-    private static HashMap<Long, ArrayList<Stack>> stackmap = new HashMap<Long, ArrayList<Stack>>();
-    static HashMap<Long, String> current_usermap = new HashMap<Long, String>();
-    static HashMap<Long, String> current_loginmap = new HashMap<Long, String>();
-    static HashMap<Long, Integer> timeoutlnsecondsmap = new HashMap<Long, Integer>();
-    static Integer timeoutlnsecond = 10;
 
     static class Stack {
         Integer number;

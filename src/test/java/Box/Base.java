@@ -20,13 +20,25 @@ import static Box.Users.*;
 
 class Base {
 
+
+
     @Step("Авторизоваться пользователем {0}")
     static void auth(String report, String login, String pass) {
+        while (!login.equals("admin") && usersintests.contains(getuserbylogin(login))) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         if (currentcurrent_login() != null && currentcurrent_login().equals(login))
             currentdriver().get(currentdriver().getCurrentUrl());
         else {
             if (currentcurrent_login() != null && !currentcurrent_login().equals(login))
                 logout();
+
+            currentdriver().get(System.getProperty("stend.url"));
 
             settext("Имя пользователя", AuthPage.username, login);
             settext("Пароль", AuthPage.password, pass);
@@ -44,6 +56,7 @@ class Base {
 
             current_loginmap.put(Thread.currentThread().getId(), login);
             current_usermap.put(Thread.currentThread().getId(), report);
+            usersintests.add(getuserbylogin(login));
         }
     }
 
@@ -67,6 +80,7 @@ class Base {
             }
             count--;
         }
+        usersintests.remove(getuserbylogin(currentcurrent_login()));
     }
 
     @Step("Удалить документ")
