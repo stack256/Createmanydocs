@@ -57,6 +57,16 @@ class About {
         usersinitial();
     }
 
+    @AfterSuite
+    void closedrivers(){
+        int i = 0;
+        while (drivermap.size() > 0 && i < 6500) {
+            if (drivermap.get(i) != null)
+                drivermap.get(i).close();
+            i++;
+        }
+    }
+
     @BeforeMethod
     public void setUp() {
         String current_login = null;
