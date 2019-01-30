@@ -285,8 +285,8 @@ class About {
     static void hardassertfail(String report) {
         System.out.println("Есть блокирующая ошибка");
         report(report);
-        if (currentcurrent_login()!="admin")
-            usersintests.remove(getuserbylogin(currentcurrent_login()));
+        /*if (currentcurrent_login()!="admin")
+            usersintests.remove(getuserbylogin(currentcurrent_login()));*/
         Assert.fail(report);
     }
 

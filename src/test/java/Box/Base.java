@@ -25,7 +25,7 @@ class Base {
     @Step("Авторизоваться пользователем {0}")
     static void auth(String report, String login, String pass) {
 
-        while (!login.equals("admin") && usersintests.contains(getuserbylogin(login))) {
+        /*while (!login.equals("admin") && usersintests.contains(getuserbylogin(login))) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -37,7 +37,7 @@ class Base {
 
             System.out.println("LogIn");
             System.out.println(usersintests);
-        }
+        }*/
 
         if (currentcurrent_login() != null && currentcurrent_login().equals(login))
             currentdriver().get(currentdriver().getCurrentUrl());
@@ -86,11 +86,11 @@ class Base {
             }
             count--;
         }
-        if (currentcurrent_login()!="admin") {
+        /*if (currentcurrent_login()!="admin") {
             usersintests.remove(getuserbylogin(currentcurrent_login()));
             System.out.println("LogOut");
             System.out.println(usersintests);
-        }
+        }*/
     }
 
     @Step("Удалить документ")
