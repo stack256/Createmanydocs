@@ -67,7 +67,7 @@ class Base {
     }
 
     @Step("Выйти из системы")
-    private static void logout(){
+    static void logout(){
         currentdriver().get(currentdriver().getCurrentUrl());
         try {
             Thread.sleep(2000);
@@ -119,6 +119,14 @@ class Base {
     @Step("Перейти в АРМ СЭД")
     static void gotoarmsed() {
         click("Логика: СЭД", MenuBar.logsed);
+        timeoutlnsecondsmap.put(Thread.currentThread().getId(),1200);
+        waitelement(ARMSED.createButton);
+        timeoutlnsecondsmap.put(Thread.currentThread().getId(),timeoutlnsecond);
+    }
+
+    @Step("Перейти в АРМ СЭД")
+    static void gotoarmsed(String path) {
+        currentdriver().get(path);
         timeoutlnsecondsmap.put(Thread.currentThread().getId(),1200);
         waitelement(ARMSED.createButton);
         timeoutlnsecondsmap.put(Thread.currentThread().getId(),timeoutlnsecond);
@@ -558,6 +566,8 @@ class Base {
             case "Пункт Примечание":
             case "Название этапа":
             case "Срок по умолчанию для согласующего (р. д.)":
+            case "Номер документа":
+            case "Дата документа":
                 for (String value : values)
                     settext(attrname, xpath, value);
                 break;
@@ -1585,11 +1595,13 @@ class Base {
     }
 
     static void fillattrcreateincoming_attach(String AttrLabel, Map<String, String[]> doc) {
+        waitForLoad();
         if (doc.get("Вложения " + AttrLabel) != null) {
             String dynamicXPath = "//legend[text()='%s']//ancestor::fieldset//img[contains(@class,'uploader')]";
             String XPath = String.format(dynamicXPath, AttrLabel);
             fillattachment(AttrLabel, XPath, doc.get("Вложения " + AttrLabel));
         }
+        waitForLoad();
     }
 
     @Step("Проверить отсутствие вложений")

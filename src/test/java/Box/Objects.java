@@ -113,7 +113,7 @@ class Objects {
         }
         static class Createform{
             static String summarycontent_iframe = "//iframe[contains(@id,'summaryContent')]";
-            static String create_button = "//div[@class='document-metadata']//button[text()='Создать']";
+            static String create_button = "//div[@class='document-metadata-with-preview']//button[text()='Создать']";
             static String attachments_uploadbutton = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//button[text()='Выберите файлы']";
             static String attachments_input = "//div[contains(@class,'container') and contains (@style,'visibility: visible')]//input[@type='file']";
             static class Incomingdocument {
@@ -175,11 +175,20 @@ class Objects {
                 */
                 static String author_label = "//div[@class='document-metadata']//*[contains(text(),'Составитель:')]";
                 static String executor_label = "//div[@class='document-metadata']//*[contains(text(),'Исполнитель:')]";
-                static String title_label = "//div[@class='document-metadata']//*[contains(text(),'Заголовок:')]";
-                static String title_field = "//div[@class='document-metadata']//*[contains(text(),'Заголовок:')]//ancestor::div[contains(@class,'control')]//input";
-                static String type_label = "//div[@class='document-metadata']//*[contains(text(),'Вид документа:')]";
-                static String type_field = "//div[@class='document-metadata']//*[contains(text(),'Вид документа:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
-                static String type_button = "//div[@class='document-metadata']//*[contains(text(),'Вид документа:')]//ancestor::div[contains(@class,'control')]//button";
+
+
+                static String type_label = "//div[@class='document-metadata-with-preview']//*[contains(text(),'Вид документа:')]";
+                static String type_field = "//div[@class='document-metadata-with-preview']//*[contains(text(),'Вид документа:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
+                static String type_button = "//div[@class='document-metadata-with-preview']//*[contains(text(),'Вид документа:')]//ancestor::div[contains(@class,'control')]//button";
+
+                static String title_label = "//div[@class='document-metadata-with-preview']//*[contains(text(),'Номер документа:')]";
+                static String title_field = "//div[@class='document-metadata-with-preview']//*[contains(text(),'Номер документа:')]//ancestor::div[contains(@class,'control')]//input";
+
+                static String signing_date_label = "//div[@class='document-metadata-with-preview']//*[contains(text(),'Дата документа:')]";
+                static String signing_date_field = "//div[@class='document-metadata-with-preview']//*[contains(text(),'Дата документа:')]//ancestor::div[contains(@class,'control')]//input[@type='text']";
+
+
+
                 static String execution_date_label = "//div[@class='document-metadata']//*[contains(text(),'Срок ответа:')]";
                 static String execution_date_field = "//div[@class='document-metadata']//*[contains(text(),'Срок ответа:')]//ancestor::div[contains(@class,'control')]//input[@type='text']";
                 static String recipient_label = "//div[@class='document-metadata']//*[contains(text(),'Получатель:')]";
@@ -193,8 +202,8 @@ class Objects {
                 static String signers_label = "//div[@class='document-metadata']//*[contains(text(),'Подписанты:')]";
                 static String signers_field = "//div[@class='document-metadata']//*[contains(text(),'Подписанты:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
                 static String signers_button = "//div[@class='document-metadata']//*[contains(text(),'Подписанты:')]//ancestor::div[contains(@class,'control')]//button";
-                static String signing_date_label = "//div[@class='document-metadata']//*[contains(text(),'Дата подписания:')]";
-                static String signing_date_field = "//div[@class='document-metadata']//*[contains(text(),'Дата подписания:')]//ancestor::div[contains(@class,'control')]//input[@type='text']";
+                //static String signing_date_label = "//div[@class='document-metadata']//*[contains(text(),'Дата подписания:')]";
+                //static String signing_date_field = "//div[@class='document-metadata']//*[contains(text(),'Дата подписания:')]//ancestor::div[contains(@class,'control')]//input[@type='text']";
                 static String response_to_label = "//div[@class='document-metadata']//*[contains(text(),'В ответ на:')]";
                 static String response_to_field = "//div[@class='document-metadata']//*[contains(text(),'В ответ на:')]//ancestor::div[contains(@class,'control')]//div[@class='cropped-item']";
                 static String response_to_button = "//div[@class='document-metadata']//*[contains(text(),'В ответ на:')]//ancestor::div[contains(@class,'control')]//button";
@@ -945,7 +954,7 @@ class Objects {
     static class ARMSED{
         static class Createmenu{
             static String incomingdocument = "//ul//a[text()='Входящий документ']";
-            static String internaldocument = "//ul//a[text()='Внутренний документ']";
+            static String internaldocument = "//ul//a[text()='Входящий первичный документ']";
             static String outgoingdocument = "//ul//a[text()='Исходящий документ']";
             static String nddocument = "//ul//a[text()='НД']";
             static String orddocument = "//ul//a[text()='ОРД']";

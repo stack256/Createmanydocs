@@ -42,7 +42,7 @@ class About {
     static ArrayList<User> usersintests = new ArrayList<>();
     static HashMap<Long, String> current_loginmap = new HashMap<Long, String>();
     static HashMap<Long, Integer> timeoutlnsecondsmap = new HashMap<Long, Integer>();
-    static Integer timeoutlnsecond = 15;
+    static Integer timeoutlnsecond = 60;
 
     @BeforeSuite
     void setAllureEnvironment() {
@@ -83,14 +83,24 @@ class About {
         removedocmap.put(Thread.currentThread().getId(),removedoc);
 
         RemoteWebDriver driver = null;
-        if (System.getProperty("remote.grid") != null) {
+        boolean t = false;
+        while (!t) {
             try {
-                driver = new RemoteWebDriver(new URL(System.getProperty("remote.grid")), new ChromeOptions());
-            } catch (MalformedURLException e) {
+                Thread.sleep(60000);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        } else {
-            driver = new ChromeDriver();
+            if (System.getProperty("remote.grid") != null) {
+                try {
+                    driver = new RemoteWebDriver(new URL(System.getProperty("remote.grid")), new ChromeOptions());
+                    t = true;
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                driver = new ChromeDriver();
+                t = true;
+            }
         }
         driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
         try {
@@ -307,7 +317,7 @@ class About {
         }
         WebDriver jsWaitDriver;
         jsWaitDriver = currentdriver();
-        WebDriverWait wait = new WebDriverWait(jsWaitDriver,15);
+        WebDriverWait wait = new WebDriverWait(jsWaitDriver,currenttimeoutlnseconds());
         JavascriptExecutor jsExec = (JavascriptExecutor) jsWaitDriver;
 
         //Wait for Javascript to load
